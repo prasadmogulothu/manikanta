@@ -201,8 +201,6 @@ so `tracking.enabled` is `false`.
 
 These are also in `README.md`.
 
-- **Proprietor name.** The signboard reads "Pro : Manasa Kashipuram", while
-  the site says Mahesh Kashipuram.
 - **Map.** It points at Kollapur town, not the shop. Paste the shop's own
   Google Maps embed link into `contact.map_embed`.
 - **Opening hours.** Not known yet.

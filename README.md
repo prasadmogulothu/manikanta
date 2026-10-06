@@ -1,7 +1,9 @@
 # Manikanta Naturals · మణికంఠ న్యాచురల్స్
 
 A static site for an organic, millets and Ayurveda store in Kollapur,
-Nagarkurnool district. Proprietor: **Mahesh Kashipuram**. The content is
+Nagarkurnool district. Proprietor: **Mahesh Kashipuram**, who runs the shop.
+It is registered in his wife Manasa's name, which is why the signboard reads
+"Pro : Manasa Kashipuram". The site names Mahesh on purpose. The content is
 Telugu first, with English kept for product names and taglines.
 
 There are two design templates over one page, built so the site can move into
@@ -47,6 +49,4 @@ what gets pasted, so nothing is copied by hand.
 - **Nasika claims.** The flyer lists diseases such as brain tumour, paralysis
   and OCD. The site only says it is traditionally used for headache, cold,
   sinus and sleeplessness, and adds "consult a doctor before use".
-- **Proprietor name.** The shopfront board reads "Pro : Manasa Kashipuram"; the
-  site says Mahesh Kashipuram, as briefed. Confirm which is right.
 - **"నల్ల పెబ్బర్లు"** is translated as *Black Cowpeas*. Check this with the owner.

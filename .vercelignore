@@ -6,3 +6,5 @@ site.json
 # source flyers; the cropped webps in assets/img are what the page loads
 assets/*.jpeg
 assets/shop.jpg
+integrate.md
+to-builder.mjs

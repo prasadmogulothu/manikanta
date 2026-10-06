@@ -18,6 +18,8 @@ python -m http.server 8788        →  http://localhost:8788/   (?d=b for design
 | `theme-a.css` | **Design A — Polam (పొలం).** Warm paper, leaf green and turmeric. Noto Serif Telugu, Anek Telugu and Fraunces. Arch-shaped image windows. |
 | `theme-b.css` | **Design B — Vanam (వనం).** Mid forest-green gradients and brass. Noto Sans Telugu and Lora. Medallion images, and the organic list set as a bill of fare. |
 | `site.json` | The `hh_sites` row (`slug`, `template_key`, `config`) carrying all of this content. |
+| `integrate.md` | How to move both templates and this site into `../hh_site_builder`. |
+| `to-builder.mjs` | Prints the builder catalogue entries and the site's seed SQL. |
 | `crop-assets.py` | Cuts the WhatsApp flyers and `assets/shop.png` into the WebPs in `assets/img/`. |
 
 ## Switching designs
@@ -28,27 +30,10 @@ scripts from `index.html`, then delete the theme file you didn't pick.
 
 ## Moving into hh_site_builder
 
-1. **Templates.** Each theme file has two parts. Its `:root { … }` block is the
-   template's `tokens` (drop the `--` prefixes), and everything after
-   `/* ---- template css ---- */` is its `css`. Add both to
-   `src/themes/catalogue.js` as `polam-paper` and `vanam-night`, both
-   `category: 'retail'`. Then run `node tools/gen-templates.mjs` and
-   `npm run check`. Both palettes already pass the builder's `auditTokens`
-   contrast check.
-2. **Assets.** Upload `assets/img/*` to the storage bucket at
-   `sites/manikantanaturals/`.
-3. **Site.** Insert `site.json` as the `hh_sites` row. Set `template_key` to
-   whichever design was chosen.
-4. **Footer label.** `Footer.jsx` hard-codes "Powered by". This site wants
-   "Developed by", so `site.json` carries `footer.powered_by_label`. Have the
-   footer read `{f.powered_by_label || 'Powered by'}`; that's a one-line change.
-5. **Icons.** The "why millets" cards use `leaf`, `scale`, `shield` and `sprout`.
-   Only `heart` exists in `src/modules/icons.jsx` today, so add the other four.
-   They are the Lucide paths already inlined in `index.html`.
-
-The templates restyle a few sections by their config `id` (`#millets`,
-`#benefits`, `#organic`, `#ayurveda`). Each of those rules has a generic
-fallback, so any other site using the templates still renders properly.
+The step-by-step guide is in **`integrate.md`**. It covers the template
+catalogue entries, the four small builder code changes, the image upload, the
+seed SQL, preview and cutover. `node to-builder.mjs catalogue|seed` generates
+what gets pasted, so nothing is copied by hand.
 
 ## Things to confirm with the shop
 

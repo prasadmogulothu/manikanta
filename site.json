@@ -1,11 +1,20 @@
 {
   "slug": "manikantanaturals",
+  "hostnames": ["manikantanaturals.vercel.app"],
   "name": "మణికంఠ న్యాచురల్స్",
   "template_key": "polam-paper",
   "config": {
+    "lang": "te",
+    "nav": [
+      { "label": "సిరిధాన్యాలు", "href": "#millets" },
+      { "label": "ఆర్గానిక్", "href": "#organic" },
+      { "label": "ఆయుర్వేద", "href": "#ayurveda" },
+      { "label": "మా గురించి", "href": "#about" },
+      { "label": "చిరునామా", "href": "#contact" }
+    ],
     "theme": {},
     "brand": {
-      "logo": "sites/manikantanaturals/logo.webp",
+      "logo": "manikantanaturals/logo.webp",
       "wordmark": "మణికంఠ",
       "wordmark_accent": "న్యాచురల్స్",
       "tagline": "Natural • Pure • Healthy",
@@ -38,11 +47,11 @@
       "note": "మిత్రులందరికీ ఉత్తమ న్యాచురల్ & ఆయుర్వేద ఉత్పత్తులు తక్కువ ధరలకు లభించును.",
       "powered_by": "HHAppSolutions",
       "powered_by_label": "Developed by",
-      "powered_by_logo": "sites/manikantanaturals/hh.png"
+      "powered_by_logo": "manikantanaturals/hh.png"
     },
     "sections": [
       { "type": "hero", "enabled": true, "config": {
-        "image": "sites/manikantanaturals/shop.webp",
+        "image": "manikantanaturals/shop.webp",
         "heading": "ప్రకృతి నుండి… మెరుగైన ఆరోగ్యానికి",
         "heading_2": "Natural • Pure • Healthy — Ayurveda, Organic, Cow-based & Millets",
         "sub": "కొండ ప్రాంతాల్లో ఎలాంటి రసాయనాలు లేకుండా సహజ సిద్ధంగా పండించిన ఆర్గానిక్ ఉత్పత్తులు, సిరిధాన్యాలు, ఆయుర్వేద మరియు గో ఆధారిత ఉత్పత్తులు — అన్నీ కొల్లాపూర్‌లో ఒకే చోట.",
@@ -56,11 +65,11 @@
         "kicker": "కొత్త స్టాక్ · New Stock", "heading": "సిరిధాన్యాలు", "heading_2": "Millets — five kinds, now in store",
         "sub": "ప్రకృతి ప్రసాదించిన ఆరోగ్యకరమైన సిరిధాన్యాలు ఇప్పుడు మణికంఠ న్యాచురల్స్ స్టోర్‌లో అందుబాటులో ఉన్నాయి!",
         "items": [
-          { "title": "కొర్రలు", "title_2": "Foxtail Millet", "image": "sites/manikantanaturals/millet-korralu.webp" },
-          { "title": "అండు కొర్రలు", "title_2": "Browntop Millet", "image": "sites/manikantanaturals/millet-andu-korralu.webp" },
-          { "title": "ఉదలు", "title_2": "Barnyard Millet", "image": "sites/manikantanaturals/millet-udalu.webp" },
-          { "title": "సామలు", "title_2": "Little Millet", "image": "sites/manikantanaturals/millet-samalu.webp" },
-          { "title": "అరికెలు", "title_2": "Kodo Millet", "image": "sites/manikantanaturals/millet-arikelu.webp" }
+          { "title": "కొర్రలు", "title_2": "Foxtail Millet", "image": "manikantanaturals/millet-korralu.webp" },
+          { "title": "అండు కొర్రలు", "title_2": "Browntop Millet", "image": "manikantanaturals/millet-andu-korralu.webp" },
+          { "title": "ఉదలు", "title_2": "Barnyard Millet", "image": "manikantanaturals/millet-udalu.webp" },
+          { "title": "సామలు", "title_2": "Little Millet", "image": "manikantanaturals/millet-samalu.webp" },
+          { "title": "అరికెలు", "title_2": "Kodo Millet", "image": "manikantanaturals/millet-arikelu.webp" }
         ]
       }},
       { "type": "services", "enabled": true, "config": {
@@ -69,7 +78,7 @@
         "items": [
           { "title": "అధిక పోషక విలువ", "title_2": "Rich in nutrition", "icon": "leaf" },
           { "title": "బరువు నియంత్రణకు సహాయం", "title_2": "Helps weight control", "icon": "scale" },
-          { "title": "గుండె ఆరోగ్యానికి మేలు", "title_2": "Good for the heart", "icon": "heart" },
+          { "title": "గుండె ఆరోగ్యానికి మేలు", "title_2": "Good for the heart", "icon": "heart-pulse" },
           { "title": "రోగనిరోధక శక్తి పెరుగుతుంది", "title_2": "Builds immunity", "icon": "shield" },
           { "title": "సహజమైన, రసాయన రహితం", "title_2": "Natural, chemical-free", "icon": "sprout" }
         ]
@@ -79,13 +88,13 @@
         "kicker": "100% ఆర్గానిక్ · Organic", "heading": "స్వచ్ఛమైన ఆర్గానిక్ ఉత్పత్తులు", "heading_2": "Grown in the hills — no chemicals, no adulteration",
         "sub": "కొండ ప్రాంతాల్లో సహజ సిద్ధంగా పండించినవి. రసాయనాలు లేవు, కల్తీ లేదు — స్వచ్ఛమైనవి, ఆరోగ్యకరమైనవి.",
         "items": [
-          { "title": "ఆర్గానిక్ పసుపు", "title_2": "Organic Turmeric", "body": "సహజమైన రంగు మరియు పరిమళంతో.", "image": "sites/manikantanaturals/p-pasupu.webp" },
-          { "title": "స్వచ్ఛమైన కారం", "title_2": "Pure Chilli Powder", "body": "కల్తీ లేని ఘాటైన రుచి.", "image": "sites/manikantanaturals/p-karam.webp" },
-          { "title": "నల్ల ఉలవలు", "title_2": "Black Horse Gram", "body": "ఆరోగ్యాన్ని ఇచ్చే పోషకాల గని.", "image": "sites/manikantanaturals/p-ulavalu.webp" },
-          { "title": "పొట్టు మినప్పప్పు", "title_2": "Urad Dal with husk", "body": "సాంప్రదాయ రుచి మరియు బలం.", "image": "sites/manikantanaturals/p-minappappu.webp" },
-          { "title": "కొండ కందిపప్పు", "title_2": "Hill Toor Dal", "body": "కల్తీ లేని గ్రామీణ స్వచ్ఛత.", "image": "sites/manikantanaturals/p-kandipappu.webp" },
-          { "title": "నల్ల పెబ్బర్లు", "title_2": "Black Cowpeas", "body": "శరీరానికి ఎంతో మేలు చేసే ప్రోటీన్.", "image": "sites/manikantanaturals/p-pebbarlu.webp" },
-          { "title": "దేశీ రకం రాజ్మా", "title_2": "Desi Rajma", "body": "అమితమైన రుచి, అద్భుతమైన ఆరోగ్యం.", "image": "sites/manikantanaturals/p-rajma.webp" }
+          { "title": "ఆర్గానిక్ పసుపు", "title_2": "Organic Turmeric", "body": "సహజమైన రంగు మరియు పరిమళంతో.", "image": "manikantanaturals/p-pasupu.webp" },
+          { "title": "స్వచ్ఛమైన కారం", "title_2": "Pure Chilli Powder", "body": "కల్తీ లేని ఘాటైన రుచి.", "image": "manikantanaturals/p-karam.webp" },
+          { "title": "నల్ల ఉలవలు", "title_2": "Black Horse Gram", "body": "ఆరోగ్యాన్ని ఇచ్చే పోషకాల గని.", "image": "manikantanaturals/p-ulavalu.webp" },
+          { "title": "పొట్టు మినప్పప్పు", "title_2": "Urad Dal with husk", "body": "సాంప్రదాయ రుచి మరియు బలం.", "image": "manikantanaturals/p-minappappu.webp" },
+          { "title": "కొండ కందిపప్పు", "title_2": "Hill Toor Dal", "body": "కల్తీ లేని గ్రామీణ స్వచ్ఛత.", "image": "manikantanaturals/p-kandipappu.webp" },
+          { "title": "నల్ల పెబ్బర్లు", "title_2": "Black Cowpeas", "body": "శరీరానికి ఎంతో మేలు చేసే ప్రోటీన్.", "image": "manikantanaturals/p-pebbarlu.webp" },
+          { "title": "దేశీ రకం రాజ్మా", "title_2": "Desi Rajma", "body": "అమితమైన రుచి, అద్భుతమైన ఆరోగ్యం.", "image": "manikantanaturals/p-rajma.webp" }
         ]
       }},
       { "type": "services", "enabled": true, "config": {
@@ -94,16 +103,16 @@
         "items": [
           { "title": "పంచగవ్య నాసిక", "title_2": "Saraswati Nasika — Panchagavya nasal drops",
             "body": "గో ఆధారిత పంచగవ్యతో తయారైన నాసిక చుక్కలు. తలనొప్పి, జలుబు, సైనస్, నిద్రలేమి వంటి ఇబ్బందులకు సంప్రదాయ ఆయుర్వేదంలో వాడుతారు. 100% సహజం · సురక్షితం.",
-            "price": "వాడే ముందు వైద్యుల సలహా తీసుకోండి", "image": "sites/manikantanaturals/nasika.webp" },
+            "price": "వాడే ముందు వైద్యుల సలహా తీసుకోండి", "image": "manikantanaturals/nasika.webp" },
           { "title": "గంగిగోవు సిట్రస్ బయోఎంజైమ్", "title_2": "Citrus Bioenzyme Dish Wash Liquid",
             "body": "నిమ్మ బయోఎంజైమ్, బెల్లం, కుంకుడుకాయ, మూలికల సారాలతో తయారైన సహజ డిష్ వాష్. మీ వంటింటి పాత్రలకు ప్రకృతి ఇచ్చే సరికొత్త మెరుపు — కెమికల్ డిష్ వాష్‌లకు గుడ్ బై!",
-            "price": "Chemical Free · Eco-Friendly · Safe for Home & Earth", "image": "sites/manikantanaturals/dishwash.webp" }
+            "price": "Chemical Free · Eco-Friendly · Safe for Home & Earth", "image": "manikantanaturals/dishwash.webp" }
         ]
       }},
       { "type": "intro", "enabled": true, "config": {
         "id": "about", "ornament": true,
         "kicker": "ప్రొప్రైటర్ · Proprietor", "heading": "మహేష్ కాశీపురం", "heading_2": "Mahesh Kashipuram",
-        "portrait": "sites/manikantanaturals/proprietor.webp",
+        "portrait": "manikantanaturals/proprietor.webp",
         "seal": { "label": "సహజం", "value": "100%" },
         "body": "సహజం.. సంప్రదాయం.. ఆరోగ్యం.. మన సంపద. కొల్లాపూర్‌లో మణికంఠ న్యాచురల్స్ స్టోర్ నడుపుతున్న మహేష్ కాశీపురం గారి లక్ష్యం ఒక్కటే — రసాయనాలు, కల్తీ లేని స్వచ్ఛమైన ఆహారాన్ని ప్రతి కుటుంబానికి అందించడం. ఆయుర్వేద, సేంద్రియ, గో ఆధారిత ఉత్పత్తులు మరియు సిరిధాన్యాలు — మిత్రులందరికీ ఉత్తమ నాణ్యతతో, తక్కువ ధరలకు.",
         "body_2": "Natural, pure and healthy food for every family in Kollapur — Ayurveda, organic, cow-based products and millets at fair prices.",
@@ -117,11 +126,11 @@
         "id": "gallery", "alt": true, "ornament": true,
         "kicker": "మా ప్రకటనలు · Flyers", "heading": "తాజా సమాచారం", "heading_2": "Our latest flyers and new stock",
         "images": [
-          "sites/manikantanaturals/flyer-millets.webp",
-          "sites/manikantanaturals/flyer-banner.webp",
-          "sites/manikantanaturals/flyer-organic.webp",
-          "sites/manikantanaturals/flyer-dishwash.webp",
-          "sites/manikantanaturals/flyer-nasika.webp"
+          "manikantanaturals/flyer-millets.webp",
+          "manikantanaturals/flyer-banner.webp",
+          "manikantanaturals/flyer-organic.webp",
+          "manikantanaturals/flyer-dishwash.webp",
+          "manikantanaturals/flyer-nasika.webp"
         ]
       }},
       { "type": "reviews", "enabled": false, "config": {

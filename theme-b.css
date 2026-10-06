@@ -5,7 +5,7 @@
    line spacing, so stacked Telugu conjuncts never collide — with Lora
    for the English lines.
 
-   Builder template: key `vanam-night`, category `retail`.
+   Builder template: key `vanam-grove`, category `retail`.
    :root is the template's `tokens`; everything after it is its `css`.
    Section ids used below (#millets #benefits #organic #ayurveda) are the
    `id` field in this site's section config — the fallbacks are generic.

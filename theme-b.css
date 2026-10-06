@@ -1,0 +1,231 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   DESIGN B — VANAM (వనం). A sunlit grove: mid forest green in soft
+   gradients, brass rules and medallions, a printed bill-of-fare for the
+   organic list. Noto Sans Telugu throughout — open counters and generous
+   line spacing, so stacked Telugu conjuncts never collide — with Lora
+   for the English lines.
+
+   Builder template: key `vanam-night`, category `retail`.
+   :root is the template's `tokens`; everything after it is its `css`.
+   Section ids used below (#millets #benefits #organic #ayurveda) are the
+   `id` field in this site's section config — the fallbacks are generic.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root {
+  --bg:#2a5a41; --bg-alt:#244f39; --panel:#2d5f45;
+  --ink:#fcf8ea; --dim:#dfe5d0; --line:rgba(255,236,190,.24);
+  --accent:#f6d27f; --accent-ink:#1d2a10; --accent2:#cdeec3;
+  --ok:#c4f0b0; --warn:#ffc2a8;
+  --font-display:'Noto Sans Telugu'; --font-body:'Noto Sans Telugu';
+  --font-mono:'Noto Sans Telugu'; --font-2:'Lora';
+  --radius:8px; --maxw:1200px;
+}
+
+/* ---- template css ---- */
+html { scroll-behavior:smooth; }
+body { line-height:1.8;
+  background-image:linear-gradient(175deg, color-mix(in srgb, var(--bg) 88%, #fff) 0%, var(--bg) 30%,
+                   color-mix(in srgb, var(--bg) 94%, #fff) 62%, var(--bg-alt) 100%); }
+:focus-visible { outline:3px solid var(--accent); outline-offset:3px; border-radius:3px; }
+section[id] { scroll-margin-top:90px; }
+.skip { position:absolute; left:12px; top:-80px; z-index:60; padding:12px 18px; border-radius:var(--radius);
+  background:var(--accent); color:var(--accent-ink); font-weight:600; }
+.skip:focus { top:12px; }
+
+/* Telugu conjuncts break apart under wide tracking and have no capitals. */
+.sec-kicker, .top-badge, .stats span, .pl, .seal span, .price { letter-spacing:.02em; text-transform:none; }
+
+/* -------------------------------------------------------------- backdrop
+   Leaves, millet, mortar and pestle, turmeric, chilli, tulsi, pepper, a
+   rock-salt crystal, a dropper bottle, a bowl of grain and cardamom: line art
+   in one 560px tile, painted through a mask so it takes this template's own
+   colours. Data URIs, so the template carries no asset files into the builder.
+   Generated — edit the motifs, not this text. */
+html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='560' height='560' viewBox='0 0 560 560'%3E%3Cg fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg transform='translate(70 80) rotate(-30) scale(1)'%3E%3Cpath d='M0-34C20-20 20 20 0 34C-20 20-20-20 0-34ZM0-30V44'/%3E%3Cpath d='M0-12l9-8M0 0l-10-8M0 12l10-8'/%3E%3C/g%3E%3Cg transform='translate(210 110) rotate(10) scale(1)'%3E%3Cpath d='M0 52C2 22 6-4 16-42'/%3E%3Cpath d='M2 30c-14-6-24-18-26-34 12 4 22 16 26 34z'/%3E%3Cellipse cx='16' cy='-44' rx='3.5' ry='6.5' transform='rotate(22 16 -44)'/%3E%3Cellipse cx='9' cy='-36' rx='3.5' ry='6.5' transform='rotate(22 9 -36)'/%3E%3Cellipse cx='20' cy='-32' rx='3.5' ry='6.5' transform='rotate(22 20 -32)'/%3E%3Cellipse cx='4' cy='-26' rx='3.5' ry='6.5' transform='rotate(22 4 -26)'/%3E%3Cellipse cx='15' cy='-21' rx='3.5' ry='6.5' transform='rotate(22 15 -21)'/%3E%3Cellipse cx='1' cy='-14' rx='3.5' ry='6.5' transform='rotate(22 1 -14)'/%3E%3Cellipse cx='11' cy='-10' rx='3.5' ry='6.5' transform='rotate(22 11 -10)'/%3E%3C/g%3E%3Cg transform='translate(380 95) rotate(0) scale(1)'%3E%3Cpath d='M-34 0h68M-30 0c0 22 14 34 30 34S30 22 30 0M-16 34h32'/%3E%3Cpath d='M8-4L30-40' stroke-width='8'/%3E%3C/g%3E%3Cg transform='translate(505 160) rotate(15) scale(0.9)'%3E%3Cpath d='M0-36L20-20V18L0 36-20 18V-20ZM-20-20L0-8 20-20M0-8V36'/%3E%3C/g%3E%3Cg transform='translate(95 250) rotate(20) scale(1)'%3E%3Cpath d='M-36-4c22 12 46 12 64-6 5-4 9 1 6 5-18 22-52 26-72 9Z'/%3E%3Cpath d='M34-8c3-7 1-12 7-17'/%3E%3C/g%3E%3Cg transform='translate(290 265) rotate(-10) scale(1)'%3E%3Cpath d='M-32 6c0-10 10-15 20-11 3-12 16-15 22-7 10-5 21 1 19 12-2 10-14 11-20 7-6 8-20 10-26 4-8 4-15 3-15-5Z'/%3E%3Cpath d='M-14-2v9M2-6v10M18-1v8'/%3E%3C/g%3E%3Cg transform='translate(460 310) rotate(25) scale(1)'%3E%3Cpath d='M0 44C2 14 2-14 0-44'/%3E%3Cpath d='M0 24c-16 0-24-8-24-18 12-2 22 6 24 18ZM0 24c16 0 24-8 24-18-12-2-22 6-24 18ZM0-2c-13 0-20-7-20-15 10-2 18 5 20 15ZM0-2c13 0 20-7 20-15-10-2-18 5-20 15ZM0-26c-9-1-13-7-12-14 7 0 12 6 12 14ZM0-26c9-1 13-7 12-14-7 0-12 6-12 14Z'/%3E%3C/g%3E%3Cg transform='translate(150 390) rotate(0) scale(1)'%3E%3Ccircle cx='0' cy='0' r='6'/%3E%3Ccircle cx='15' cy='-4' r='6'/%3E%3Ccircle cx='6' cy='13' r='6'/%3E%3Ccircle cx='-13' cy='8' r='6'/%3E%3Ccircle cx='-6' cy='-13' r='6'/%3E%3Ccircle cx='21' cy='11' r='6'/%3E%3C/g%3E%3Cg transform='translate(330 425) rotate(-12) scale(1)'%3E%3Cpath d='M-15-8h30v40a6 6 0 0 1-6 6h-18a6 6 0 0 1-6-6ZM-9-8v-8h18v8M-5-16v-12a5 5 0 0 1 10 0v12M-15 8h30M-15 22h30'/%3E%3C/g%3E%3Cg transform='translate(480 475) rotate(0) scale(1)'%3E%3Cpath d='M-34 0h68c0 20-15 30-34 30S-34 20-34 0ZM-30 0c8-14 52-14 60 0'/%3E%3Ccircle cx='-14' cy='-6' r='2.5'/%3E%3Ccircle cx='-4' cy='-9' r='2.5'/%3E%3Ccircle cx='6' cy='-8' r='2.5'/%3E%3Ccircle cx='16' cy='-5' r='2.5'/%3E%3Ccircle cx='1' cy='-3' r='2.5'/%3E%3C/g%3E%3Cg transform='translate(60 480) rotate(40) scale(1)'%3E%3Cpath d='M0-22c11 7 11 37 0 44-11-7-11-37 0-44ZM0-22V22M0 22c0 6 2 10 4 12'/%3E%3C/g%3E%3Cg transform='translate(230 500) rotate(60) scale(0.8)'%3E%3Cpath d='M0-34C20-20 20 20 0 34C-20 20-20-20 0-34ZM0-30V44'/%3E%3Cpath d='M0-12l9-8M0 0l-10-8M0 12l10-8'/%3E%3C/g%3E%3Cg transform='translate(405 215) rotate(120) scale(0.7)'%3E%3Cpath d='M0-34C20-20 20 20 0 34C-20 20-20-20 0-34ZM0-30V44'/%3E%3Cpath d='M0-12l9-8M0 0l-10-8M0 12l10-8'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  --branch:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Cg fill='black' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 290C80 220 140 160 280 20' fill='none' stroke-width='3'/%3E%3Cg transform='translate(55 250) rotate(-5)'%3E%3Cpath d='M0 0C10-24 40-34 70-30 64-4 30 12 0 0Z' fill-opacity='.5'/%3E%3Cpath d='M0 0C24-12 44-22 70-30' fill='none'/%3E%3C/g%3E%3Cg transform='translate(85 222) rotate(-125)'%3E%3Cpath d='M0 0C10-24 40-34 70-30 64-4 30 12 0 0Z' fill-opacity='.5'/%3E%3Cpath d='M0 0C24-12 44-22 70-30' fill='none'/%3E%3C/g%3E%3Cg transform='translate(115 192) rotate(0)'%3E%3Cpath d='M0 0C10-24 40-34 70-30 64-4 30 12 0 0Z' fill-opacity='.5'/%3E%3Cpath d='M0 0C24-12 44-22 70-30' fill='none'/%3E%3C/g%3E%3Cg transform='translate(145 160) rotate(-120)'%3E%3Cpath d='M0 0C10-24 40-34 70-30 64-4 30 12 0 0Z' fill-opacity='.5'/%3E%3Cpath d='M0 0C24-12 44-22 70-30' fill='none'/%3E%3C/g%3E%3Cg transform='translate(178 128) rotate(5)'%3E%3Cpath d='M0 0C10-24 40-34 70-30 64-4 30 12 0 0Z' fill-opacity='.5'/%3E%3Cpath d='M0 0C24-12 44-22 70-30' fill='none'/%3E%3C/g%3E%3Cg transform='translate(212 95) rotate(-115)'%3E%3Cpath d='M0 0C10-24 40-34 70-30 64-4 30 12 0 0Z' fill-opacity='.5'/%3E%3Cpath d='M0 0C24-12 44-22 70-30' fill='none'/%3E%3C/g%3E%3Cg transform='translate(245 60) rotate(-50)'%3E%3Cpath d='M0 0C10-24 40-34 70-30 64-4 30 12 0 0Z' fill-opacity='.5'/%3E%3Cpath d='M0 0C24-12 44-22 70-30' fill='none'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+.hero, .sec { position:relative; isolation:isolate; }
+.hero { overflow:hidden; }
+.hero::before, .sec::before { content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:var(--motif-ink, var(--accent)); opacity:var(--motif-a, .07);
+  -webkit-mask:var(--motifs) 0 0 / 560px 560px repeat; mask:var(--motifs) 0 0 / 560px 560px repeat; }
+.sec:nth-of-type(even)::before { -webkit-mask-position:280px 190px; mask-position:280px 190px; }
+.hero::after { content:""; position:absolute; z-index:-1; left:-70px; bottom:-60px; width:440px; height:440px; pointer-events:none;
+  background:var(--branch-ink, var(--accent)); opacity:var(--branch-a, .1);
+  -webkit-mask:var(--branch) center / contain no-repeat; mask:var(--branch) center / contain no-repeat; }
+:root { --motif-a:.09; --branch-ink:var(--accent2); --branch-a:.13; }
+.sec.alt { --motif-a:.11; }
+
+/* ---------------------------------------------------------------- header */
+.top { padding:10px 40px; background:color-mix(in srgb, var(--bg-alt) 92%, transparent);
+  border-bottom:1px solid var(--line); box-shadow:0 10px 30px -20px rgba(0,0,0,.5); }
+.top-brand { margin-right:auto; }
+.top-brand img { width:54px; height:54px; border-radius:50%; box-shadow:0 0 0 2px var(--bg-alt), 0 0 0 3px var(--accent); }
+.top-brand b { font-size:23px; font-weight:700; line-height:1.4; }
+.top-brand small { font-family:var(--font-2), Georgia, serif; font-size:12.5px; color:var(--accent); letter-spacing:.08em; }
+.top-nav a { font-size:15.5px; font-weight:500; padding:10px 2px; opacity:.9; transition:color .2s, opacity .2s; }
+.top-call { min-height:44px; padding:0 18px; border-radius:999px; transition:filter .2s; }
+.top-call:hover { filter:brightness(1.06); }
+
+/* ------------------------------------------------------------------ hero
+   The packs sit in a brass medallion — at its native size, so it stays sharp. */
+.hero { min-height:clamp(600px, 84vh, 760px); padding:96px 0;
+  background:radial-gradient(55% 75% at 80% 45%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 65%),
+             radial-gradient(50% 60% at 0% 0%, color-mix(in srgb, var(--accent2) 16%, transparent), transparent 70%),
+             linear-gradient(160deg, color-mix(in srgb, var(--bg) 80%, #fff), var(--bg) 60%, var(--bg-alt)); }
+.hero-bg { inset:50% max(40px, calc((100vw - var(--maxw)) / 2 + 40px)) auto auto; transform:translateY(-50%);
+  width:min(40vw, 500px); aspect-ratio:1; }
+.hero-bg img { border-radius:50%;
+  box-shadow:0 0 0 10px color-mix(in srgb, var(--bg) 70%, #fff), 0 0 0 11px var(--accent), 0 50px 80px -40px rgba(0,0,0,.6); }
+.hero-bg::after { inset:-26px; border-radius:50%; background:none; border:1px dashed color-mix(in srgb, var(--accent) 60%, transparent); }
+/* .hero is a grid, so a margin:auto .wrap would shrink to its content and centre */
+.hero > .wrap { width:100%; }
+.hero-in { max-width:560px; }
+.hero h1 { font-size:clamp(36px, 5vw, 62px); line-height:1.45; font-weight:700; letter-spacing:0;
+  color:var(--accent); text-shadow:0 2px 18px rgba(0,0,0,.18); }
+.hero .t2 { margin-top:14px; font-size:18px; line-height:1.6; color:var(--accent2); }
+.hero .hero-sub { font-size:18px; line-height:1.9; color:var(--dim); }
+.btn { min-height:52px; padding:0 28px; border-radius:999px; font-weight:600; font-size:16px; cursor:pointer;
+  transition:transform .2s ease-out, box-shadow .2s ease-out, background .2s; }
+.btn:hover { transform:translateY(-2px); box-shadow:0 16px 30px -16px rgba(0,0,0,.55); }
+.btn.ghost:hover { background:color-mix(in srgb, var(--accent) 14%, transparent); }
+
+/* -------------------------------------------------------------- headings */
+.sec { padding:110px 0; }
+.sec.alt { border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  background:radial-gradient(60% 80% at 100% 0, color-mix(in srgb, var(--accent) 12%, transparent), transparent 65%),
+             radial-gradient(50% 70% at 0% 100%, color-mix(in srgb, var(--accent2) 10%, transparent), transparent 70%),
+             linear-gradient(165deg, var(--bg-alt), color-mix(in srgb, var(--bg) 90%, #fff)); }
+.sec-kicker { display:inline-flex; align-items:center; gap:12px; font-family:var(--font-body); font-size:15px; font-weight:600; }
+.sec-kicker::before, .sec-kicker::after { content:""; width:28px; height:1px; background:var(--accent); }
+.sec-title { font-weight:700; font-size:clamp(30px, 4.6vw, 48px); line-height:1.5; }
+.sec-sub { max-width:680px; margin-left:auto; margin-right:auto; line-height:1.85; }
+.sec-sub.t2 { margin-top:6px; font-size:18px; color:var(--accent2); }
+.orn { display:flex; align-items:center; justify-content:center; gap:10px; margin-top:20px; }
+.orn span { width:72px; height:1px; background:linear-gradient(90deg, transparent, var(--accent)); }
+.orn span:last-child { background:linear-gradient(90deg, var(--accent), transparent); }
+.orn i { width:9px; height:9px; transform:rotate(45deg); border:1px solid var(--accent); }
+
+/* ----------------------------------------------------------------- cards
+   A label on a jar: panel, inner brass rule. Flex so short rows centre. */
+.cards { display:flex; flex-wrap:wrap; justify-content:center; gap:22px; }
+/* base.css makes a figure a grid, and an auto row grows to a tall photo's own height,
+   so the photo spills past the frame instead of filling it. Pin the track to the frame. */
+.card figure { grid-template:100% / 100%; }
+.card { position:relative; flex:0 1 calc((100% - (var(--cols, 3) - 1) * 22px) / var(--cols, 3)); text-align:center;
+  background:linear-gradient(170deg, color-mix(in srgb, var(--panel) 88%, #fff), var(--panel));
+  box-shadow:0 24px 40px -30px rgba(0,0,0,.55); transition:border-color .25s, transform .25s ease-out; }
+.card::before { content:""; position:absolute; inset:6px; border:1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  border-radius:4px; pointer-events:none; }
+.card:hover { border-color:color-mix(in srgb, var(--accent) 60%, transparent); transform:translateY(-3px); }
+.card h3 { font-size:20px; line-height:1.55; font-weight:700; }
+.card .t2 { font-size:14.5px; line-height:1.5; color:var(--accent2); }
+.card p:not(.t2) { line-height:1.8; color:var(--dim); }
+.card .price { display:block; margin-top:16px; padding-top:12px; border-top:1px dashed var(--line);
+  font-family:var(--font-body); font-size:14px; font-weight:600; line-height:1.6; }
+
+/* millets — grain in a brass-ringed medallion */
+#millets .card { padding:28px 18px 26px; }
+#millets .card figure { width:148px; height:148px; margin:4px auto 20px; border-radius:50%; overflow:hidden;
+  box-shadow:0 0 0 4px var(--panel), 0 0 0 5px var(--accent); }
+#millets .card figure img { border-radius:0; object-position:50% 70%; }
+
+/* why millets — icons set in brass diamonds */
+#benefits .card { background:none; border:0; padding:10px; transform:none; box-shadow:none; }
+#benefits .card::before { display:none; }
+#benefits .card figure { width:80px; height:80px; margin:14px auto 28px; transform:rotate(45deg); border-radius:12px;
+  border:1px solid var(--accent); background:color-mix(in srgb, var(--accent) 12%, transparent); }
+#benefits .card figure svg { width:40px; height:40px; transform:rotate(-45deg); }
+#benefits .card h3 { font-size:18px; }
+
+/* organic — a printed bill of fare, two columns, swatch on the left */
+#organic .cards { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:0 56px; max-width:980px; margin:0 auto; }
+#organic .card { display:grid; grid-template-columns:76px minmax(0,1fr); column-gap:20px; align-content:center;
+  padding:20px 0; text-align:left; background:none; box-shadow:none; border:0; border-bottom:1px dashed var(--line);
+  border-radius:0; transform:none; }
+#organic .card::before { display:none; }
+#organic .card figure { grid-row:1 / span 3; width:76px; height:76px; margin:0; border-radius:50%; overflow:hidden;
+  box-shadow:0 0 0 2px var(--accent); }
+#organic .card figure img { border-radius:0; transform:scale(1.24); }
+#organic .card h3 { font-size:20px; }
+#organic .card .t2 { margin-top:0; }
+#organic .card p:not(.t2) { margin-top:2px; font-size:15px; }
+
+/* ayurveda — picture beside the words */
+#ayurveda .card { display:grid; grid-template-columns:200px minmax(0,1fr); column-gap:28px; align-content:start;
+  padding:30px; text-align:left; }
+#ayurveda .card figure { grid-row:1 / span 4; height:100%; min-height:290px; margin:0; overflow:hidden; border-radius:4px;
+  background:radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 70%); }
+#ayurveda .card figure img { border-radius:0; }
+
+/* ------------------------------------------------------------------ intro */
+.intro { grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:80px; }
+.intro-portrait { position:relative; overflow:visible; border:0; }
+.intro-portrait::before { content:""; position:absolute; inset:20px -20px -20px 20px; border:1px solid var(--accent); border-radius:var(--radius); }
+.intro-portrait img { position:relative; width:100%; height:460px; object-fit:cover; object-position:top; border-radius:var(--radius);
+  box-shadow:0 40px 60px -36px rgba(0,0,0,.6); }
+.intro-body p { font-size:18px; line-height:2; color:var(--ink); }
+.intro-body .t2 { color:var(--dim); font-size:17px; line-height:1.75; }
+.seal { width:100px; height:100px; color:var(--accent-ink);
+  background:radial-gradient(circle at 34% 30%, #fff1c8, var(--accent) 62%, #c8973a);
+  box-shadow:0 14px 26px -12px rgba(0,0,0,.6), inset 0 0 0 3px rgba(255,255,255,.35); }
+.seal span { font-size:13px; }
+.seal b { font-family:var(--font-2), Georgia, serif; font-size:26px; }
+.stats { gap:0; }
+.stats > div { padding:0 28px; border-left:1px solid var(--line); }
+.stats > div:first-child { padding-left:0; border-left:0; }
+.stats b { font-family:var(--font-2), Georgia, serif; font-size:40px; }
+.stats span { display:block; margin-top:8px; font-size:15px; }
+
+/* ---------------------------------------------------------------- gallery */
+.gallery { display:block; columns:3 260px; column-gap:18px; }
+.gallery img { width:100%; height:auto; aspect-ratio:auto; margin:0 0 18px; break-inside:avoid;
+  padding:6px; background:var(--panel); border:1px solid var(--line); box-shadow:0 24px 40px -30px rgba(0,0,0,.6); }
+
+/* ---------------------------------------------------------------- contact */
+.panel { background:linear-gradient(170deg, color-mix(in srgb, var(--panel) 88%, #fff), var(--panel)); }
+.pl { font-family:var(--font-body); font-size:15px; }
+.addr { font-size:17px; line-height:1.95; }
+.tel { font-family:var(--font-2), Georgia, serif; font-weight:700; font-size:36px; color:var(--accent); }
+
+/* ----------------------------------------------------------------- footer */
+.foot { background:linear-gradient(135deg, var(--bg-alt), color-mix(in srgb, var(--bg-alt) 80%, #000)); border-top:1px solid var(--line); padding:32px 40px; }
+.foot b { color:var(--accent); }
+.foot small { font-size:14px; margin-top:6px; line-height:1.7; }
+.pb img { height:38px; border-radius:8px; background:#fff; padding:3px; }
+
+/* ------------------------------------------------------------- responsive */
+@media (max-width:860px) {
+  .top { position:static; flex-wrap:wrap; gap:8px 12px; padding:10px 18px; }
+  .top-brand img { width:44px; height:44px; }
+  .top-brand b { font-size:19px; }
+  .top-nav { order:3; width:100%; justify-content:center; gap:4px 14px; padding-top:6px; border-top:1px solid var(--line); }
+  .top-nav a { font-size:15px; padding:8px 0; }
+
+  .hero { display:flex; flex-direction:column; min-height:0; padding:44px 0 60px; }
+  .hero-bg { position:relative; inset:auto; transform:none; width:min(74vw, 320px); margin:0 auto 52px; }
+
+  .sec { padding:68px 0; }
+  .cards { gap:16px; }
+  .card { flex-basis:calc(50% - 8px); padding:24px 14px; }
+  #millets .card figure { width:118px; height:118px; }
+  #organic .cards { grid-template-columns:1fr; }
+  #organic .card { padding:16px 0; }
+  #ayurveda .card { flex-basis:100%; grid-template-columns:1fr; padding:24px 20px; }
+  #ayurveda .card figure { grid-row:auto; height:260px; min-height:0; margin-bottom:20px; }
+  #ayurveda .card figure img { object-fit:contain; }
+  /* base.css is layered, so its own mobile rules lose to the desktop ones above */
+  .intro { grid-template-columns:1fr; gap:44px; }
+  .foot { padding:26px 18px; }
+  .intro-portrait { max-width:280px; margin:0 auto; }
+  .intro-portrait img { height:390px; }
+  .stats > div { padding:0 18px; }
+  .stats b { font-size:32px; }
+  .tel { font-size:32px; }
+}
+@media (max-width:420px) {
+  .top-call { width:44px; padding:0; gap:0; font-size:0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior:auto; }
+  *, *::before, *::after { transition:none !important; }
+  .card:hover, .btn:hover { transform:none; }
+}

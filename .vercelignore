@@ -1,0 +1,7 @@
+# Kept in git, never served: Vercel publishes every file in this folder.
+README.md
+crop-assets.py
+site.json
+.gitignore
+# source flyers; the cropped webps in assets/img are what the page loads
+assets/*.jpeg

@@ -37,12 +37,13 @@
     "footer": {
       "note": "మిత్రులందరికీ ఉత్తమ న్యాచురల్ & ఆయుర్వేద ఉత్పత్తులు తక్కువ ధరలకు లభించును.",
       "powered_by": "HHAppSolutions",
+      "powered_by_label": "Developed by",
       "powered_by_logo": "sites/manikantanaturals/hh.png"
     },
     "sections": [
       { "type": "hero", "enabled": true, "config": {
-        "image": "sites/manikantanaturals/hero-packs.webp",
-        "heading": "ప్రకృతి నుండి… ఆరోగ్యానికి దారి",
+        "image": "sites/manikantanaturals/shop.webp",
+        "heading": "ప్రకృతి నుండి… మెరుగైన ఆరోగ్యానికి",
         "heading_2": "Natural • Pure • Healthy — Ayurveda, Organic, Cow-based & Millets",
         "sub": "కొండ ప్రాంతాల్లో ఎలాంటి రసాయనాలు లేకుండా సహజ సిద్ధంగా పండించిన ఆర్గానిక్ ఉత్పత్తులు, సిరిధాన్యాలు, ఆయుర్వేద మరియు గో ఆధారిత ఉత్పత్తులు — అన్నీ కొల్లాపూర్‌లో ఒకే చోట.",
         "ctas": [

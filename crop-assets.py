@@ -22,7 +22,6 @@ F = {
 CROPS = {
     "logo":          ("nasika",   (14, 10, 182, 178), 168),
     "proprietor":    ("owner",    (0, 0, 205, 384), None),
-    "hero-packs":    ("organic",  (150, 372, 843, 778), None),
     "nasika":        ("nasika",   (40, 180, 184, 460), None),
     "dishwash":      ("dishwash", (55, 112, 468, 232), None),
     "millet-korralu":      ("millets", (14, 300, 116, 500), None),
@@ -63,4 +62,11 @@ for name, (flyer, box) in FLYERS.items():
     img = Image.open(SRC / F[flyer]).convert("RGB")
     save(img.crop(box) if box else img, name)
 
-print("wrote", len(CROPS) + len(FLYERS), "files to", OUT)
+# the shopfront render has a soft transparent halo; keep the solid middle and
+# flatten whatever alpha is left onto warm cream so no fringe shows in the hero
+shop = Image.open(SRC / "shop.png").convert("RGBA").crop((200, 20, 1280, 1040))
+flat = Image.new("RGBA", shop.size, (246, 239, 224, 255))
+flat.alpha_composite(shop)
+save(flat.convert("RGB"), "shop", 900)
+
+print("wrote", len(CROPS) + len(FLYERS) + 1, "files to", OUT)

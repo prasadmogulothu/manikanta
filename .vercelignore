@@ -5,3 +5,4 @@ site.json
 .gitignore
 # source flyers; the cropped webps in assets/img are what the page loads
 assets/*.jpeg
+assets/*.png

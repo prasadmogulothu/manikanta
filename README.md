@@ -18,7 +18,7 @@ python -m http.server 8788        →  http://localhost:8788/   (?d=b for design
 | `theme-a.css` | **Design A — Polam (పొలం).** Warm paper, leaf green and turmeric. Noto Serif Telugu, Anek Telugu and Fraunces. Arch-shaped image windows. |
 | `theme-b.css` | **Design B — Vanam (వనం).** Mid forest-green gradients and brass. Noto Sans Telugu and Lora. Medallion images, and the organic list set as a bill of fare. |
 | `site.json` | The `hh_sites` row (`slug`, `template_key`, `config`) carrying all of this content. |
-| `crop-assets.py` | Cuts the WhatsApp flyers in `assets/` into the WebPs in `assets/img/`. |
+| `crop-assets.py` | Cuts the WhatsApp flyers and `assets/shop.png` into the WebPs in `assets/img/`. |
 
 ## Switching designs
 
@@ -39,7 +39,10 @@ scripts from `index.html`, then delete the theme file you didn't pick.
    `sites/manikantanaturals/`.
 3. **Site.** Insert `site.json` as the `hh_sites` row. Set `template_key` to
    whichever design was chosen.
-4. **Icons.** The "why millets" cards use `leaf`, `scale`, `shield` and `sprout`.
+4. **Footer label.** `Footer.jsx` hard-codes "Powered by". This site wants
+   "Developed by", so `site.json` carries `footer.powered_by_label`. Have the
+   footer read `{f.powered_by_label || 'Powered by'}`; that's a one-line change.
+5. **Icons.** The "why millets" cards use `leaf`, `scale`, `shield` and `sprout`.
    Only `heart` exists in `src/modules/icons.jsx` today, so add the other four.
    They are the Lucide paths already inlined in `index.html`.
 
@@ -59,4 +62,6 @@ fallback, so any other site using the templates still renders properly.
 - **Nasika claims.** The flyer lists diseases such as brain tumour, paralysis
   and OCD. The site only says it is traditionally used for headache, cold,
   sinus and sleeplessness, and adds "consult a doctor before use".
+- **Proprietor name.** The shopfront board reads "Pro : Manasa Kashipuram"; the
+  site says Mahesh Kashipuram, as briefed. Confirm which is right.
 - **"నల్ల పెబ్బర్లు"** is translated as *Black Cowpeas*. Check this with the owner.

@@ -61,25 +61,30 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .top-brand img { width:54px; height:54px; border-radius:50%; box-shadow:0 0 0 2px var(--bg-alt), 0 0 0 3px var(--accent); }
 .top-brand b { font-size:23px; font-weight:700; line-height:1.4; }
 .top-brand small { font-family:var(--font-2), Georgia, serif; font-size:12.5px; color:var(--accent); letter-spacing:.08em; }
-.top-nav a { font-size:15.5px; font-weight:500; padding:10px 2px; opacity:.9; transition:color .2s, opacity .2s; }
+/* Pills, so the menu reads as buttons rather than a line of text. */
+.top-nav { gap:8px; }
+.top-nav a { font-size:15px; font-weight:600; padding:7px 15px; border-radius:999px; opacity:1; color:var(--accent);
+  border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  background:color-mix(in srgb, var(--accent) 7%, transparent); transition:background .2s, color .2s, border-color .2s; }
+.top-nav a:hover, .top-nav a:focus-visible { background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
 .top-call { min-height:44px; padding:0 18px; border-radius:999px; transition:filter .2s; }
 .top-call:hover { filter:brightness(1.06); }
 
 /* ------------------------------------------------------------------ hero
-   The packs sit in a brass medallion — at its native size, so it stays sharp. */
+   The shopfront in a brass-ruled frame, with a dashed outer rule. */
 .hero { min-height:clamp(600px, 84vh, 760px); padding:96px 0;
   background:radial-gradient(55% 75% at 80% 45%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 65%),
              radial-gradient(50% 60% at 0% 0%, color-mix(in srgb, var(--accent2) 16%, transparent), transparent 70%),
              linear-gradient(160deg, color-mix(in srgb, var(--bg) 80%, #fff), var(--bg) 60%, var(--bg-alt)); }
 .hero-bg { inset:50% max(40px, calc((100vw - var(--maxw)) / 2 + 40px)) auto auto; transform:translateY(-50%);
-  width:min(40vw, 500px); aspect-ratio:1; }
-.hero-bg img { border-radius:50%;
+  width:min(42vw, 540px); aspect-ratio:900 / 850; }
+.hero-bg img { border-radius:14px;
   box-shadow:0 0 0 10px color-mix(in srgb, var(--bg) 70%, #fff), 0 0 0 11px var(--accent), 0 50px 80px -40px rgba(0,0,0,.6); }
-.hero-bg::after { inset:-26px; border-radius:50%; background:none; border:1px dashed color-mix(in srgb, var(--accent) 60%, transparent); }
+.hero-bg::after { inset:-20px; border-radius:24px; background:none; border:1px dashed color-mix(in srgb, var(--accent) 60%, transparent); }
 /* .hero is a grid, so a margin:auto .wrap would shrink to its content and centre */
 .hero > .wrap { width:100%; }
 .hero-in { max-width:560px; }
-.hero h1 { font-size:clamp(36px, 5vw, 62px); line-height:1.45; font-weight:700; letter-spacing:0;
+.hero h1 { text-wrap:balance; font-size:clamp(36px, 5vw, 62px); line-height:1.45; font-weight:700; letter-spacing:0;
   color:var(--accent); text-shadow:0 2px 18px rgba(0,0,0,.18); }
 .hero .t2 { margin-top:14px; font-size:18px; line-height:1.6; color:var(--accent2); }
 .hero .hero-sub { font-size:18px; line-height:1.9; color:var(--dim); }
@@ -159,7 +164,8 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 /* ------------------------------------------------------------------ intro */
 .intro { grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:80px; }
 .intro-portrait { position:relative; overflow:visible; border:0; }
-.intro-portrait::before { content:""; position:absolute; inset:20px -20px -20px 20px; border:1px solid var(--accent); border-radius:var(--radius); }
+/* an even brass frame round the photo — an offset one reads as misaligned */
+.intro-portrait::before { content:""; position:absolute; inset:-14px; border:1px solid var(--accent); border-radius:calc(var(--radius) + 8px); }
 .intro-portrait img { position:relative; width:100%; height:460px; object-fit:cover; object-position:top; border-radius:var(--radius);
   box-shadow:0 40px 60px -36px rgba(0,0,0,.6); }
 .intro-body p { font-size:18px; line-height:2; color:var(--ink); }
@@ -190,18 +196,34 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .foot { background:linear-gradient(135deg, var(--bg-alt), color-mix(in srgb, var(--bg-alt) 80%, #000)); border-top:1px solid var(--line); padding:32px 40px; }
 .foot b { color:var(--accent); }
 .foot small { font-size:14px; margin-top:6px; line-height:1.7; }
-.pb img { height:38px; border-radius:8px; background:#fff; padding:3px; }
+.pb { display:grid; grid-template-columns:auto auto; align-items:center; column-gap:12px; row-gap:2px; text-align:right; }
+.pb span { grid-column:1; font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; opacity:.85; }
+.pb b { grid-column:1; font-size:15px; letter-spacing:.02em; }
+/* square white tile, as on the sibling sites: the mark is round and needs its own ground */
+.pb img { grid-column:2; grid-row:1 / span 2; width:56px; height:56px; padding:5px; border-radius:12px;
+  background:#fff; object-fit:contain; box-shadow:0 8px 18px -8px rgba(0,0,0,.6); }
 
 /* ------------------------------------------------------------- responsive */
 @media (max-width:860px) {
-  .top { position:static; flex-wrap:wrap; gap:8px 12px; padding:10px 18px; }
+  .top { position:sticky; flex-wrap:wrap; gap:6px 12px; padding:8px 14px 0; }
+  section[id] { scroll-margin-top:118px; }
   .top-brand img { width:44px; height:44px; }
   .top-brand b { font-size:19px; }
-  .top-nav { order:3; width:100%; justify-content:center; gap:4px 14px; padding-top:6px; border-top:1px solid var(--line); }
-  .top-nav a { font-size:15px; padding:8px 0; }
+  /* one swipeable row keeps the sticky header short; auto margins centre it when it fits */
+  .top-nav { order:3; width:100%; flex-wrap:nowrap; overflow-x:auto; gap:9px; padding:0;
+    border-top:1px solid var(--line); scrollbar-width:none; }
+  .top-nav::-webkit-scrollbar { display:none; }
+  .top-nav a { white-space:nowrap; }
+  .top-nav a:first-child { margin-left:auto; } .top-nav a:last-child { margin-right:auto; }
+  /* Five pills don't fit 360px, so on phones the links keep their colour and
+     take an underline instead — still plainly links, at no extra width. */
+  .top-nav a { font-size:13.5px; padding:7px 0; border:0; border-radius:0; background:none;
+    text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:7px;
+    text-decoration-color:color-mix(in srgb, var(--accent) 45%, transparent); }
+  .top-nav a:hover { background:none; color:var(--accent); }
 
   .hero { display:flex; flex-direction:column; min-height:0; padding:44px 0 60px; }
-  .hero-bg { position:relative; inset:auto; transform:none; width:min(74vw, 320px); margin:0 auto 52px; }
+  .hero-bg { position:relative; inset:auto; transform:none; width:calc(100% - 56px); max-width:440px; margin:0 auto 52px; }
 
   .sec { padding:68px 0; }
   .cards { gap:16px; }
@@ -222,7 +244,7 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
   .tel { font-size:32px; }
 }
 @media (max-width:420px) {
-  .top-call { width:44px; padding:0; gap:0; font-size:0; }
+  .top-call { width:44px; height:44px; padding:0; gap:0; font-size:0; justify-content:center; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior:auto; }

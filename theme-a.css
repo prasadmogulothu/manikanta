@@ -60,11 +60,12 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
   box-shadow:0 0 0 2px var(--panel), 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); }
 .top-brand b { font-size:22px; font-weight:700; color:var(--ink); line-height:1.3; }
 .top-brand small { font-family:var(--font-2), Georgia, serif; font-size:12px; color:var(--accent2); letter-spacing:.06em; }
-.top-nav a { position:relative; font-size:15px; font-weight:500; padding:10px 2px; opacity:1; color:var(--dim); }
-.top-nav a::after { content:""; position:absolute; left:0; right:0; bottom:4px; height:2px; border-radius:2px;
-  background:var(--accent); transform:scaleX(0); transition:transform .2s ease-out; }
-.top-nav a:hover { color:var(--accent); }
-.top-nav a:hover::after { transform:scaleX(1); }
+/* Pills, so the menu reads as buttons rather than a line of text. */
+.top-nav { gap:8px; }
+.top-nav a { font-size:15px; font-weight:600; padding:7px 15px; border-radius:999px; opacity:1; color:var(--accent);
+  border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  background:color-mix(in srgb, var(--accent) 7%, transparent); transition:background .2s, color .2s, border-color .2s; }
+.top-nav a:hover, .top-nav a:focus-visible { background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
 .top-call { min-height:44px; border-radius:999px; padding:0 20px; transition:background .2s; }
 .top-call:hover { background:color-mix(in srgb, var(--accent) 86%, #000); }
 
@@ -73,8 +74,8 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
   background:radial-gradient(60% 80% at 88% 18%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 62%),
              radial-gradient(45% 60% at 0% 100%, color-mix(in srgb, var(--accent2) 15%, transparent), transparent 70%),
              linear-gradient(165deg, color-mix(in srgb, var(--bg) 60%, #fff), color-mix(in srgb, var(--bg) 90%, var(--accent)) 60%, var(--bg)); }
-.hero-bg { inset:48px max(40px, calc((100vw - var(--maxw)) / 2 + 40px)) 56px auto; width:min(42vw, 500px);
-  border-radius:260px 260px 26px 26px; overflow:hidden; background:var(--bg-alt);
+.hero-bg { inset:50% max(40px, calc((100vw - var(--maxw)) / 2 + 40px)) auto auto; transform:translateY(-50%);
+  width:min(44vw, 540px); aspect-ratio:900 / 850; border-radius:24px; overflow:hidden; background:var(--bg-alt);
   box-shadow:0 0 0 10px var(--panel), 0 0 0 11px var(--line), 0 50px 70px -40px rgba(27,42,31,.55); }
 .hero-bg::after { display:none; }
 /* .hero is a grid, so a margin:auto .wrap would shrink to its content and centre */
@@ -83,7 +84,7 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .hero-in::before, .orn i { -webkit-mask:var(--sprig) center / contain no-repeat; mask:var(--sprig) center / contain no-repeat;
   --sprig:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 28'%3E%3Cpath d='M2 14h60' stroke='%23000' stroke-width='1.6'/%3E%3Cpath d='M32 14c-6-10-14-11-19-9 3 6 11 9 19 9zM32 14c6-10 14-11 19-9-3 6-11 9-19 9z'/%3E%3C/svg%3E"); }
 .hero-in::before { content:""; display:block; width:72px; height:30px; margin-bottom:20px; background:var(--accent); }
-.hero h1 { font-size:clamp(34px, 4.8vw, 58px); line-height:1.3; font-weight:700; color:var(--accent); letter-spacing:0; }
+.hero h1 { text-wrap:balance; font-size:clamp(34px, 4.8vw, 58px); line-height:1.3; font-weight:700; color:var(--accent); letter-spacing:0; }
 .hero .t2 { margin-top:16px; font-size:18px; line-height:1.5; color:var(--accent2); font-weight:500; }
 .hero .hero-sub { font-size:18px; line-height:1.85; }
 .btn { min-height:52px; border-radius:999px; padding:0 28px; font-weight:600; font-size:16px; cursor:pointer;
@@ -175,19 +176,35 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .foot { background:linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 72%, #000)); border:0; color:color-mix(in srgb, var(--accent-ink) 82%, transparent); padding:32px 40px; }
 .foot b { color:var(--accent-ink); }
 .foot small { font-size:14px; margin-top:6px; }
-.pb img { height:38px; border-radius:8px; background:#fff; padding:3px; }
+.pb { display:grid; grid-template-columns:auto auto; align-items:center; column-gap:12px; row-gap:2px; text-align:right; }
+.pb span { grid-column:1; font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; opacity:.85; }
+.pb b { grid-column:1; font-size:15px; letter-spacing:.02em; }
+/* square white tile, as on the sibling sites: the mark is round and needs its own ground */
+.pb img { grid-column:2; grid-row:1 / span 2; width:56px; height:56px; padding:5px; border-radius:12px;
+  background:#fff; object-fit:contain; box-shadow:0 8px 18px -8px rgba(0,0,0,.6); }
 
 /* ------------------------------------------------------------- responsive */
 @media (max-width:860px) {
-  .top { position:static; flex-wrap:wrap; gap:8px 12px; padding:10px 18px; }
+  .top { position:sticky; flex-wrap:wrap; gap:6px 12px; padding:8px 14px 0; }
+  section[id] { scroll-margin-top:118px; }
   .top-brand img { width:44px; height:44px; }
   .top-brand b { font-size:18px; }
-  .top-nav { order:3; width:100%; justify-content:center; gap:4px 14px; padding-top:6px; border-top:1px solid var(--line); }
-  .top-nav a { font-size:14.5px; padding:8px 0; }
+  /* one swipeable row keeps the sticky header short; auto margins centre it when it fits */
+  .top-nav { order:3; width:100%; flex-wrap:nowrap; overflow-x:auto; gap:9px; padding:0;
+    border-top:1px solid var(--line); scrollbar-width:none; }
+  .top-nav::-webkit-scrollbar { display:none; }
+  .top-nav a { white-space:nowrap; }
+  .top-nav a:first-child { margin-left:auto; } .top-nav a:last-child { margin-right:auto; }
+  /* Five pills don't fit 360px, so on phones the links keep their colour and
+     take an underline instead — still plainly links, at no extra width. */
+  .top-nav a { font-size:13.5px; padding:7px 0; border:0; border-radius:0; background:none;
+    text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:7px;
+    text-decoration-color:color-mix(in srgb, var(--accent) 45%, transparent); }
+  .top-nav a:hover { background:none; color:var(--accent); }
 
   .hero { display:flex; flex-direction:column; min-height:0; padding:28px 0 56px; }
-  .hero-bg { position:relative; inset:auto; width:calc(100% - 36px); max-width:440px; height:270px; margin:0 auto 34px;
-    border-radius:200px 200px 18px 18px; }
+  .hero-bg { position:relative; inset:auto; transform:none; width:calc(100% - 36px); max-width:480px; margin:0 auto 34px;
+    border-radius:18px; }
 
   .sec { padding:64px 0; }
   .cards { gap:16px; }
@@ -205,7 +222,7 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
   .tel { font-size:30px; }
 }
 @media (max-width:420px) {
-  .top-call { width:44px; padding:0; gap:0; font-size:0; }
+  .top-call { width:44px; height:44px; padding:0; gap:0; font-size:0; justify-content:center; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior:auto; }

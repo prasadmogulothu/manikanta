@@ -62,11 +62,8 @@ for name, (flyer, box) in FLYERS.items():
     img = Image.open(SRC / F[flyer]).convert("RGB")
     save(img.crop(box) if box else img, name)
 
-# the shopfront render has a soft transparent halo; keep the solid middle and
-# flatten whatever alpha is left onto warm cream so no fringe shows in the hero
-shop = Image.open(SRC / "shop.png").convert("RGBA").crop((200, 20, 1280, 1040))
-flat = Image.new("RGBA", shop.size, (246, 239, 224, 255))
-flat.alpha_composite(shop)
-save(flat.convert("RGB"), "shop", 900)
+# the shopfront arrives on a baked-in checkerboard (fake transparency); crop inside
+# the walls, board and plinth so none of it shows
+save(Image.open(SRC / "shop.jpg").convert("RGB").crop((160, 30, 1040, 845)), "shop")
 
 print("wrote", len(CROPS) + len(FLYERS) + 1, "files to", OUT)

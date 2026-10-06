@@ -75,7 +75,7 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
              radial-gradient(45% 60% at 0% 100%, color-mix(in srgb, var(--accent2) 15%, transparent), transparent 70%),
              linear-gradient(165deg, color-mix(in srgb, var(--bg) 60%, #fff), color-mix(in srgb, var(--bg) 90%, var(--accent)) 60%, var(--bg)); }
 .hero-bg { inset:50% max(40px, calc((100vw - var(--maxw)) / 2 + 40px)) auto auto; transform:translateY(-50%);
-  width:min(44vw, 540px); aspect-ratio:900 / 850; border-radius:24px; overflow:hidden; background:var(--bg-alt);
+  width:min(44vw, 540px); aspect-ratio:880 / 815; border-radius:24px; overflow:hidden; background:var(--bg-alt);
   box-shadow:0 0 0 10px var(--panel), 0 0 0 11px var(--line), 0 50px 70px -40px rgba(27,42,31,.55); }
 .hero-bg::after { display:none; }
 /* .hero is a grid, so a margin:auto .wrap would shrink to its content and centre */
@@ -93,7 +93,7 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .btn.ghost:hover { background:color-mix(in srgb, var(--accent) 8%, transparent); }
 
 /* -------------------------------------------------------------- headings */
-.sec { padding:104px 0; }
+.sec { padding:52px 0; }
 .sec.alt { background:radial-gradient(50% 70% at 100% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%),
                       radial-gradient(45% 60% at 0% 100%, color-mix(in srgb, var(--accent2) 10%, transparent), transparent 70%),
                       linear-gradient(170deg, var(--bg-alt), color-mix(in srgb, var(--bg-alt) 90%, var(--accent))); }
@@ -206,7 +206,7 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
   .hero-bg { position:relative; inset:auto; transform:none; width:calc(100% - 36px); max-width:480px; margin:0 auto 34px;
     border-radius:18px; }
 
-  .sec { padding:64px 0; }
+  .sec { padding:32px 0; }
   .cards { gap:16px; }
   .card { flex-basis:calc(50% - 8px); padding:22px 14px; }
   #millets .card figure { height:180px; }

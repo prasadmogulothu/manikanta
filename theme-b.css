@@ -82,7 +82,10 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
   box-shadow:0 0 0 10px color-mix(in srgb, var(--bg) 70%, #fff), 0 0 0 11px var(--accent), 0 50px 80px -40px rgba(0,0,0,.6); }
 .hero-bg::after { inset:-20px; border-radius:24px; background:none; border:1px dashed color-mix(in srgb, var(--accent) 60%, transparent); }
 /* .hero is a grid, so a margin:auto .wrap would shrink to its content and centre */
-.hero > .wrap { width:100%; }
+.hero>.wrap {
+  width: 100%;
+  padding: 0% 26px;
+}
 .hero-in { max-width:560px; }
 .hero h1 { text-wrap:balance; font-size:clamp(36px, 5vw, 62px); line-height:1.45; font-weight:700; letter-spacing:0;
   color:var(--accent); text-shadow:0 2px 18px rgba(0,0,0,.18); }

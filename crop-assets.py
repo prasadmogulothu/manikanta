@@ -67,3 +67,13 @@ for name, (flyer, box) in FLYERS.items():
 save(Image.open(SRC / "shop.jpg").convert("RGB").crop((160, 30, 1040, 845)), "shop")
 
 print("wrote", len(CROPS) + len(FLYERS) + 1, "files to", OUT)
+
+# shop's own product photos and new flyers in products/: each becomes
+# prod-<name>.webp (lower-case). Flyers and the festival popup keep more pixels.
+for src in sorted((Path(__file__).parent / "products").glob("*.jpeg")):
+    big = src.stem.startswith(("New-Flyer", "Dussehra"))
+    img = Image.open(src).convert("RGB")
+    img.thumbnail((900, 1200) if big else (640, 640), Image.LANCZOS)
+    name = "dussehra-wishes" if src.stem.startswith("Dussehra") else f"prod-{src.stem.lower()}"
+    img.save(OUT / f"{name}.webp", "WEBP", quality=84, method=6)
+print("wrote product photos")

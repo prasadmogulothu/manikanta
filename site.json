@@ -8,7 +8,7 @@
     "nav": [
       { "label": "సిరిధాన్యాలు", "href": "#millets" },
       { "label": "ఆర్గానిక్", "href": "#organic" },
-      { "label": "ఆయుర్వేద", "href": "#ayurveda" },
+      { "label": "డ్రై ఫ్రూట్స్", "href": "#dryfruits" },
       { "label": "మా గురించి", "href": "#about" },
       { "label": "చిరునామా", "href": "#contact" }
     ],
@@ -65,15 +65,27 @@
         "kicker": "కొత్త స్టాక్ · New Stock", "heading": "సిరిధాన్యాలు", "heading_2": "Millets — five kinds, now in store",
         "sub": "ప్రకృతి ప్రసాదించిన ఆరోగ్యకరమైన సిరిధాన్యాలు ఇప్పుడు మణికంఠ న్యాచురల్స్ స్టోర్‌లో అందుబాటులో ఉన్నాయి!",
         "items": [
-          { "title": "కొర్రలు", "title_2": "Foxtail Millet", "image": "manikantanaturals/millet-korralu.webp" },
-          { "title": "అండు కొర్రలు", "title_2": "Browntop Millet", "image": "manikantanaturals/millet-andu-korralu.webp" },
-          { "title": "ఉదలు", "title_2": "Barnyard Millet", "image": "manikantanaturals/millet-udalu.webp" },
-          { "title": "సామలు", "title_2": "Little Millet", "image": "manikantanaturals/millet-samalu.webp" },
-          { "title": "అరికెలు", "title_2": "Kodo Millet", "image": "manikantanaturals/millet-arikelu.webp" }
+          { "title": "కొర్రలు", "title_2": "Foxtail Millet", "image": "manikantanaturals/prod-organic-korralu.webp" },
+          { "title": "అండు కొర్రలు", "title_2": "Browntop Millet", "image": "manikantanaturals/prod-organic-andu-korralu.webp" },
+          { "title": "ఉదలు", "title_2": "Barnyard Millet", "image": "manikantanaturals/prod-orgnaic-oodalu.webp" },
+          { "title": "సామలు", "title_2": "Little Millet", "image": "manikantanaturals/prod-organic-samalu.webp" },
+          { "title": "అరికెలు", "title_2": "Kodo Millet", "image": "manikantanaturals/prod-organic-arikelu.webp" }
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "benefits", "alt": true, "ornament": true, "columns": 5,
+        "id": "millet-foods", "alt": true, "ornament": true, "columns": 3,
+        "kicker": "సిరిధాన్యాల ఉత్పత్తులు · Millet Foods", "heading": "సిరిధాన్యాలతో రుచికరమైన ఆహారం", "heading_2": "Rava, snacks, cookies and chikkies — all made with millets",
+        "items": [
+          { "title": "మల్టీ మిల్లెట్ ఇడ్లీ రవ్వ", "title_2": "Multi-Millet Idli Rava", "body": "మెత్తటి ఇడ్లీలకు సిరిధాన్యాల రవ్వ.", "image": "manikantanaturals/prod-multi-millet-idli-rava.webp" },
+          { "title": "మల్టీ మిల్లెట్ ఉప్మా రవ్వ", "title_2": "Multi-Millet Upma Rava", "body": "ఆరోగ్యకరమైన అల్పాహారానికి.", "image": "manikantanaturals/prod-multi-millet-upma-rava.webp" },
+          { "title": "మిల్లెట్ మసాలా స్నాక్స్", "title_2": "Millet Crispy — Home Made Masala", "body": "నూనెలో వేయించనివి (Non-fried).", "image": "manikantanaturals/prod-millet-masala-snacks.webp" },
+          { "title": "మిల్లెట్ చిక్కీలు", "title_2": "Millet Chikkies", "body": "పిల్లలకు, పెద్దలకు ఆరోగ్యకరమైన తీపి.", "image": "manikantanaturals/prod-millet-chikkies.webp" },
+          { "title": "మిల్లెట్ కుకీస్", "title_2": "Millet Cookies — Nava Grain", "body": "తొమ్మిది ధాన్యాలతో కరకరలాడే కుకీస్.", "image": "manikantanaturals/prod-millet-cookies-nava-grain.webp" },
+          { "title": "మిల్లెట్ రస్క్", "title_2": "Millet Rusk", "body": "టీ తో పాటు ఆరోగ్యకరమైన రస్క్.", "image": "manikantanaturals/prod-millet-cookies-rusk.webp" }
+        ]
+      }},
+      { "type": "services", "enabled": true, "config": {
+        "id": "benefits", "ornament": true, "columns": 5,
         "kicker": "ఎందుకు సిరిధాన్యాలు? · Why millets", "heading": "సిరిధాన్యాలు తినండి… ఆరోగ్యంగా జీవించండి!",
         "items": [
           { "title": "అధిక పోషక విలువ", "title_2": "Rich in nutrition", "icon": "leaf" },
@@ -84,17 +96,28 @@
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "organic", "ornament": true, "columns": 4,
+        "id": "organic", "alt": true, "ornament": true, "columns": 5,
         "kicker": "100% ఆర్గానిక్ · Organic", "heading": "స్వచ్ఛమైన ఆర్గానిక్ ఉత్పత్తులు", "heading_2": "Grown in the hills — no chemicals, no adulteration",
         "sub": "కొండ ప్రాంతాల్లో సహజ సిద్ధంగా పండించినవి. రసాయనాలు లేవు, కల్తీ లేదు — స్వచ్ఛమైనవి, ఆరోగ్యకరమైనవి.",
         "items": [
-          { "title": "ఆర్గానిక్ పసుపు", "title_2": "Organic Turmeric", "body": "సహజమైన రంగు మరియు పరిమళంతో.", "image": "manikantanaturals/p-pasupu.webp" },
-          { "title": "స్వచ్ఛమైన కారం", "title_2": "Pure Chilli Powder", "body": "కల్తీ లేని ఘాటైన రుచి.", "image": "manikantanaturals/p-karam.webp" },
-          { "title": "నల్ల ఉలవలు", "title_2": "Black Horse Gram", "body": "ఆరోగ్యాన్ని ఇచ్చే పోషకాల గని.", "image": "manikantanaturals/p-ulavalu.webp" },
-          { "title": "పొట్టు మినప్పప్పు", "title_2": "Urad Dal with husk", "body": "సాంప్రదాయ రుచి మరియు బలం.", "image": "manikantanaturals/p-minappappu.webp" },
-          { "title": "కొండ కందిపప్పు", "title_2": "Hill Toor Dal", "body": "కల్తీ లేని గ్రామీణ స్వచ్ఛత.", "image": "manikantanaturals/p-kandipappu.webp" },
-          { "title": "నల్ల పెబ్బర్లు", "title_2": "Black Cowpeas", "body": "శరీరానికి ఎంతో మేలు చేసే ప్రోటీన్.", "image": "manikantanaturals/p-pebbarlu.webp" },
-          { "title": "దేశీ రకం రాజ్మా", "title_2": "Desi Rajma", "body": "అమితమైన రుచి, అద్భుతమైన ఆరోగ్యం.", "image": "manikantanaturals/p-rajma.webp" }
+          { "title": "ఆర్గానిక్ పసుపు", "title_2": "Organic Turmeric", "body": "సహజమైన రంగు మరియు పరిమళంతో.", "image": "manikantanaturals/prod-organic-pasupu.webp" },
+          { "title": "స్వచ్ఛమైన కారం", "title_2": "Pure Chilli Powder", "body": "కల్తీ లేని ఘాటైన రుచి.", "image": "manikantanaturals/prod-organic-karam.webp" },
+          { "title": "నల్ల ఉలవలు", "title_2": "Black Horse Gram", "body": "ఆరోగ్యాన్ని ఇచ్చే పోషకాల గని.", "image": "manikantanaturals/prod-organic-nalla-uluvalu.webp" },
+          { "title": "పొట్టు మినప్పప్పు", "title_2": "Urad Dal with husk", "body": "సాంప్రదాయ రుచి మరియు బలం.", "image": "manikantanaturals/prod-organic-pottu-minapappu.webp" },
+          { "title": "కొండ కందిపప్పు", "title_2": "Hill Toor Dal", "body": "కల్తీ లేని గ్రామీణ స్వచ్ఛత.", "image": "manikantanaturals/prod-konda-kandi-pappu.webp" },
+          { "title": "విసిరిన కందిపప్పు", "title_2": "Stone-ground Toor Dal", "body": "విసుర్రాయిపై విసిరిన సంప్రదాయ కందిపప్పు.", "image": "manikantanaturals/prod-organic-visirina-kandipappu.webp" },
+          { "title": "నల్ల పెబ్బర్లు", "title_2": "Black Cowpeas", "body": "శరీరానికి ఎంతో మేలు చేసే ప్రోటీన్.", "image": "manikantanaturals/prod-organic-nalla-pebbarlu.webp" },
+          { "title": "దేశీ రకం రాజ్మా", "title_2": "Desi Rajma", "body": "అమితమైన రుచి, అద్భుతమైన ఆరోగ్యం.", "image": "manikantanaturals/p-rajma.webp" },
+          { "title": "బెల్లం పొడి", "title_2": "Organic Jaggery Powder", "body": "చక్కెరకు బదులు సహజమైన తీపి.", "image": "manikantanaturals/prod-organic-bellam-podi.webp" },
+          { "title": "బ్రౌన్ షుగర్", "title_2": "Organic Brown Sugar", "body": "శుద్ధి చేయని సహజ చక్కెర.", "image": "manikantanaturals/prod-organic-brown-sugar.webp" }
+        ]
+      }},
+      { "type": "services", "enabled": true, "config": {
+        "id": "dryfruits", "ornament": true, "columns": 3,
+        "kicker": "కొత్తగా వచ్చినవి · New Arrivals", "heading": "డ్రై ఫ్రూట్స్ & సంప్రదాయ స్వీట్స్", "heading_2": "Dry fruits, pure ghee and jaggery — traditional sweets",
+        "items": [
+          { "title": "ఆత్రేయపురం పూతరేకులు", "title_2": "Atreyapuram Special Putharekulu", "body": "స్వచ్ఛమైన నెయ్యి, బెల్లం మరియు డ్రై ఫ్రూట్స్‌తో.", "price": "₹99 మాత్రమే", "image": "manikantanaturals/prod-atreyapuram-putharekulu.webp" },
+          { "title": "ఇప్ప పువ్వు లడ్డు", "title_2": "Ippa Puvvu (Mahua) Laddu", "body": "ప్రకృతి ప్రసాదించిన అమృతం — రోగ నిరోధక శక్తిని పెంచి, శరీరానికి తక్షణ శక్తిని ఇస్తుంది.", "image": "manikantanaturals/prod-ippa-puvvu-laddu.webp" }
         ]
       }},
       { "type": "services", "enabled": true, "config": {
@@ -103,10 +126,13 @@
         "items": [
           { "title": "పంచగవ్య నాసిక", "title_2": "Saraswati Nasika — Panchagavya nasal drops",
             "body": "గో ఆధారిత పంచగవ్యతో తయారైన నాసిక చుక్కలు. తలనొప్పి, జలుబు, సైనస్, నిద్రలేమి వంటి ఇబ్బందులకు సంప్రదాయ ఆయుర్వేదంలో వాడుతారు. 100% సహజం · సురక్షితం.",
-            "price": "వాడే ముందు వైద్యుల సలహా తీసుకోండి", "image": "manikantanaturals/nasika.webp" },
+            "price": "వాడే ముందు వైద్యుల సలహా తీసుకోండి", "image": "manikantanaturals/prod-nasika.webp" },
           { "title": "గంగిగోవు సిట్రస్ బయోఎంజైమ్", "title_2": "Citrus Bioenzyme Dish Wash Liquid",
             "body": "నిమ్మ బయోఎంజైమ్, బెల్లం, కుంకుడుకాయ, మూలికల సారాలతో తయారైన సహజ డిష్ వాష్. మీ వంటింటి పాత్రలకు ప్రకృతి ఇచ్చే సరికొత్త మెరుపు — కెమికల్ డిష్ వాష్‌లకు గుడ్ బై!",
-            "price": "Chemical Free · Eco-Friendly · Safe for Home & Earth", "image": "manikantanaturals/dishwash.webp" }
+            "price": "Chemical Free · Eco-Friendly · Safe for Home & Earth", "image": "manikantanaturals/prod-gangigovu-citrus-bioengyme.webp" },
+          { "title": "గోశాల హెర్బల్ హ్యాండ్ వాష్", "title_2": "Goshala Herbal Hand Wash — Neem, Panchagavya", "body": "వేప మరియు పంచగవ్యతో తయారైన సహజ లిక్విడ్ హ్యాండ్ వాష్. చేతులను సున్నితంగా, సురక్షితంగా శుభ్రం చేస్తుంది.", "price": "250 ml", "image": "manikantanaturals/prod-goshala-handwash.webp" },
+          { "title": "బాంబూ టూత్‌బ్రష్", "title_2": "Organic Bamboo Toothbrush — Ultra Soft", "body": "వెదురుతో చేసిన, మట్టిలో కలిసిపోయే అల్ట్రా సాఫ్ట్ టూత్‌బ్రష్. ప్లాస్టిక్ బ్రష్‌లకు గుడ్ బై!", "price": "100% Biodegradable", "image": "manikantanaturals/prod-organic-ultrasoft-toothbrush.webp" },
+          { "title": "వట్టివేరు స్క్రబ్", "title_2": "Vetiver Bath Scrub", "body": "సహజమైన వట్టివేరుతో అల్లిన స్నానపు స్క్రబ్ — చర్మానికి చల్లదనం, మంచి సువాసన.", "image": "manikantanaturals/prod-vattiveru-made-scrub.webp" }
         ]
       }},
       { "type": "intro", "enabled": true, "config": {
@@ -126,6 +152,8 @@
         "id": "gallery", "alt": true, "ornament": true,
         "kicker": "మా ప్రకటనలు · Flyers", "heading": "తాజా సమాచారం", "heading_2": "Our latest flyers and new stock",
         "images": [
+          "manikantanaturals/prod-new-flyer-atreyapuram-putharekulu.webp",
+          "manikantanaturals/prod-new-flyer-ippa-puvvu-laddu.webp",
           "manikantanaturals/flyer-millets.webp",
           "manikantanaturals/flyer-banner.webp",
           "manikantanaturals/flyer-organic.webp",

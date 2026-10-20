@@ -120,10 +120,12 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .card .price { margin-top:16px; padding:6px 14px; border-radius:999px; font-family:var(--font-body);
   font-size:14px; font-weight:600; line-height:1.5; background:color-mix(in srgb, var(--accent) 9%, transparent); }
 
-/* millets — each grain in its own arch window */
-#millets .card { padding:20px 18px 26px; }
-#millets .card figure { height:220px; margin:0 0 18px; border-radius:120px 120px 12px 12px; overflow:hidden; background:var(--bg-alt); }
-#millets .card figure img { border-radius:0; }
+/* product photos — the shop's own shots, each in a rounded white frame */
+:is(#millets, #millet-foods, #organic, #dryfruits) .card { padding:18px 18px 24px; }
+:is(#millets, #millet-foods, #organic, #dryfruits, #ayurveda) .card figure { height:240px; margin:0 0 18px; overflow:hidden;
+  border:6px solid #fff; border-radius:22px; background:#fff;
+  box-shadow:0 0 0 1px var(--line), 0 18px 30px -22px rgba(27,42,31,.55); }
+:is(#millets, #millet-foods, #organic, #dryfruits, #ayurveda) .card figure img { border-radius:15px; }
 
 /* why millets — icons on soft leaf discs, no boxes */
 #benefits .card { background:none; border:0; padding:8px; box-shadow:none; transform:none; }
@@ -132,16 +134,10 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 #benefits .card figure svg { width:44px; height:44px; }
 #benefits .card h3 { font-size:18px; }
 
-/* organic — the swatch bowls as round portholes */
-#organic .card figure { width:132px; height:132px; margin:0 auto 20px; border-radius:50%; overflow:hidden;
-  box-shadow:0 0 0 6px var(--panel), 0 0 0 7px var(--line); }
-#organic .card figure img { border-radius:0; transform:scale(1.24); }
-
 /* ayurveda — picture beside the words */
 #ayurveda .card { display:grid; grid-template-columns:190px minmax(0,1fr); column-gap:28px; align-content:start; text-align:left; }
-#ayurveda .card figure { grid-row:1 / span 4; height:100%; min-height:280px; margin:0; overflow:hidden;
-  border-radius:100px 100px 12px 12px; background:var(--bg-alt); }
-#ayurveda .card figure img { border-radius:0; }
+#ayurveda .card figure { grid-row:1 / span 4; height:300px; margin:0; }
+#ayurveda .card .price { align-self:start; justify-self:start; }
 
 /* ------------------------------------------------------------------ intro */
 .intro { grid-template-columns:minmax(0,330px) minmax(0,1fr); gap:72px; }
@@ -176,7 +172,7 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .foot { background:linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 72%, #000)); border:0; color:color-mix(in srgb, var(--accent-ink) 82%, transparent); padding:32px 40px; }
 .foot b { color:var(--accent-ink); }
 .foot small { font-size:14px; margin-top:6px; }
-.pb { display:grid; grid-template-columns:auto auto; align-items:center; column-gap:12px; row-gap:2px; text-align:right; }
+.pb { display:grid; grid-template-columns:auto auto; align-items:center; column-gap:12px; row-gap:2px; text-align:right; color:inherit; }
 .pb span { grid-column:1; font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; opacity:.85; }
 .pb b { grid-column:1; font-size:15px; letter-spacing:.02em; }
 /* square white tile, as on the sibling sites: the mark is round and needs its own ground */
@@ -209,8 +205,7 @@ html { --motifs:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
   .sec { padding:32px 0; }
   .cards { gap:16px; }
   .card { flex-basis:calc(50% - 8px); padding:22px 14px; }
-  #millets .card figure { height:180px; }
-  #organic .card figure { width:108px; height:108px; }
+  :is(#millets, #millet-foods, #organic, #dryfruits) .card figure { height:190px; }
   #ayurveda .card { flex-basis:100%; grid-template-columns:1fr; padding:22px 20px; }
   #ayurveda .card figure { grid-row:auto; height:260px; min-height:0; margin-bottom:20px; }
   #ayurveda .card figure img { object-fit:contain; }

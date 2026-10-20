@@ -9,25 +9,28 @@
 <link rel="icon" href="assets/img/logo.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Both templates' faces. On the builder, theme.js builds this link from the tokens. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;500;600;700&family=Anek+Telugu:wght@400;500;600;700&family=Fraunces:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap">
+<!-- Design A's faces. On the builder, theme.js builds this link from the tokens. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;500;600;700&family=Anek+Telugu:wght@400;500;600;700&family=Fraunces:wght@400;500;600;700&display=swap">
 <!-- Same cascade as the builder: base.css → template (tokens + css). -->
 <link rel="stylesheet" href="base.css">
-<link rel="stylesheet" href="theme-a.css" id="theme">
-<script>
-  /* design switcher — demo only, remove before launch (see README) */
-  if (new URLSearchParams(location.search).get('d') === 'b')
-    document.getElementById('theme').href = 'theme-b.css';
-</script>
+<link rel="stylesheet" href="theme-a.css">
 <style>
-/* design switcher — demo only */
-.demo-switch { position:fixed; left:14px; bottom:14px; z-index:50; display:flex; align-items:center; gap:4px;
-  padding:5px; border-radius:999px; background:#111; color:#fff; font:600 12px/1 system-ui, sans-serif;
-  box-shadow:0 8px 24px rgba(0,0,0,.3); }
-.demo-switch span { padding:0 8px; opacity:.7; }
-.demo-switch button { width:36px; height:36px; border-radius:50%; border:0; cursor:pointer;
-  background:transparent; color:#fff; font:inherit; }
-.demo-switch button[aria-pressed="true"] { background:#fff; color:#111; }
+/* festival popup — not a builder module; delete this, the dialog and its script after the festival */
+.wishes { padding:0; border:0; background:none; overflow:visible; max-width:92vw; }
+.wishes::backdrop { background:radial-gradient(circle at 50% 40%, rgba(120,40,10,.55), rgba(15,8,2,.85)); backdrop-filter:blur(5px); }
+.wishes[open] { animation:wish-in .7s cubic-bezier(.2,1.25,.4,1) both; }
+.wishes img { display:block; width:auto; height:auto; max-width:calc(100vw - 32px); max-height:78vh; margin:0 auto; border-radius:20px;
+  border:6px solid #f5c542; animation:wish-glow 2.4s ease-in-out .7s infinite alternate;
+  box-shadow:0 0 0 2px #fff, 0 0 40px 4px rgba(245,197,66,.55), 0 30px 60px rgba(0,0,0,.55); }
+.wishes p { margin:16px 0 0; text-align:center; color:#ffe9a8; font:700 20px/1.5 'Noto Serif Telugu', serif;
+  text-shadow:0 2px 12px rgba(0,0,0,.6); }
+.wishes form { position:absolute; top:-16px; right:-16px; }
+.wishes .x { width:44px; height:44px; border-radius:50%; border:3px solid #f5c542; background:#fff; color:#8a2410;
+  font:600 26px/1 system-ui, sans-serif; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.4); }
+@keyframes wish-in { from { opacity:0; transform:scale(.6) rotate(-4deg); } to { opacity:1; transform:none; } }
+@keyframes wish-glow { to { box-shadow:0 0 0 2px #fff, 0 0 70px 14px rgba(245,197,66,.8), 0 30px 60px rgba(0,0,0,.55); } }
+@media (max-width:520px) { .wishes form { top:-12px; right:-6px; } .wishes p { font-size:16px; } }
+@media (prefers-reduced-motion: reduce) { .wishes[open], .wishes img { animation:none; } }
 </style>
 </head>
 <body>
@@ -44,7 +47,7 @@
   <nav class="top-nav" aria-label="ప్రధాన మెను">
     <a href="#millets">సిరిధాన్యాలు</a>
     <a href="#organic">ఆర్గానిక్</a>
-    <a href="#ayurveda">ఆయుర్వేద</a>
+    <a href="#dryfruits">డ్రై ఫ్రూట్స్</a>
     <a href="#about">మా గురించి</a>
     <a href="#contact">చిరునామా</a>
   </nav>
@@ -83,17 +86,37 @@
       <div class="orn"><span></span><i></i><span></span></div>
     </div>
     <div class="cards" style="--cols: 5;">
-      <article class="card"><figure><img src="assets/img/millet-korralu.webp" alt="" width="102" height="200" loading="lazy"></figure><h3>కొర్రలు</h3><p class="t2">Foxtail Millet</p></article>
-      <article class="card"><figure><img src="assets/img/millet-andu-korralu.webp" alt="" width="104" height="200" loading="lazy"></figure><h3>అండు కొర్రలు</h3><p class="t2">Browntop Millet</p></article>
-      <article class="card"><figure><img src="assets/img/millet-udalu.webp" alt="" width="104" height="200" loading="lazy"></figure><h3>ఉదలు</h3><p class="t2">Barnyard Millet</p></article>
-      <article class="card"><figure><img src="assets/img/millet-samalu.webp" alt="" width="102" height="200" loading="lazy"></figure><h3>సామలు</h3><p class="t2">Little Millet</p></article>
-      <article class="card"><figure><img src="assets/img/millet-arikelu.webp" alt="" width="104" height="200" loading="lazy"></figure><h3>అరికెలు</h3><p class="t2">Kodo Millet</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-korralu.webp" alt="" width="420" height="640" loading="lazy"></figure><h3>కొర్రలు</h3><p class="t2">Foxtail Millet</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-andu-korralu.webp" alt="" width="361" height="640" loading="lazy"></figure><h3>అండు కొర్రలు</h3><p class="t2">Browntop Millet</p></article>
+      <article class="card"><figure><img src="assets/img/prod-orgnaic-oodalu.webp" alt="" width="379" height="640" loading="lazy"></figure><h3>ఉదలు</h3><p class="t2">Barnyard Millet</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-samalu.webp" alt="" width="366" height="640" loading="lazy"></figure><h3>సామలు</h3><p class="t2">Little Millet</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-arikelu.webp" alt="" width="369" height="640" loading="lazy"></figure><h3>అరికెలు</h3><p class="t2">Kodo Millet</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- services: millet foods -->
+<section class="sec alt" id="millet-foods">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">సిరిధాన్యాల ఉత్పత్తులు · Millet Foods</div>
+      <h2 class="sec-title">సిరిధాన్యాలతో రుచికరమైన ఆహారం</h2>
+      <p class="sec-sub t2">Rava, snacks, cookies and chikkies — all made with millets</p>
+      <div class="orn"><span></span><i></i><span></span></div>
+    </div>
+    <div class="cards" style="--cols: 3;">
+      <article class="card"><figure><img src="assets/img/prod-multi-millet-idli-rava.webp" alt="" width="379" height="640" loading="lazy"></figure><h3>మల్టీ మిల్లెట్ ఇడ్లీ రవ్వ</h3><p class="t2">Multi-Millet Idli Rava</p><p>మెత్తటి ఇడ్లీలకు సిరిధాన్యాల రవ్వ.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-multi-millet-upma-rava.webp" alt="" width="390" height="640" loading="lazy"></figure><h3>మల్టీ మిల్లెట్ ఉప్మా రవ్వ</h3><p class="t2">Multi-Millet Upma Rava</p><p>ఆరోగ్యకరమైన అల్పాహారానికి.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-millet-masala-snacks.webp" alt="" width="440" height="640" loading="lazy"></figure><h3>మిల్లెట్ మసాలా స్నాక్స్</h3><p class="t2">Millet Crispy — Home Made Masala</p><p>నూనెలో వేయించనివి (Non-fried).</p></article>
+      <article class="card"><figure><img src="assets/img/prod-millet-chikkies.webp" alt="" width="278" height="640" loading="lazy"></figure><h3>మిల్లెట్ చిక్కీలు</h3><p class="t2">Millet Chikkies</p><p>పిల్లలకు, పెద్దలకు ఆరోగ్యకరమైన తీపి.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-millet-cookies-nava-grain.webp" alt="" width="640" height="253" loading="lazy"></figure><h3>మిల్లెట్ కుకీస్</h3><p class="t2">Millet Cookies — Nava Grain</p><p>తొమ్మిది ధాన్యాలతో కరకరలాడే కుకీస్.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-millet-cookies-rusk.webp" alt="" width="640" height="491" loading="lazy"></figure><h3>మిల్లెట్ రస్క్</h3><p class="t2">Millet Rusk</p><p>టీ తో పాటు ఆరోగ్యకరమైన రస్క్.</p></article>
     </div>
   </div>
 </section>
 
 <!-- services: why millets (icons) -->
-<section class="sec alt" id="benefits">
+<section class="sec" id="benefits">
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-kicker">ఎందుకు సిరిధాన్యాలు? · Why millets</div>
@@ -111,7 +134,7 @@
 </section>
 
 <!-- services: organic -->
-<section class="sec" id="organic">
+<section class="sec alt" id="organic">
   <div class="wrap">
     <div class="sec-head">
       <div class="sec-kicker">100% ఆర్గానిక్ · Organic</div>
@@ -120,14 +143,33 @@
       <p class="sec-sub">కొండ ప్రాంతాల్లో సహజ సిద్ధంగా పండించినవి. రసాయనాలు లేవు, కల్తీ లేదు — స్వచ్ఛమైనవి, ఆరోగ్యకరమైనవి.</p>
       <div class="orn"><span></span><i></i><span></span></div>
     </div>
-    <div class="cards" style="--cols: 4;">
-      <article class="card"><figure><img src="assets/img/p-pasupu.webp" alt="" width="160" height="160" loading="lazy"></figure><h3>ఆర్గానిక్ పసుపు</h3><p class="t2">Organic Turmeric</p><p>సహజమైన రంగు మరియు పరిమళంతో.</p></article>
-      <article class="card"><figure><img src="assets/img/p-karam.webp" alt="" width="160" height="160" loading="lazy"></figure><h3>స్వచ్ఛమైన కారం</h3><p class="t2">Pure Chilli Powder</p><p>కల్తీ లేని ఘాటైన రుచి.</p></article>
-      <article class="card"><figure><img src="assets/img/p-ulavalu.webp" alt="" width="160" height="160" loading="lazy"></figure><h3>నల్ల ఉలవలు</h3><p class="t2">Black Horse Gram</p><p>ఆరోగ్యాన్ని ఇచ్చే పోషకాల గని.</p></article>
-      <article class="card"><figure><img src="assets/img/p-minappappu.webp" alt="" width="160" height="160" loading="lazy"></figure><h3>పొట్టు మినప్పప్పు</h3><p class="t2">Urad Dal with husk</p><p>సాంప్రదాయ రుచి మరియు బలం.</p></article>
-      <article class="card"><figure><img src="assets/img/p-kandipappu.webp" alt="" width="160" height="160" loading="lazy"></figure><h3>కొండ కందిపప్పు</h3><p class="t2">Hill Toor Dal</p><p>కల్తీ లేని గ్రామీణ స్వచ్ఛత.</p></article>
-      <article class="card"><figure><img src="assets/img/p-pebbarlu.webp" alt="" width="160" height="160" loading="lazy"></figure><h3>నల్ల పెబ్బర్లు</h3><p class="t2">Black Cowpeas</p><p>శరీరానికి ఎంతో మేలు చేసే ప్రోటీన్.</p></article>
+    <div class="cards" style="--cols: 5;">
+      <article class="card"><figure><img src="assets/img/prod-organic-pasupu.webp" alt="" width="410" height="640" loading="lazy"></figure><h3>ఆర్గానిక్ పసుపు</h3><p class="t2">Organic Turmeric</p><p>సహజమైన రంగు మరియు పరిమళంతో.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-karam.webp" alt="" width="433" height="640" loading="lazy"></figure><h3>స్వచ్ఛమైన కారం</h3><p class="t2">Pure Chilli Powder</p><p>కల్తీ లేని ఘాటైన రుచి.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-nalla-uluvalu.webp" alt="" width="408" height="640" loading="lazy"></figure><h3>నల్ల ఉలవలు</h3><p class="t2">Black Horse Gram</p><p>ఆరోగ్యాన్ని ఇచ్చే పోషకాల గని.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-pottu-minapappu.webp" alt="" width="400" height="640" loading="lazy"></figure><h3>పొట్టు మినప్పప్పు</h3><p class="t2">Urad Dal with husk</p><p>సాంప్రదాయ రుచి మరియు బలం.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-konda-kandi-pappu.webp" alt="" width="422" height="640" loading="lazy"></figure><h3>కొండ కందిపప్పు</h3><p class="t2">Hill Toor Dal</p><p>కల్తీ లేని గ్రామీణ స్వచ్ఛత.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-visirina-kandipappu.webp" alt="" width="378" height="640" loading="lazy"></figure><h3>విసిరిన కందిపప్పు</h3><p class="t2">Stone-ground Toor Dal</p><p>విసుర్రాయిపై విసిరిన సంప్రదాయ కందిపప్పు.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-nalla-pebbarlu.webp" alt="" width="414" height="640" loading="lazy"></figure><h3>నల్ల పెబ్బర్లు</h3><p class="t2">Black Cowpeas</p><p>శరీరానికి ఎంతో మేలు చేసే ప్రోటీన్.</p></article>
       <article class="card"><figure><img src="assets/img/p-rajma.webp" alt="" width="160" height="160" loading="lazy"></figure><h3>దేశీ రకం రాజ్మా</h3><p class="t2">Desi Rajma</p><p>అమితమైన రుచి, అద్భుతమైన ఆరోగ్యం.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-bellam-podi.webp" alt="" width="407" height="640" loading="lazy"></figure><h3>బెల్లం పొడి</h3><p class="t2">Organic Jaggery Powder</p><p>చక్కెరకు బదులు సహజమైన తీపి.</p></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-brown-sugar.webp" alt="" width="364" height="640" loading="lazy"></figure><h3>బ్రౌన్ షుగర్</h3><p class="t2">Organic Brown Sugar</p><p>శుద్ధి చేయని సహజ చక్కెర.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- services: dry fruits & sweets -->
+<section class="sec" id="dryfruits">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-kicker">కొత్తగా వచ్చినవి · New Arrivals</div>
+      <h2 class="sec-title">డ్రై ఫ్రూట్స్ &amp; సంప్రదాయ స్వీట్స్</h2>
+      <p class="sec-sub t2">Dry fruits, pure ghee and jaggery — traditional sweets</p>
+      <div class="orn"><span></span><i></i><span></span></div>
+    </div>
+    <div class="cards" style="--cols: 3;">
+      <article class="card"><figure><img src="assets/img/prod-atreyapuram-putharekulu.webp" alt="" width="562" height="640" loading="lazy"></figure><h3>ఆత్రేయపురం పూతరేకులు</h3><p class="t2">Atreyapuram Special Putharekulu</p><p>స్వచ్ఛమైన నెయ్యి, బెల్లం మరియు డ్రై ఫ్రూట్స్‌తో.</p><span class="price">₹99 మాత్రమే</span></article>
+      <article class="card"><figure><img src="assets/img/prod-ippa-puvvu-laddu.webp" alt="" width="593" height="640" loading="lazy"></figure><h3>ఇప్ప పువ్వు లడ్డు</h3><p class="t2">Ippa Puvvu (Mahua) Laddu</p><p>ప్రకృతి ప్రసాదించిన అమృతం — రోగ నిరోధక శక్తిని పెంచి, శరీరానికి తక్షణ శక్తిని ఇస్తుంది.</p></article>
     </div>
   </div>
 </section>
@@ -142,8 +184,11 @@
       <div class="orn"><span></span><i></i><span></span></div>
     </div>
     <div class="cards" style="--cols: 2;">
-      <article class="card"><figure><img src="assets/img/nasika.webp" alt="సరస్వతి నాసిక సీసా" width="144" height="280" loading="lazy"></figure><h3>పంచగవ్య నాసిక</h3><p class="t2">Saraswati Nasika — Panchagavya nasal drops</p><p>గో ఆధారిత పంచగవ్యతో తయారైన నాసిక చుక్కలు. తలనొప్పి, జలుబు, సైనస్, నిద్రలేమి వంటి ఇబ్బందులకు సంప్రదాయ ఆయుర్వేదంలో వాడుతారు. 100% సహజం · సురక్షితం.</p><span class="price">వాడే ముందు వైద్యుల సలహా తీసుకోండి</span></article>
-      <article class="card"><figure><img src="assets/img/dishwash.webp" alt="గంగిగోవు సిట్రస్ బయోఎంజైమ్ డిష్ వాష్ సీసాలు" width="413" height="120" loading="lazy"></figure><h3>గంగిగోవు సిట్రస్ బయోఎంజైమ్</h3><p class="t2">Citrus Bioenzyme Dish Wash Liquid</p><p>నిమ్మ బయోఎంజైమ్, బెల్లం, కుంకుడుకాయ, మూలికల సారాలతో తయారైన సహజ డిష్ వాష్. మీ వంటింటి పాత్రలకు ప్రకృతి ఇచ్చే సరికొత్త మెరుపు — కెమికల్ డిష్ వాష్‌లకు గుడ్ బై!</p><span class="price">Chemical Free · Eco-Friendly · Safe for Home &amp; Earth</span></article>
+      <article class="card"><figure><img src="assets/img/prod-nasika.webp" alt="సరస్వతి నాసిక సీసా" width="213" height="640" loading="lazy"></figure><h3>పంచగవ్య నాసిక</h3><p class="t2">Saraswati Nasika — Panchagavya nasal drops</p><p>గో ఆధారిత పంచగవ్యతో తయారైన నాసిక చుక్కలు. తలనొప్పి, జలుబు, సైనస్, నిద్రలేమి వంటి ఇబ్బందులకు సంప్రదాయ ఆయుర్వేదంలో వాడుతారు. 100% సహజం · సురక్షితం.</p><span class="price">వాడే ముందు వైద్యుల సలహా తీసుకోండి</span></article>
+      <article class="card"><figure><img src="assets/img/prod-gangigovu-citrus-bioengyme.webp" alt="గంగిగోవు సిట్రస్ బయోఎంజైమ్ డిష్ వాష్ సీసా" width="245" height="640" loading="lazy"></figure><h3>గంగిగోవు సిట్రస్ బయోఎంజైమ్</h3><p class="t2">Citrus Bioenzyme Dish Wash Liquid</p><p>నిమ్మ బయోఎంజైమ్, బెల్లం, కుంకుడుకాయ, మూలికల సారాలతో తయారైన సహజ డిష్ వాష్. మీ వంటింటి పాత్రలకు ప్రకృతి ఇచ్చే సరికొత్త మెరుపు — కెమికల్ డిష్ వాష్‌లకు గుడ్ బై!</p><span class="price">Chemical Free · Eco-Friendly · Safe for Home &amp; Earth</span></article>
+      <article class="card"><figure><img src="assets/img/prod-goshala-handwash.webp" alt="" width="315" height="640" loading="lazy"></figure><h3>గోశాల హెర్బల్ హ్యాండ్ వాష్</h3><p class="t2">Goshala Herbal Hand Wash — Neem, Panchagavya</p><p>వేప మరియు పంచగవ్యతో తయారైన సహజ లిక్విడ్ హ్యాండ్ వాష్. చేతులను సున్నితంగా, సురక్షితంగా శుభ్రం చేస్తుంది.</p><span class="price">250 ml</span></article>
+      <article class="card"><figure><img src="assets/img/prod-organic-ultrasoft-toothbrush.webp" alt="" width="128" height="640" loading="lazy" style="object-fit:contain"></figure><h3>బాంబూ టూత్‌బ్రష్</h3><p class="t2">Organic Bamboo Toothbrush — Ultra Soft</p><p>వెదురుతో చేసిన, మట్టిలో కలిసిపోయే అల్ట్రా సాఫ్ట్ టూత్‌బ్రష్. ప్లాస్టిక్ బ్రష్‌లకు గుడ్ బై!</p><span class="price">100% Biodegradable</span></article>
+      <article class="card"><figure><img src="assets/img/prod-vattiveru-made-scrub.webp" alt="" width="426" height="640" loading="lazy"></figure><h3>వట్టివేరు స్క్రబ్</h3><p class="t2">Vetiver Bath Scrub</p><p>సహజమైన వట్టివేరుతో అల్లిన స్నానపు స్క్రబ్ — చర్మానికి చల్లదనం, మంచి సువాసన.</p></article>
     </div>
   </div>
 </section>
@@ -183,6 +228,8 @@
       <div class="orn"><span></span><i></i><span></span></div>
     </div>
     <div class="gallery">
+      <img src="assets/img/prod-new-flyer-atreyapuram-putharekulu.webp" alt="ఆత్రేయపురం స్పెషల్ పూతరేకులు ₹99 ప్రకటన" width="610" height="924" loading="lazy">
+      <img src="assets/img/prod-new-flyer-ippa-puvvu-laddu.webp" alt="ఇప్ప పువ్వు లడ్డు ప్రకటన" width="610" height="918" loading="lazy">
       <img src="assets/img/flyer-millets.webp" alt="సిరిధాన్యాలు కొత్త స్టాక్ ప్రకటన" width="575" height="861" loading="lazy">
       <img src="assets/img/flyer-banner.webp" alt="మణికంఠ న్యాచురల్స్ బ్యానర్ — మహేష్ కాశీపురం" width="575" height="384" loading="lazy">
       <img src="assets/img/flyer-organic.webp" alt="100% ఆర్గానిక్ ఉత్పత్తుల ప్రకటన" width="843" height="1264" loading="lazy">
@@ -230,28 +277,22 @@
       <b>మణికంఠ న్యాచురల్స్</b> &copy; 2026
       <small>మిత్రులందరికీ ఉత్తమ న్యాచురల్ &amp; ఆయుర్వేద ఉత్పత్తులు తక్కువ ధరలకు లభించును.</small>
     </div>
-    <div class="pb"><span>Developed by</span><b>HHAppSolutions</b><img src="assets/img/hh.png" alt="HHAppSolutions logo"></div>
+    <a class="pb" href="https://hhappsolutions.com" target="_blank" rel="noopener"><span>Developed by</span><b>HHAppSolutions</b><img src="assets/img/hh.png" alt="HHAppSolutions logo"></a>
   </div>
 </footer>
 
-<div class="demo-switch" role="group" aria-label="Design option">
-  <span>Design</span>
-  <button type="button" data-d="a" aria-pressed="false">A</button>
-  <button type="button" data-d="b" aria-pressed="false">B</button>
-</div>
+<dialog class="wishes" id="wishes" aria-label="విజయదశమి శుభాకాంక్షలు">
+  <form method="dialog"><button class="x" aria-label="మూసివేయండి">&times;</button></form>
+  <img src="assets/img/dussehra-wishes.webp" alt="మణికంఠ న్యాచురల్స్ — మీకు, మీ కుటుంబానికి విజయదశమి శుభాకాంక్షలు" width="900" height="1200">
+  <p>విజయదశమి శుభాకాంక్షలు! · Happy Dussehra</p>
+</dialog>
 <script>
-  /* design switcher — demo only */
-  (function () {
-    var link = document.getElementById('theme');
-    var btns = document.querySelectorAll('.demo-switch button');
-    function show(d) {
-      link.href = 'theme-' + d + '.css';
-      btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.d === d)); });
-      history.replaceState(null, '', d === 'b' ? '?d=b' : location.pathname);
-    }
-    btns.forEach(function (b) { b.onclick = function () { show(b.dataset.d); }; });
-    show(link.getAttribute('href') === 'theme-b.css' ? 'b' : 'a');
-  })();
+  /* festival popup — every visitor, every load; a click outside the picture closes it */
+  addEventListener('load', function () {
+    var d = document.getElementById('wishes');
+    d.onclick = function (e) { if (e.target === d) d.close(); };
+    d.showModal();
+  });
 </script>
 </body>
 </html>

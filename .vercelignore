@@ -8,3 +8,5 @@ assets/*.jpeg
 assets/shop.jpg
 integrate.md
 to-builder.mjs
+# product photos; prod-*.webp in assets/img is what the page loads
+products/

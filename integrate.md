@@ -19,7 +19,7 @@ says what to run, and anything that needs a builder code change is listed in
 | `site.json` | one `hh_sites` row: `slug`, `name`, `hostnames`, `template_key` and `config` |
 | `assets/img/*` | storage bucket `sites`, folder `manikantanaturals/` |
 | `to-builder.mjs` | prints the catalogue entries and the seed SQL from the files above, so nothing is copied by hand |
-| Design A/B switch in `index.html` | Nothing. It's a demo control, and the builder picks a template through `template_key`. |
+| Dussehra popup in `index.html` | Nothing. It is a page-only festival popup, not a builder module. |
 
 Everything a template draws lives inside its CSS. That covers the gradients,
 the leaf, millet and Ayurveda line-art backdrop (SVG data URIs), the frames,
@@ -141,14 +141,14 @@ spanners, not an error.
 
 ## 4. Upload the images
 
-Upload every file in `../manikanta/assets/img/` (22 files) to the storage
+Upload every file in `../manikanta/assets/img/` (53 files) to the storage
 bucket **`sites`**, folder **`manikantanaturals/`**.
 
 The paths in `site.json` are `manikantanaturals/shop.webp` and so on, **without**
 `sites/`. `asset()` in `src/lib/sb.js` already prefixes
 `…/storage/v1/object/public/sites/`, as in `seed-murali.sql`.
 
-The originals (`assets/*.jpeg`, `assets/shop.jpg`) stay out of storage. Only
+The originals (`assets/*.jpeg`, `assets/shop.jpg`, `products/*.jpeg`) stay out of storage. Only
 `crop-assets.py` uses them, to regenerate `assets/img/`.
 
 ## 5. Create the site row

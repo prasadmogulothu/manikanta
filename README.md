@@ -10,7 +10,7 @@ There are two design templates over one page, built so the site can move into
 `../hh_site_builder` without changing the markup.
 
 ```
-python -m http.server 8788        →  http://localhost:8788/   (?d=b for design B)
+python -m http.server 8788        →  http://localhost:8788/
 ```
 
 | File | What it is |
@@ -22,13 +22,19 @@ python -m http.server 8788        →  http://localhost:8788/   (?d=b for design
 | `site.json` | The `hh_sites` row (`slug`, `template_key`, `config`) carrying all of this content. |
 | `integrate.md` | How to move both templates and this site into `../hh_site_builder`. |
 | `to-builder.mjs` | Prints the builder catalogue entries and the site's seed SQL. |
-| `crop-assets.py` | Cuts the WhatsApp flyers and `assets/shop.png` into the WebPs in `assets/img/`. |
+| `crop-assets.py` | Cuts the WhatsApp flyers and `assets/shop.png` into the WebPs in `assets/img/`, and turns each shop photo in `products/` into `prod-<name>.webp`. |
 
-## Switching designs
+## Designs
 
-The **Design A / B** pill at the bottom left is a demo control. Before launch,
-delete the `.demo-switch` markup, its `<style>` and both `/* design switcher */`
-scripts from `index.html`, then delete the theme file you didn't pick.
+The shop chose **Design A (Polam)**, and the page loads only `theme-a.css`.
+`theme-b.css` stays in the repo as a template for future builder sites. To
+preview it, point the `theme-a.css` link in `index.html` at `theme-b.css`.
+
+## Festival popup
+
+`index.html` opens a Dussehra wishes popup (`assets/img/dussehra-wishes.webp`)
+on every page load. After the festival, delete the `.wishes` styles, the
+`<dialog>` and its script.
 
 ## Moving into hh_site_builder
 

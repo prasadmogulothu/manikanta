@@ -48,8 +48,6 @@ what gets pasted, so nothing is copied by hand.
 - **Photos.** Every image is cut from WhatsApp flyers at 575–843px wide, so they
   look soft on large screens. Original product photos and a proper portrait
   would improve the site most.
-- **Map.** It points at Kollapur town, not the exact shop. Replace
-  `map_embed` with the shop's own Google Maps embed link.
 - **Opening hours.** Not known. The contact panel lists the second phone number
   where the hours would go.
 - **Nasika claims.** The flyer lists diseases such as brain tumour, paralysis

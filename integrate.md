@@ -141,7 +141,7 @@ spanners, not an error.
 
 ## 4. Upload the images
 
-Upload every file in `../manikanta/assets/img/` (53 files) to the storage
+Upload every file in `../manikanta/assets/img/` (55 files) to the storage
 bucket **`sites`**, folder **`manikantanaturals/`**.
 
 The paths in `site.json` are `manikantanaturals/shop.webp` and so on, **without**

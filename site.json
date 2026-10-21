@@ -152,6 +152,8 @@
         "id": "gallery", "alt": true, "ornament": true,
         "kicker": "మా ప్రకటనలు · Flyers", "heading": "తాజా సమాచారం", "heading_2": "Our latest flyers and new stock",
         "images": [
+          "manikantanaturals/prod-pooja-samgri-flyer.webp",
+          "manikantanaturals/prod-millets-snacks-flyer.webp",
           "manikantanaturals/prod-new-flyer-atreyapuram-putharekulu.webp",
           "manikantanaturals/prod-new-flyer-ippa-puvvu-laddu.webp",
           "manikantanaturals/flyer-millets.webp",

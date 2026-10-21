@@ -71,7 +71,7 @@ print("wrote", len(CROPS) + len(FLYERS) + 1, "files to", OUT)
 # shop's own product photos and new flyers in products/: each becomes
 # prod-<name>.webp (lower-case). Flyers and the festival popup keep more pixels.
 for src in sorted((Path(__file__).parent / "products").glob("*.jpeg")):
-    big = src.stem.startswith(("New-Flyer", "Dussehra"))
+    big = "flyer" in src.stem.lower() or src.stem.startswith("Dussehra")
     img = Image.open(src).convert("RGB")
     img.thumbnail((900, 1200) if big else (640, 640), Image.LANCZOS)
     name = "dussehra-wishes" if src.stem.startswith("Dussehra") else f"prod-{src.stem.lower()}"

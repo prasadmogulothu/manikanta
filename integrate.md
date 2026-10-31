@@ -19,7 +19,6 @@ says what to run, and anything that needs a builder code change is listed in
 | `site.json` | one `hh_sites` row: `slug`, `name`, `hostnames`, `template_key` and `config` |
 | `assets/img/*` | storage bucket `sites`, folder `manikantanaturals/` |
 | `to-builder.mjs` | prints the catalogue entries and the seed SQL from the files above, so nothing is copied by hand |
-| Dussehra popup in `index.html` | Nothing. It is a page-only festival popup, not a builder module. |
 
 Everything a template draws lives inside its CSS. That covers the gradients,
 the leaf, millet and Ayurveda line-art backdrop (SVG data URIs), the frames,

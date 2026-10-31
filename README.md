@@ -30,12 +30,6 @@ The shop chose **Design A (Polam)**, and the page loads only `theme-a.css`.
 `theme-b.css` stays in the repo as a template for future builder sites. To
 preview it, point the `theme-a.css` link in `index.html` at `theme-b.css`.
 
-## Festival popup
-
-`index.html` opens a Dussehra wishes popup (`assets/img/dussehra-wishes.webp`)
-on every page load. After the festival, delete the `.wishes` styles, the
-`<dialog>` and its script.
-
 ## Moving into hh_site_builder
 
 The step-by-step guide is in **`integrate.md`**. It covers the template

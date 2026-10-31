@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "check": "tsc --noEmit && node scripts/migrate.check.mjs",
+    "check": "tsc --noEmit && node scripts/migrate.check.mjs && node scripts/modules.check.mjs",
+    "seed": "node --env-file=.env.local scripts/seed.mjs",
     "migrate": "node --env-file=.env.local scripts/migrate.mjs",
     "db:app-password": "node --env-file=.env.local scripts/app-role-password.mjs",
     "infra:check": "node --env-file=.env.local scripts/infra-check.mjs"

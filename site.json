@@ -1,6 +1,6 @@
 {
   "slug": "manikantanaturals",
-  "hostnames": ["manikantanaturals.vercel.app"],
+  "hostnames": ["www.manikantanaturals.com", "manikantanaturals.com", "manikantanaturals.vercel.app"],
   "name": "మణికంఠ న్యాచురల్స్",
   "template_key": "polam-paper",
   "config": {
@@ -18,12 +18,13 @@
       "wordmark": "మణికంఠ",
       "wordmark_accent": "న్యాచురల్స్",
       "tagline": "Natural • Pure • Healthy",
-      "favicon": "🌿"
+      "favicon": "manikantanaturals/logo.webp"
     },
     "contact": {
       "phone": "+919581617244",
       "phone_display": "95816 17244",
       "whatsapp": "+919581617244",
+      "whatsapp_text": "నమస్కారం, Manikanta Naturals",
       "address_lines": [
         "రాజాగారి బంగ్లా వెనకాల, బండయ్య గుట్ట రోడ్",
         "సుబ్రహ్మణ్యం హోటల్ (అన్నపూర్ణ మెస్) ఎదురుగా",
@@ -41,27 +42,29 @@
     "reviews": { "source": "public_form", "grid_count": 6, "per_page": 5 },
     "seo": {
       "title": "మణికంఠ న్యాచురల్స్ · Manikanta Naturals, Kollapur — Organic, Millets & Ayurveda",
-      "description": "మణికంఠ న్యాచురల్స్, కొల్లాపూర్ — ఆర్గానిక్ ఉత్పత్తులు, సిరిధాన్యాలు (Millets), ఆయుర్వేద & గో ఆధారిత ఉత్పత్తులు. Natural • Pure • Healthy."
+      "description": "మణికంఠ న్యాచురల్స్, కొల్లాపూర్ — ఆర్గానిక్ ఉత్పత్తులు, సిరిధాన్యాలు (Millets), ఆయుర్వేద & గో ఆధారిత ఉత్పత్తులు. Natural • Pure • Healthy. Ph: 95816 17244."
     },
     "footer": {
       "note": "మిత్రులందరికీ ఉత్తమ న్యాచురల్ & ఆయుర్వేద ఉత్పత్తులు తక్కువ ధరలకు లభించును.",
       "powered_by": "HHAppSolutions",
       "powered_by_label": "Developed by",
+      "powered_by_url": "https://hhappsolutions.com",
       "powered_by_logo": "manikantanaturals/hh.png"
     },
     "sections": [
       { "type": "hero", "enabled": true, "config": {
         "image": "manikantanaturals/shop.webp",
+        "image_alt": "కొల్లాపూర్‌లోని మణికంఠ న్యాచురల్స్ స్టోర్",
         "heading": "ప్రకృతి నుండి… మెరుగైన ఆరోగ్యానికి",
         "heading_2": "Natural • Pure • Healthy — Ayurveda, Organic, Cow-based & Millets",
         "sub": "కొండ ప్రాంతాల్లో ఎలాంటి రసాయనాలు లేకుండా సహజ సిద్ధంగా పండించిన ఆర్గానిక్ ఉత్పత్తులు, సిరిధాన్యాలు, ఆయుర్వేద మరియు గో ఆధారిత ఉత్పత్తులు — అన్నీ కొల్లాపూర్‌లో ఒకే చోట.",
         "ctas": [
-          { "label": "ఫోన్ చేయండి", "href": "tel:+919581617244" },
-          { "label": "WhatsApp లో అడగండి", "href": "https://wa.me/919581617244" }
+          { "label": "ఫోన్ చేయండి", "action": "call" },
+          { "label": "WhatsApp లో అడగండి", "action": "whatsapp" }
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "millets", "ornament": true, "columns": 5,
+        "id": "millets", "alt": false, "ornament": true, "columns": 5,
         "kicker": "కొత్త స్టాక్ · New Stock", "heading": "సిరిధాన్యాలు", "heading_2": "Millets — five kinds, now in store",
         "sub": "ప్రకృతి ప్రసాదించిన ఆరోగ్యకరమైన సిరిధాన్యాలు ఇప్పుడు మణికంఠ న్యాచురల్స్ స్టోర్‌లో అందుబాటులో ఉన్నాయి!",
         "items": [
@@ -85,7 +88,7 @@
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "benefits", "ornament": true, "columns": 5,
+        "id": "benefits", "alt": false, "ornament": true, "columns": 5,
         "kicker": "ఎందుకు సిరిధాన్యాలు? · Why millets", "heading": "సిరిధాన్యాలు తినండి… ఆరోగ్యంగా జీవించండి!",
         "items": [
           { "title": "అధిక పోషక విలువ", "title_2": "Rich in nutrition", "icon": "leaf" },
@@ -113,7 +116,7 @@
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "dryfruits", "ornament": true, "columns": 3,
+        "id": "dryfruits", "alt": false, "ornament": true, "columns": 3,
         "kicker": "కొత్తగా వచ్చినవి · New Arrivals", "heading": "డ్రై ఫ్రూట్స్ & సంప్రదాయ స్వీట్స్", "heading_2": "Dry fruits, pure ghee and jaggery — traditional sweets",
         "items": [
           { "title": "ఆత్రేయపురం పూతరేకులు", "title_2": "Atreyapuram Special Putharekulu", "body": "స్వచ్ఛమైన నెయ్యి, బెల్లం మరియు డ్రై ఫ్రూట్స్‌తో.", "price": "₹99 మాత్రమే", "image": "manikantanaturals/prod-atreyapuram-putharekulu.webp" },
@@ -126,19 +129,20 @@
         "items": [
           { "title": "పంచగవ్య నాసిక", "title_2": "Saraswati Nasika — Panchagavya nasal drops",
             "body": "గో ఆధారిత పంచగవ్యతో తయారైన నాసిక చుక్కలు. తలనొప్పి, జలుబు, సైనస్, నిద్రలేమి వంటి ఇబ్బందులకు సంప్రదాయ ఆయుర్వేదంలో వాడుతారు. 100% సహజం · సురక్షితం.",
-            "price": "వాడే ముందు వైద్యుల సలహా తీసుకోండి", "image": "manikantanaturals/prod-nasika.webp" },
+            "price": "వాడే ముందు వైద్యుల సలహా తీసుకోండి", "image": "manikantanaturals/prod-nasika.webp", "alt": "సరస్వతి నాసిక సీసా" },
           { "title": "గంగిగోవు సిట్రస్ బయోఎంజైమ్", "title_2": "Citrus Bioenzyme Dish Wash Liquid",
             "body": "నిమ్మ బయోఎంజైమ్, బెల్లం, కుంకుడుకాయ, మూలికల సారాలతో తయారైన సహజ డిష్ వాష్. మీ వంటింటి పాత్రలకు ప్రకృతి ఇచ్చే సరికొత్త మెరుపు — కెమికల్ డిష్ వాష్‌లకు గుడ్ బై!",
-            "price": "Chemical Free · Eco-Friendly · Safe for Home & Earth", "image": "manikantanaturals/prod-gangigovu-citrus-bioengyme.webp" },
+            "price": "Chemical Free · Eco-Friendly · Safe for Home & Earth", "image": "manikantanaturals/prod-gangigovu-citrus-bioengyme.webp", "alt": "గంగిగోవు సిట్రస్ బయోఎంజైమ్ డిష్ వాష్ సీసా" },
           { "title": "గోశాల హెర్బల్ హ్యాండ్ వాష్", "title_2": "Goshala Herbal Hand Wash — Neem, Panchagavya", "body": "వేప మరియు పంచగవ్యతో తయారైన సహజ లిక్విడ్ హ్యాండ్ వాష్. చేతులను సున్నితంగా, సురక్షితంగా శుభ్రం చేస్తుంది.", "price": "250 ml", "image": "manikantanaturals/prod-goshala-handwash.webp" },
-          { "title": "బాంబూ టూత్‌బ్రష్", "title_2": "Organic Bamboo Toothbrush — Ultra Soft", "body": "వెదురుతో చేసిన, మట్టిలో కలిసిపోయే అల్ట్రా సాఫ్ట్ టూత్‌బ్రష్. ప్లాస్టిక్ బ్రష్‌లకు గుడ్ బై!", "price": "100% Biodegradable", "image": "manikantanaturals/prod-organic-ultrasoft-toothbrush.webp" },
+          { "title": "బాంబూ టూత్‌బ్రష్", "title_2": "Organic Bamboo Toothbrush — Ultra Soft", "body": "వెదురుతో చేసిన, మట్టిలో కలిసిపోయే అల్ట్రా సాఫ్ట్ టూత్‌బ్రష్. ప్లాస్టిక్ బ్రష్‌లకు గుడ్ బై!", "price": "100% Biodegradable", "image": "manikantanaturals/prod-organic-ultrasoft-toothbrush.webp", "fit": "contain" },
           { "title": "వట్టివేరు స్క్రబ్", "title_2": "Vetiver Bath Scrub", "body": "సహజమైన వట్టివేరుతో అల్లిన స్నానపు స్క్రబ్ — చర్మానికి చల్లదనం, మంచి సువాసన.", "image": "manikantanaturals/prod-vattiveru-made-scrub.webp" }
         ]
       }},
       { "type": "intro", "enabled": true, "config": {
-        "id": "about", "ornament": true,
+        "id": "about", "alt": false, "ornament": true,
         "kicker": "ప్రొప్రైటర్ · Proprietor", "heading": "మహేష్ కాశీపురం", "heading_2": "Mahesh Kashipuram",
         "portrait": "manikantanaturals/proprietor.webp",
+        "portrait_alt": "ప్రొప్రైటర్ మహేష్ కాశీపురం",
         "seal": { "label": "సహజం", "value": "100%" },
         "body": "సహజం.. సంప్రదాయం.. ఆరోగ్యం.. మన సంపద. కొల్లాపూర్‌లో మణికంఠ న్యాచురల్స్ స్టోర్ నడుపుతున్న మహేష్ కాశీపురం గారి లక్ష్యం ఒక్కటే — రసాయనాలు, కల్తీ లేని స్వచ్ఛమైన ఆహారాన్ని ప్రతి కుటుంబానికి అందించడం. ఆయుర్వేద, సేంద్రియ, గో ఆధారిత ఉత్పత్తులు మరియు సిరిధాన్యాలు — మిత్రులందరికీ ఉత్తమ నాణ్యతతో, తక్కువ ధరలకు.",
         "body_2": "Natural, pure and healthy food for every family in Kollapur — Ayurveda, organic, cow-based products and millets at fair prices.",
@@ -152,25 +156,25 @@
         "id": "gallery", "alt": true, "ornament": true,
         "kicker": "మా ప్రకటనలు · Flyers", "heading": "తాజా సమాచారం", "heading_2": "Our latest flyers and new stock",
         "images": [
-          "manikantanaturals/prod-pooja-samgri-flyer.webp",
-          "manikantanaturals/prod-millets-snacks-flyer.webp",
-          "manikantanaturals/prod-new-flyer-atreyapuram-putharekulu.webp",
-          "manikantanaturals/prod-new-flyer-ippa-puvvu-laddu.webp",
-          "manikantanaturals/flyer-millets.webp",
-          "manikantanaturals/flyer-banner.webp",
-          "manikantanaturals/flyer-organic.webp",
-          "manikantanaturals/flyer-dishwash.webp",
-          "manikantanaturals/flyer-nasika.webp",
-          "manikantanaturals/dussehra-wishes.webp"
+          {"src": "manikantanaturals/prod-pooja-samgri-flyer.webp", "alt": "మణికంఠ న్యాచురల్స్‌లో ప్రీమియం నాచురల్ పూజా సామాగ్రి ప్రకటన", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/prod-millets-snacks-flyer.webp", "alt": "మిల్లెట్ ఉత్పత్తులు — బిస్కెట్స్, చిప్స్, రస్కులు, నూడుల్స్, సేమియా ప్రకటన", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/prod-new-flyer-atreyapuram-putharekulu.webp", "alt": "ఆత్రేయపురం స్పెషల్ పూతరేకులు ₹99 ప్రకటన", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/prod-new-flyer-ippa-puvvu-laddu.webp", "alt": "ఇప్ప పువ్వు లడ్డు ప్రకటన", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/flyer-millets.webp", "alt": "సిరిధాన్యాలు కొత్త స్టాక్ ప్రకటన", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/flyer-banner.webp", "alt": "మణికంఠ న్యాచురల్స్ బ్యానర్ — మహేష్ కాశీపురం", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/flyer-organic.webp", "alt": "100% ఆర్గానిక్ ఉత్పత్తుల ప్రకటన", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/flyer-dishwash.webp", "alt": "గంగిగోవు సిట్రస్ బయోఎంజైమ్ డిష్ వాష్ ప్రకటన", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/flyer-nasika.webp", "alt": "పంచగవ్య నాసిక ప్రకటన", "active": true, "popup": false, "popup_until": null},
+          {"src": "manikantanaturals/dussehra-wishes.webp", "alt": "మణికంఠ న్యాచురల్స్ — మీకు, మీ కుటుంబానికి విజయదశమి శుభాకాంక్షలు", "active": true, "popup": false, "popup_until": null}
         ]
       }},
       { "type": "reviews", "enabled": false, "config": {
         "kicker": "కస్టమర్ల మాట · Reviews", "heading": "మా కస్టమర్లు ఏమంటున్నారు"
       }},
       { "type": "contact", "enabled": true, "config": {
-        "id": "contact", "ornament": true, "show_map": true,
+        "id": "contact", "alt": false, "ornament": true, "show_map": true,
         "kicker": "సంప్రదించండి · Contact", "heading": "మా చిరునామా", "heading_2": "Visit the store in Kollapur",
-        "address_label": "చిరునామా · Address", "phone_label": "ఫోన్ చేయండి · Call", "hours_label": "మరిన్ని నంబర్లు · More"
+        "address_label": "చిరునామా · Address", "phone_label": "ఫోన్ చేయండి · Call", "hours_label": "మరిన్ని నంబర్లు · More", "hours_icon": "message"
       }}
     ]
   }

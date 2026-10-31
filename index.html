@@ -14,24 +14,6 @@
 <!-- Same cascade as the builder: base.css → template (tokens + css). -->
 <link rel="stylesheet" href="base.css">
 <link rel="stylesheet" href="theme-a.css">
-<style>
-/* festival popup — not a builder module; delete this, the dialog and its script after the festival */
-.wishes { padding:0; border:0; background:none; overflow:visible; max-width:92vw; }
-.wishes::backdrop { background:radial-gradient(circle at 50% 40%, rgba(120,40,10,.55), rgba(15,8,2,.85)); backdrop-filter:blur(5px); }
-.wishes[open] { animation:wish-in .7s cubic-bezier(.2,1.25,.4,1) both; }
-.wishes img { display:block; width:auto; height:auto; max-width:calc(100vw - 32px); max-height:78vh; margin:0 auto; border-radius:20px;
-  border:6px solid #f5c542; animation:wish-glow 2.4s ease-in-out .7s infinite alternate;
-  box-shadow:0 0 0 2px #fff, 0 0 40px 4px rgba(245,197,66,.55), 0 30px 60px rgba(0,0,0,.55); }
-.wishes p { margin:16px 0 0; text-align:center; color:#ffe9a8; font:700 20px/1.5 'Noto Serif Telugu', serif;
-  text-shadow:0 2px 12px rgba(0,0,0,.6); }
-.wishes form { position:absolute; top:-16px; right:-16px; }
-.wishes .x { width:44px; height:44px; border-radius:50%; border:3px solid #f5c542; background:#fff; color:#8a2410;
-  font:600 26px/1 system-ui, sans-serif; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.4); }
-@keyframes wish-in { from { opacity:0; transform:scale(.6) rotate(-4deg); } to { opacity:1; transform:none; } }
-@keyframes wish-glow { to { box-shadow:0 0 0 2px #fff, 0 0 70px 14px rgba(245,197,66,.8), 0 30px 60px rgba(0,0,0,.55); } }
-@media (max-width:520px) { .wishes form { top:-12px; right:-6px; } .wishes p { font-size:16px; } }
-@media (prefers-reduced-motion: reduce) { .wishes[open], .wishes img { animation:none; } }
-</style>
 </head>
 <body>
 <a class="skip" href="#main">ప్రధాన విషయానికి వెళ్ళండి</a>
@@ -237,6 +219,7 @@
       <img src="assets/img/flyer-organic.webp" alt="100% ఆర్గానిక్ ఉత్పత్తుల ప్రకటన" width="843" height="1264" loading="lazy">
       <img src="assets/img/flyer-dishwash.webp" alt="గంగిగోవు సిట్రస్ బయోఎంజైమ్ డిష్ వాష్ ప్రకటన" width="575" height="335" loading="lazy">
       <img src="assets/img/flyer-nasika.webp" alt="పంచగవ్య నాసిక ప్రకటన" width="575" height="862" loading="lazy">
+      <img src="assets/img/dussehra-wishes.webp" alt="మణికంఠ న్యాచురల్స్ — మీకు, మీ కుటుంబానికి విజయదశమి శుభాకాంక్షలు" width="900" height="1200" loading="lazy">
     </div>
   </div>
 </section>
@@ -283,18 +266,5 @@
   </div>
 </footer>
 
-<dialog class="wishes" id="wishes" aria-label="విజయదశమి శుభాకాంక్షలు">
-  <form method="dialog"><button class="x" aria-label="మూసివేయండి">&times;</button></form>
-  <img src="assets/img/dussehra-wishes.webp" alt="మణికంఠ న్యాచురల్స్ — మీకు, మీ కుటుంబానికి విజయదశమి శుభాకాంక్షలు" width="900" height="1200">
-  <p>విజయదశమి శుభాకాంక్షలు! · Happy Dussehra</p>
-</dialog>
-<script>
-  /* festival popup — every visitor, every load; a click outside the picture closes it */
-  addEventListener('load', function () {
-    var d = document.getElementById('wishes');
-    d.onclick = function (e) { if (e.target === d) d.close(); };
-    d.showModal();
-  });
-</script>
 </body>
 </html>

@@ -3,8 +3,16 @@
 Stack: `techstack.md` (Next.js + Neon + R2 + simple auth), replacing the earlier
 Vite + Supabase plan.
 
-**Status, 2026-11-01** (work is on branch `next-migration`; the static site on `main`
-is still what's live):
+**Branches, since 2026-11-01:** this work is on `main`. The static site's code is on
+`static` (tag `static-final` is its older rollback point). `next-migration` is no
+longer used. Each push to `main` fails on Vercel with `STATIC_BUILD_NO_OUT_DIR`,
+because the project's Framework is still "Other", so Vercel keeps serving the last
+good static deployment. That's expected until go-live, but it means **the live site
+can't be updated from `main`**. To change it before go-live, deploy `static`. Go-live
+needs the Framework set to Next.js and the environment variables added, and that
+deploy is what replaces the static site.
+
+**Status, 2026-11-01:**
 
 | Phase | State |
 |---|---|
@@ -64,7 +72,7 @@ Size: S = under a day, M = 1 to 2 days, L = 3 or more days.
 | 4 | **Admin: content** | `/admin` client app: form generator from module `fields`, screens in §7, up/down reorder, Telugu and English inputs side by side, a warning when a title lacks either language, a warning before leaving unsaved changes | The owner can make every change in §4 **on a phone**, and it shows on the site after saving. Choosing a flyer makes it open on page load and removes it from the bottom section | L |
 | 5 | **Images** | Port `ImagePicker.jsx`, `data/crop.js` and `data/upload.js` from `../fmwa`. Add WebP with JPEG fallback. API route signs an upload to a server-built key. Details in §5a | A phone photo, from Android and iPhone, becomes a product image that displays the right way up | M |
 | 6 | **Users and roles** | Laptop script to create an owner. Users screen: add staff, reset password, remove. Roles screen: create a role, tick capabilities | Sign in as staff: they can do only what the role allows, and the API refuses the rest | M |
-| 7 | **Go-live** | Sitemap, robots, share-preview tags, `noindex` on `/admin`. Nightly backup. Vercel Pro. Merge to `main` and move `www.manikantanaturals.com`, `manikantanaturals.com` and `manikantanaturals.vercel.app` to the new deployment. Freeze `site.json` | View-source and a WhatsApp preview are correct on the live URL, a save appears on the site, and rollback to `static-final` has been confirmed | M |
+| 7 | **Go-live** | Sitemap, robots, share-preview tags, `noindex` on `/admin`. Nightly backup. Vercel Pro. Set the Vercel Framework to Next.js, add the environment variables, and redeploy `main` so `www.manikantanaturals.com`, `manikantanaturals.com` and `manikantanaturals.vercel.app` serve the new app. Freeze `site.json` | View-source and a WhatsApp preview are correct on the live URL, a save appears on the site, and rollback to `static-final` has been confirmed | M |
 | 8 | **Builder base** (later) | Move this code into `hh_site_builder`. Port its other modules (Events, Tracking, Reviews, pages), the remaining templates and the local platform admin | A second test site runs from a new row, with no code change | L |
 | 9 | **Owner mobile app** (later) | `mobile/` Vite + Capacitor, per `techstack.md` §6 | Owner app works on a real Android and iPhone | L |
 

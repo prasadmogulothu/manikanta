@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { asset } from '@/lib/links';
+import { canonicalOrigin, shareImage } from '@/lib/seo';
 import { getSite } from '@/lib/site';
 import { composeCss, fontHref } from '@/lib/theme';
 import '@/themes/base.css';
@@ -11,13 +12,27 @@ type Params = { params: Promise<{ host: string }> };
 export const generateStaticParams = async () => [];
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const site = await getSite((await params).host);
+  const { host } = await params;
+  const site = await getSite(host);
   if (!site) return {};
   const { seo = {}, brand = {} } = site.config;
+  const title = seo.title || site.name;
+  const image = shareImage(site.config);
   return {
-    title: seo.title || site.name,
+    metadataBase: new URL(canonicalOrigin(site, host)),
+    title,
     description: seo.description,
+    alternates: { canonical: '/' },
     icons: brand.favicon ? { icon: asset(brand.favicon) } : undefined,
+    openGraph: {
+      type: 'website',
+      url: '/',
+      siteName: brand.name || site.name,
+      title,
+      description: seo.description,
+      images: image ? [{ url: asset(image) }] : undefined,
+    },
+    twitter: { card: image ? 'summary_large_image' : 'summary', title, description: seo.description },
   };
 }
 

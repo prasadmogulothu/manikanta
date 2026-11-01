@@ -5,6 +5,9 @@ export type Source = ImageBitmap | HTMLImageElement;
 
 // Keeps visits light on mobile data. The server's hard limit is in lib/uploads.ts.
 const TARGET_BYTES = 400_000;
+// Sources disagree on WebP and on size limits for link previews, so a share image is a JPEG
+// under the strictest limit reported.
+const SHARE_TARGET_BYTES = 290_000;
 const QUALITIES = [0.82, 0.7, 0.58, 0.46];
 
 // Phone photos carry their rotation as a tag, and a canvas ignores the tag unless
@@ -60,9 +63,10 @@ const toBlob = (canvas: HTMLCanvasElement, type: string, quality: number) =>
 
 // Re-encoding also drops the original's tags, GPS position included, so never upload
 // the original bytes even when they're small enough.
-export async function encode(canvas: HTMLCanvasElement) {
+export async function encode(canvas: HTMLCanvasElement, forSharing = false) {
   // Safari can't write WebP and silently returns a PNG instead.
-  const webp = (await toBlob(canvas, 'image/webp', QUALITIES[0])).type === 'image/webp';
+  const webp = !forSharing && (await toBlob(canvas, 'image/webp', QUALITIES[0])).type === 'image/webp';
+  const target = forSharing ? SHARE_TARGET_BYTES : TARGET_BYTES;
   if (!webp) {
     // JPEG has no transparency, so a logo goes onto white rather than black.
     const ctx = canvas.getContext('2d')!;
@@ -74,7 +78,7 @@ export async function encode(canvas: HTMLCanvasElement) {
   let blob!: Blob;
   for (const quality of QUALITIES) {
     blob = await toBlob(canvas, webp ? 'image/webp' : 'image/jpeg', quality);
-    if (blob.size <= TARGET_BYTES) break;
+    if (blob.size <= target) break;
   }
   return blob;
 }

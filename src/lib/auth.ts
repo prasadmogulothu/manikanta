@@ -6,6 +6,8 @@ const COOKIE = 'hh_session';
 const SESSION_DAYS = 30;
 const MAX_FAILURES = 5;
 const LOCK_MINUTES = 15;
+// Across every username, so one address can't try a common password on many accounts.
+const MAX_IP_FAILURES = 30;
 
 export type AuthContext = {
   siteId: string;
@@ -105,17 +107,20 @@ export function withAuth<P = unknown>(cap: string | null, handler: Handler<P>) {
 }
 
 export async function isLocked(siteId: string, username: string, ip: string) {
-  const rows = await query(
-    `select 1 from hh_login_attempts
-      where site_id = $1 and username = $2 and ip = $3 and locked_until > now()`,
-    [siteId, username, ip],
+  const [row] = await query(
+    `select exists (select 1 from hh_login_attempts
+                     where site_id = $1 and username = $2 and ip = $3 and locked_until > now())
+         or (select coalesce(sum(failures), 0) from hh_login_attempts
+              where ip = $3 and updated_at > now() - make_interval(mins => $4)) >= $5 as locked`,
+    [siteId, username, ip, LOCK_MINUTES, MAX_IP_FAILURES],
   );
-  return rows.length > 0;
+  return row.locked as boolean;
 }
 
-// ponytail: rows are never purged. Add a clean-up if this table ever grows large.
-export const recordFailure = (siteId: string, username: string, ip: string) =>
-  query(
+export const recordFailure = async (siteId: string, username: string, ip: string) => {
+  // Every made-up username adds a row, so old ones are cleared as new ones arrive.
+  await query(`delete from hh_login_attempts where updated_at < now() - interval '7 days'`);
+  return query(
     `insert into hh_login_attempts as a (site_id, username, ip, failures)
      values ($1, $2, $3, 1)
      on conflict (site_id, username, ip) do update set
@@ -127,6 +132,7 @@ export const recordFailure = (siteId: string, username: string, ip: string) =>
        updated_at = now()`,
     [siteId, username, ip, MAX_FAILURES, LOCK_MINUTES],
   );
+};
 
 export const clearFailures = (siteId: string, username: string, ip: string) =>
   query('delete from hh_login_attempts where site_id = $1 and username = $2 and ip = $3', [siteId, username, ip]);

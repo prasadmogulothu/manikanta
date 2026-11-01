@@ -5,6 +5,8 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { ContentError, MAX_CONTENT_BYTES, prepareContent } from '../src/lib/content.ts';
 import { asset, ctaHref, safeHref, safeMapUrl, visibleNav } from '../src/lib/links.ts';
 import { isFixedLink, orderMenu, setInMenu } from '../src/admin/menu.ts';
+import { canonicalOrigin, robotsTxt, shareImage, sitemapXml } from '../src/lib/seo.ts';
+import { toVars } from '../src/lib/theme.ts';
 import { DUMMY_HASH, hashPassword, verifyPassword } from '../src/lib/password.ts';
 import { ASPECTS, ZOOM_MAX, ZOOM_MIN, clampZoom, cropBox, dragged } from '../src/admin/crop.ts';
 import { allowedType, bytesMatchKey, keyFor, ownsKey } from '../src/lib/uploads.ts';
@@ -157,6 +159,20 @@ assert.ok(!isFixedLink({ href: '#a' }, secs));
 const named = { nav: [{ label: 'A', href: '#a' }, { label: ' ', href: '#b' }, { label: 'About', href: '#about' }], sections: [{ enabled: false, config: { id: 'a' } }, about] };
 assert.deepEqual(hrefs(visibleNav(named)), ['#about'], 'no links to hidden sections, and no empty names');
 assert.deepEqual(visibleNav({}), []);
+
+// Search and sharing: one address per site, and an image whenever the site has one.
+assert.equal(canonicalOrigin({ hostnames: ['www.a.com', 'a.com', 'a.vercel.app'] }, 'a.vercel.app'), 'https://www.a.com');
+assert.equal(canonicalOrigin({}, 'a.com'), 'https://a.com');
+assert.match(robotsTxt('https://a.com'), /Disallow: \/api\/\n/);
+assert.match(robotsTxt('https://a.com'), /Sitemap: https:\/\/a\.com\/sitemap\.xml/);
+assert.doesNotMatch(robotsTxt('https://a.com'), /admin/, 'a crawler must be able to read the admin noindex tag');
+assert.match(sitemapXml('https://a.com'), /<loc>https:\/\/a\.com\/<\/loc>/);
+const hero = { type: 'hero', config: { image: 'hero.webp' } };
+assert.equal(shareImage({ seo: { image: 'share.jpg' }, sections: [hero], brand: { logo: 'logo.webp' } }), 'share.jpg');
+assert.equal(shareImage({ sections: [hero], brand: { logo: 'logo.webp' } }), 'hero.webp');
+assert.equal(shareImage({ sections: [{ ...hero, enabled: false }], brand: { logo: 'logo.webp' } }), 'logo.webp');
+assert.equal(shareImage({}), undefined);
+assert.equal(toVars({ a: 'red;}</style><script>' }), '--a:red/style>script>;', 'a theme value cannot end the style element');
 
 // Uploads: keys are built by the server and tied to the site.
 const key = keyFor('site-a', 'image/webp');

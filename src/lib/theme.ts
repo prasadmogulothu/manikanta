@@ -5,10 +5,11 @@ type Tokens = Record<string, string> | undefined;
 // A stray "</style" in stored CSS would end the element and dump the rest as markup.
 const safeCss = (s: string | null | undefined) => String(s || '').replace(/<\/(style)/gi, '<\\/$1');
 
-// Token values land in a declaration block, so ; { } could write arbitrary rules.
+// Token values land in a declaration block, so ; { } could write arbitrary rules,
+// and they land inside a <style> element, so < could end it.
 export const toVars = (tokens: Tokens) =>
   Object.entries(tokens || {})
-    .map(([k, v]) => `--${k}:${String(v).replace(/[;{}]/g, '')};`)
+    .map(([k, v]) => `--${k}:${String(v).replace(/[;{}<]/g, '')};`)
     .join('');
 
 const FONT_KEYS = ['font-display', 'font-body', 'font-mono', 'font-2'];

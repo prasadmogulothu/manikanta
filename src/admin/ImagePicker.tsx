@@ -8,10 +8,11 @@ const ZOOM_STEP = 0.1;
 // Choose a photo, crop it, send it. Dragging is the quick way to position it, and the
 // sliders stay because they also work with a keyboard and a screen reader.
 // ponytail: no pinch to zoom, the zoom bar covers it. Add it if owners keep trying to pinch.
-export default function ImagePicker({ id, label, maxEdge, onDone }: {
+export default function ImagePicker({ id, label, maxEdge, forSharing, onDone }: {
   id?: string;
   label: string;
   maxEdge: number;
+  forSharing?: boolean;
   onDone: (path: string) => void;
 }) {
   const [src, setSrc] = useState<Source | null>(null);
@@ -63,7 +64,7 @@ export default function ImagePicker({ id, label, maxEdge, onDone }: {
     setBusy('Uploading…');
     setError('');
     try {
-      onDone(await upload(await encode(canvas.current!)));
+      onDone(await upload(await encode(canvas.current!, forSharing)));
       setSrc(null);
     } catch (err: any) {
       setError(err.message);

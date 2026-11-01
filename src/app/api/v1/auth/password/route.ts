@@ -7,6 +7,7 @@ export const POST = withAuth(null, async (req, ctx) => {
   const body = await req.json().catch(() => null);
   const { current, next } = body ?? {};
   if (typeof current !== 'string' || typeof next !== 'string') return fail('Enter both passwords', 400);
+  if (current.length > 200) return fail('Current password is wrong', 403);
   if (!validPassword(next)) return fail(`Use at least ${MIN_PASSWORD} characters`, 400);
 
   const [user] = await query('select password_hash from hh_users where id = $1 and site_id = $2', [ctx.userId, ctx.siteId]);

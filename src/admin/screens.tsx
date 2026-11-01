@@ -154,6 +154,7 @@ const SITE_FIELDS: Field[] = [
     k: 'seo', t: 'group', label: 'Search engines', fields: [
       { k: 'title', t: 'text', label: 'Page title', two: true },
       { k: 'description', t: 'textarea', label: 'Page description', two: true },
+      { k: 'image', t: 'image', label: 'Image shown when the link is shared', forSharing: true, hint: 'Choose the Wide 16:9 shape. WhatsApp and Facebook show this photo with the link.' },
     ],
   },
 ];

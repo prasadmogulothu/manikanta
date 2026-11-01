@@ -3,14 +3,9 @@
 Stack: `techstack.md` (Next.js + Neon + R2 + simple auth), replacing the earlier
 Vite + Supabase plan.
 
-**Branches, since 2026-11-01:** this work is on `main`. The static site's code is on
-`static` (tag `static-final` is its older rollback point). `next-migration` is no
-longer used. Each push to `main` fails on Vercel with `STATIC_BUILD_NO_OUT_DIR`,
-because the project's Framework is still "Other", so Vercel keeps serving the last
-good static deployment. That's expected until go-live, but it means **the live site
-can't be updated from `main`**. To change it before go-live, deploy `static`. Go-live
-needs the Framework set to Next.js and the environment variables added, and that
-deploy is what replaces the static site.
+**Branches, since 2026-11-01:** this work is on `main`, which is now what the live site
+runs. The Vercel Framework is Next.js. The static site's code is on `static` (tag
+`static-final` is its older rollback point). `next-migration` is no longer used.
 
 **Status, 2026-11-01:**
 
@@ -21,7 +16,7 @@ deploy is what replaces the static site.
 | 5 Images | Built and tested, the R2 CORS rule in §5a is added, and the owner checked it on Android (Xiaomi 12T Pro). **iPhone is still unchecked:** Safari's JPEG fallback, HEIC photos and the blank-first-preview fix have never run on one |
 | 6 Users and roles | Built and tested, not yet checked on a real phone |
 | 2 Two languages | **Next.** Not started. English can be typed in the admin, but `/en` doesn't exist |
-| 7 Go-live | Not started. Needs the Vercel Pro decision. The owner changed the `admin` password and removed the test data on 2026-11-01 |
+| 7 Go-live | **Live since 2026-11-01** at `www.manikantanaturals.com`. The owner changed the `admin` password and removed the test data first. **Still open:** functions run in `iad1` while the database is in Singapore, a backup once or twice a month (the owner's choice, since edits are rare; not built yet), a real iPhone check, and the hero layout at 1024px. A security review was done on 2026-11-01 (accepted risks in §9), and robots, sitemap, canonical and share tags are built. The owner sets the share image under Site details → Search engines |
 
 Also added beyond this plan: a per-product `amount` shown as a tag on the photo, and
 `config.show_prices`, a site-wide switch on the Products screen.
@@ -224,6 +219,9 @@ owner finds English hard.
 
 ## 8. Moving into `hh_site_builder` (Phase 8)
 
+New sites share this structure and admin, but each gets its own design. Do not
+reuse Manikanta's look: give each site its own template (colours, fonts, styling).
+
 The Manikanta row, images and logins are already in the shared Neon and R2, so
 only code moves.
 
@@ -248,8 +246,7 @@ any `hh_*` rows already in Supabase are exported when this phase starts.
 |---|---|
 | **A missing check exposes another shop's data**, now that the database doesn't enforce separation | One wrapper, required `siteId`, a build-failing check, and the cross-site test. Add row-level security before private data |
 | **Neon compute runs out and suspends the database** | Public pages come from cache. Watch usage monthly, and move to the paid plan before it gets close |
-| Hand-written login has a flaw | Standard `crypto` functions, hashed tokens, rate limits, and a security review before go-live |
-| Vercel Hobby doesn't allow commercial use | Move to Pro at go-live. Budget for it with client pricing |
+| Hand-written login has a flaw | Standard `crypto` functions, hashed tokens and rate limits. Reviewed 2026-11-01. Accepted: a botnet can spread password guesses across many addresses (10-character minimum), a few parallel guesses can slip in before a lock, no full Content-Security-Policy because no owner text renders as HTML, `users.manage` can grant itself any capability on its own site, and separation between sites is in app code, so add row-level security before storing private customer data |
 | Moving the `.vercel.app` address between projects | Test on a spare address first, and keep the static deployment ready to restore |
 | R2 needs a custom domain on Cloudflare | Sort out DNS in Phase 0, before any image paths go live |
 | The port changes the design by accident | Side-by-side comparison in Phase 1 at 4 widths, before any admin work |

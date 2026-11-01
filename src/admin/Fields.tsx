@@ -16,6 +16,7 @@ export type Field = {
   fields?: Field[];
   hint?: string;
   edge?: number;
+  forSharing?: boolean;
 };
 type Obj = Record<string, any>;
 
@@ -63,11 +64,11 @@ export function MoveButtons({ onUp, onDown, name }: { onUp?: () => void; onDown?
   );
 }
 
-function ImageInput({ value, onChange, id, edge }: { value: string; onChange: (v: string) => void; id: string; edge?: number }) {
+function ImageInput({ value, onChange, id, edge, forSharing }: { value: string; onChange: (v: string) => void; id: string; edge?: number; forSharing?: boolean }) {
   return (
     <div className="image-input">
       {value && <img src={asset(value)} alt="" />}
-      <ImagePicker id={id} label={value ? 'Change photo' : 'Add photo'} maxEdge={edge || DEFAULT_EDGE} onDone={onChange} />
+      <ImagePicker id={id} label={value ? 'Change photo' : 'Add photo'} maxEdge={edge || DEFAULT_EDGE} forSharing={forSharing} onDone={onChange} />
       {value && <button type="button" className="link danger" onClick={() => onChange('')}>Remove photo</button>}
     </div>
   );
@@ -95,7 +96,7 @@ function Input({ field, value, onChange, id }: { field: Field; value: any; onCha
       );
     }
     case 'image':
-      return <ImageInput id={id} value={value ?? ''} onChange={onChange} edge={field.edge} />;
+      return <ImageInput id={id} value={value ?? ''} onChange={onChange} edge={field.edge} forSharing={field.forSharing} />;
     default:
       return <input id={id} type="text" value={value ?? ''} placeholder={field.placeholder} onChange={(e) => onChange(e.target.value)} />;
   }

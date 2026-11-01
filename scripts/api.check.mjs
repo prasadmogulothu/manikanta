@@ -77,7 +77,7 @@ function call(method, path, { host = HOST_A, cookie, bearer, body, origin = `htt
       res.on('end', () => {
         let data = null;
         try { data = JSON.parse(text); } catch {}
-        resolve({ status: res.statusCode, data, text, setCookie: res.headers['set-cookie']?.[0] });
+        resolve({ status: res.statusCode, data, text, headers: res.headers, setCookie: res.headers['set-cookie']?.[0] });
       });
     });
     req.on('error', reject);
@@ -541,6 +541,46 @@ try {
     assert.equal((await temp.get('/content')).status, 403);
     assert.deepEqual((await owner.get('/users')).data.users.find((u) => u.id === userId).role_ids, []);
     assert.equal((await owner.del(`/roles/${id}`)).status, 404);
+  });
+
+  await test('one address cannot try a password on many accounts', async () => {
+    const ip = '10.6.6.6';
+    const attempt = (username) => call('POST', '/api/v1/auth/login', { body: { username, password: 'not-the-password' }, ip });
+    for (let i = 0; i < 30; i++) assert.equal((await attempt(`spray${i}`)).status, 401, `attempt ${i}`);
+    assert.equal((await attempt('spray-another')).status, 429);
+    assert.equal((await call('POST', '/api/v1/auth/login', { body: { username: 'owner', password: PASS }, ip })).status, 429, 'even with the right password');
+    assert.equal((await call('POST', '/api/v1/auth/login', { body: { username: 'owner', password: PASS }, ip: '10.6.6.7' })).status, 200, 'another address is fine');
+  });
+
+  await test('an oversized current password is refused before hashing', async () => {
+    const owner = as(await login('owner'));
+    assert.equal((await owner.post('/auth/password', { current: 'x'.repeat(201), next: 'long-enough-password' })).status, 403);
+  });
+
+  await test('every response refuses to be framed', async () => {
+    for (const path of ['/admin', '/api/v1/auth/me', '/', '/robots.txt']) {
+      const { headers } = await call('GET', path);
+      assert.equal(headers['x-frame-options'], 'DENY', path);
+      assert.equal(headers['content-security-policy'], "frame-ancestors 'none'", path);
+      assert.equal(headers['x-content-type-options'], 'nosniff', path);
+    }
+  });
+
+  await test('each site has its own robots, sitemap and share tags', async () => {
+    const robots = await call('GET', '/robots.txt');
+    assert.equal(robots.status, 200);
+    assert.match(robots.headers['content-type'], /text\/plain/);
+    assert.ok(robots.text.includes(`Sitemap: https://${HOST_A}/sitemap.xml`), robots.text);
+    const map = await call('GET', '/sitemap.xml', { host: HOST_B });
+    assert.equal(map.status, 200);
+    assert.match(map.headers['content-type'], /application\/xml/);
+    assert.ok(map.text.includes(`<loc>https://${HOST_B}/</loc>`), map.text);
+    assert.equal((await call('GET', '/robots.txt', { host: 'nobody.check.invalid' })).status, 404);
+    const home = (await call('GET', '/')).text;
+    assert.ok(home.includes(`<link rel="canonical" href="https://${HOST_A}"`) || home.includes(`<link rel="canonical" href="https://${HOST_A}/"`), 'canonical tag');
+    assert.match(home, /<meta property="og:title"/);
+    assert.match(home, /<meta property="og:site_name"/);
+    assert.match(home, /<meta name="twitter:card"/);
   });
 
   await test('the app role still has no schema rights', async () => {

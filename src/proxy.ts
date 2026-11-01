@@ -7,7 +7,9 @@ export function proxy(req: NextRequest) {
   const host = hostFromHeader(req.headers.get('host'));
   if (!/^[a-z0-9.-]+$/.test(host)) return new NextResponse('Bad host', { status: 400 });
   const url = req.nextUrl.clone();
-  url.pathname = `/${host}${url.pathname === '/' ? '' : url.pathname}`;
+  // A route folder named sitemap.xml works locally but is a 404 on Vercel, so it has another name.
+  const path = url.pathname === '/' ? '' : url.pathname === '/sitemap.xml' ? '/sitemap-xml' : url.pathname;
+  url.pathname = `/${host}${path}`;
   return NextResponse.rewrite(url);
 }
 

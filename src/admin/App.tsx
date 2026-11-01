@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { asset } from '../lib/links';
 import { ApiError, api } from './api';
 import { LangContext } from './Fields';
+import { Roles, Users } from './people';
 import Products from './Products';
 import { ChangePassword, Flyers, History, HomeSections, SiteDetails } from './screens';
 
@@ -16,6 +17,11 @@ const CONTENT_SCREENS = [
   ['home', 'Home sections'],
   ['site', 'Site details'],
   ['history', 'History'],
+] as const;
+
+const PEOPLE_SCREENS = [
+  ['users', 'Users'],
+  ['roles', 'Roles'],
 ] as const;
 
 type Brand = Record<string, string | undefined>;
@@ -85,6 +91,7 @@ export default function AdminApp({ brand: initialBrand = {}, name = '' }: { bran
   const top = useRef<HTMLElement>(null);
 
   const canEdit = !!me && (me.isOwner || me.caps.includes('content.edit'));
+  const canManage = !!me && (me.isOwner || me.caps.includes('users.manage'));
   const dirty = !!saved && !!draft && JSON.stringify(saved.config) !== JSON.stringify(draft);
 
   const loadContent = useCallback(async () => {
@@ -98,7 +105,7 @@ export default function AdminApp({ brand: initialBrand = {}, name = '' }: { bran
       const user = await api<Me>('GET', '/auth/me');
       setMe(user);
       if (user.isOwner || user.caps.includes('content.edit')) await loadContent();
-      else setScreen('password');
+      else setScreen(user.caps.includes('users.manage') ? 'users' : 'password');
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) setMe(null);
       else setStatus({ kind: 'error', text: (err as Error).message });
@@ -179,12 +186,17 @@ export default function AdminApp({ brand: initialBrand = {}, name = '' }: { bran
           {canEdit && CONTENT_SCREENS.map(([key, label]) => (
             <button type="button" key={key} aria-current={screen === key ? 'page' : undefined} onClick={() => go(key)}>{label}</button>
           ))}
+          {canManage && PEOPLE_SCREENS.map(([key, label]) => (
+            <button type="button" key={key} aria-current={screen === key ? 'page' : undefined} onClick={() => go(key)}>{label}</button>
+          ))}
           <button type="button" aria-current={screen === 'password' ? 'page' : undefined} onClick={() => go('password')}>Password</button>
         </nav>
       </header>
 
       <main className="screen">
         {screen === 'password' && <ChangePassword />}
+        {canManage && screen === 'users' && <Users me={me.username} />}
+        {canManage && screen === 'roles' && <Roles />}
         {canEdit && draft && saved && (
           <>
             {screen === 'products' && <Products {...props} />}

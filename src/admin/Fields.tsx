@@ -1,6 +1,10 @@
 import { createContext, useContext, useId, type ReactNode } from 'react';
 import { asset } from '../lib/links';
 import { ICON_NAMES } from '../modules/icons';
+import ImagePicker from './ImagePicker';
+
+// Hero and flyers. A field can ask for less with `edge`.
+export const DEFAULT_EDGE = 1200;
 
 export type Field = {
   k: string;
@@ -11,6 +15,7 @@ export type Field = {
   options?: string[] | 'icons';
   fields?: Field[];
   hint?: string;
+  edge?: number;
 };
 type Obj = Record<string, any>;
 
@@ -36,12 +41,12 @@ export function MoveButtons({ onUp, onDown, name }: { onUp?: () => void; onDown?
   );
 }
 
-// ponytail: a typed path until Phase 5 adds upload, crop and compress here.
-function ImageInput({ value, onChange, id }: { value: string; onChange: (v: string) => void; id: string }) {
+function ImageInput({ value, onChange, id, edge }: { value: string; onChange: (v: string) => void; id: string; edge?: number }) {
   return (
     <div className="image-input">
       {value && <img src={asset(value)} alt="" />}
-      <input id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder="Image path" />
+      <ImagePicker id={id} label={value ? 'Change photo' : 'Add photo'} maxEdge={edge || DEFAULT_EDGE} onDone={onChange} />
+      {value && <button type="button" className="link danger" onClick={() => onChange('')}>Remove photo</button>}
     </div>
   );
 }
@@ -68,7 +73,7 @@ function Input({ field, value, onChange, id }: { field: Field; value: any; onCha
       );
     }
     case 'image':
-      return <ImageInput id={id} value={value ?? ''} onChange={onChange} />;
+      return <ImageInput id={id} value={value ?? ''} onChange={onChange} edge={field.edge} />;
     default:
       return <input id={id} type="text" value={value ?? ''} placeholder={field.placeholder} onChange={(e) => onChange(e.target.value)} />;
   }

@@ -5,6 +5,9 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { ContentError, MAX_CONTENT_BYTES, prepareContent } from '../src/lib/content.ts';
 import { asset, ctaHref, safeHref, safeMapUrl } from '../src/lib/links.ts';
 import { DUMMY_HASH, hashPassword, verifyPassword } from '../src/lib/password.ts';
+import { ASPECTS, ZOOM_MAX, ZOOM_MIN, clampZoom, cropBox, dragged } from '../src/admin/crop.ts';
+import { allowedType, bytesMatchKey, keyFor, ownsKey } from '../src/lib/uploads.ts';
+import { ASSIGNABLE_CAPS, cleanUsername, validCaps, validPassword, validRoleIds, validUserId } from '../src/lib/users.ts';
 
 const path = (f) => new URL(`../src/${f}`, import.meta.url);
 const read = (f) => readFileSync(path(f), 'utf8');
@@ -96,5 +99,77 @@ assert.notEqual(stored, await hashPassword('correct horse'), 'each password gets
 assert.equal(await verifyPassword('correct horse', stored), true);
 assert.equal(await verifyPassword('wrong', stored), false);
 assert.equal(await verifyPassword('anything', DUMMY_HASH), false);
+
+// Crop: the window stays inside the photo, never upscales, and the shape is honoured.
+const NONE = { aspect: null, zoom: 1, x: 0.5, y: 0.5 };
+assert.deepEqual(cropBox(4000, 3000, NONE, 640), { sx: 0, sy: 0, sw: 4000, sh: 3000, dw: 640, dh: 480 });
+assert.deepEqual(cropBox(800, 600, NONE, 1200), { sx: 0, sy: 0, sw: 800, sh: 600, dw: 800, dh: 600 });
+assert.deepEqual(cropBox(4000, 3000, { ...NONE, aspect: 1 }, 640), { sx: 500, sy: 0, sw: 3000, sh: 3000, dw: 640, dh: 640 });
+assert.equal(cropBox(4000, 3000, { ...NONE, aspect: 1, x: 0 }, 640).sx, 0);
+assert.equal(cropBox(4000, 3000, { ...NONE, aspect: 1, x: 1 }, 640).sx, 1000);
+assert.equal(cropBox(3000, 4000, { ...NONE, aspect: 1, y: 1 }, 640).sy, 1000);
+assert.deepEqual(cropBox(4000, 2000, { ...NONE, zoom: 2, x: 1, y: 0 }, 5000), { sx: 2000, sy: 0, sw: 2000, sh: 1000, dw: 2000, dh: 1000 });
+for (const [w, h] of [[4000, 3000], [3000, 4000], [2000, 2000], [1, 5000]]) {
+  for (const { value: aspect } of ASPECTS) {
+    for (const zoom of [1, 2.5, 4]) {
+      for (const p of [0, 0.3, 1, -5, 99, NaN]) {
+        const b = cropBox(w, h, { aspect, zoom, x: p, y: p }, 640);
+        assert.ok(b.sx >= 0 && b.sy >= 0 && b.sx + b.sw <= w + 1 && b.sy + b.sh <= h + 1, `crop left the photo: ${w}x${h} ${aspect} ${zoom} ${p}`);
+        assert.ok(b.dw >= 1 && b.dh >= 1 && Math.max(b.dw, b.dh) <= 640, 'canvas size out of range');
+      }
+    }
+  }
+}
+for (const [w, h] of [[0, 100], [100, 0], [NaN, 10]]) assert.throws(() => cropBox(w, h, NONE, 640), /bad image size/);
+
+// Zooming out: the frame outgrows the photo, which stays inside it and can still be moved.
+assert.deepEqual(cropBox(4000, 3000, { ...NONE, aspect: 1, zoom: 0.5 }, 640), { sx: -1000, sy: -1500, sw: 6000, sh: 6000, dw: 640, dh: 640 });
+assert.ok(cropBox(1000, 1000, { ...NONE, zoom: 0.5, x: 0 }, 640).sx === 0);
+assert.equal(cropBox(1000, 1000, { ...NONE, zoom: 0.5, x: 1 }, 640).sx, -1000);
+assert.equal(clampZoom(0.01), ZOOM_MIN);
+assert.equal(clampZoom(99), ZOOM_MAX);
+assert.equal(clampZoom(NaN), 1);
+
+// Dragging: the photo follows the finger, zoomed in or out, and stops at the edge.
+assert.equal(dragged(0.5, 0.25, 500, 1000), 0.25); // frame half the photo: right moves the crop left
+assert.equal(dragged(0.5, 0.25, 2000, 1000), 1); // frame twice the photo: right moves the photo right
+assert.equal(dragged(0.5, 5, 500, 1000), 0);
+assert.equal(dragged(0.5, 0.25, 1000, 1000), 0.5); // nowhere to go
+
+// Uploads: keys are built by the server and tied to the site.
+const key = keyFor('site-a', 'image/webp');
+assert.ok(ownsKey('site-a', key));
+assert.ok(ownsKey('site-a', keyFor('site-a', 'image/jpeg')));
+for (const bad of [
+  key.replace('site-a', 'site-b'), 'site-a/../site-b/x.webp', `site-a/x/${key}`, 'site-a/x.webp',
+  key.replace('.webp', '.html'), `${key}/`, null, 5, ['site-a/x'],
+]) {
+  assert.equal(ownsKey('site-a', bad), false, `ownsKey let through ${bad}`);
+}
+assert.equal(ownsKey('site-a-b', key), false, 'a site whose slug starts the same is a different site');
+assert.equal(allowedType('image/webp') && allowedType('image/jpeg'), true);
+for (const bad of ['image/svg+xml', 'text/html', 'image/png', 'constructor', null]) assert.equal(allowedType(bad), false, `allowedType let through ${bad}`);
+const WEBP = new Uint8Array([...Buffer.from('RIFF'), 1, 2, 3, 4, ...Buffer.from('WEBP')]);
+const JPEG = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0, 0, 0, 0, 0]);
+const HTML = new Uint8Array(Buffer.from('<html><body>'));
+assert.ok(bytesMatchKey(WEBP, 'a/b.webp') && bytesMatchKey(JPEG, 'a/b.jpg'));
+for (const [bytes, name] of [[JPEG, 'a/b.webp'], [WEBP, 'a/b.jpg'], [HTML, 'a/b.webp'], [HTML, 'a/b.jpg'], [new Uint8Array(0), 'a/b.webp']]) {
+  assert.equal(bytesMatchKey(bytes, name), false, `bytesMatchKey accepted ${name}`);
+}
+
+// Users and roles.
+assert.equal(cleanUsername(' Ravi.K '), 'ravi.k');
+for (const bad of ['a', 'has space', 'x'.repeat(51), 'రవి', null, 5]) assert.equal(cleanUsername(bad), null, `cleanUsername let through ${bad}`);
+assert.ok(validPassword('x'.repeat(10)));
+for (const bad of ['short', 'x'.repeat(201), null, 1234567890]) assert.equal(validPassword(bad), false);
+assert.ok(validCaps(['content.edit', 'users.manage']) && validCaps([]));
+for (const bad of [['content.edti'], ['events.edit'], 'content.edit', null]) assert.equal(validCaps(bad), false);
+assert.ok(validRoleIds(['1', '22']) && validRoleIds([]));
+for (const bad of [[1], ['1; drop table x'], '1', null]) assert.equal(validRoleIds(bad), false);
+assert.equal(validUserId('00000000-0000-0000-0000-000000000000'), true);
+assert.equal(validUserId("x' or 1=1"), false);
+
+// The Roles screen offers exactly what the API accepts.
+assert.deepEqual([...read('admin/people.tsx').matchAll(/^\s+'([a-z]+\.[a-z]+)': '/gm)].map((m) => m[1]), ASSIGNABLE_CAPS);
 
 console.log('modules.check: ok');

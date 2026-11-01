@@ -17,10 +17,11 @@ deploy is what replaces the static site.
 | Phase | State |
 |---|---|
 | 0 Foundation, 1 Same page from the database | Done |
-| 3 Auth and API, 4 Admin content | Built and tested, not yet checked on a real phone |
-| 5 Images | **Next.** Image fields only take a typed path until this is done |
-| 2 Two languages | Not started. English can be typed in the admin, but `/en` doesn't exist. Run alongside 5 |
-| 6 Users and roles, 7 Go-live | Not started. Go-live needs the Vercel Pro decision, and the temporary `admin` password must change first |
+| 3 Auth and API, 4 Admin content | Built and tested, and checked on a real phone |
+| 5 Images | Built and tested, the R2 CORS rule in §5a is added, and the owner tried it on a real phone. Confirm both Android and iPhone before go-live |
+| 6 Users and roles | Built and tested, not yet checked on a real phone |
+| 2 Two languages | **Next.** Not started. English can be typed in the admin, but `/en` doesn't exist |
+| 7 Go-live | Not started. Needs the Vercel Pro decision, and the temporary `admin` password must change first |
 
 Also added beyond this plan: a per-product `amount` shown as a tag on the photo, and
 `config.show_prices`, a site-wide switch on the Products screen.
@@ -127,10 +128,25 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Phases 2 and 3 can run side 
 | Crop, rotate, resize, compress | Owner's browser | Products up to 640px on the long edge; hero and flyers up to 1200px |
 | Format | Owner's browser | Try WebP and check `blob.type`. Safari can silently return PNG, so fall back to JPEG. Flatten transparent logos onto white when using JPEG |
 | Sign the upload | `/api/v1/uploads` | Requires login and `content.edit`. The **server** builds the key as `<slug>/<uuid>.<ext>` from the session's site, and allows only image types. The link expires in minutes |
-| Store the file | Cloudflare R2, uploaded directly from the browser | R2 needs a CORS rule for the site's origins. Set a long `Cache-Control`, since filenames never repeat |
+| Store the file | Cloudflare R2, uploaded directly from the browser | The link also signs the type and exact length, so R2 refuses anything else even if confirm is never called. Long `Cache-Control`, since filenames never repeat. Needs the CORS rule below |
 | Verify | `/api/v1/uploads` confirm step | Checks the file's real size and first bytes, and deletes it if it's wrong, because browser checks can be bypassed |
 | Store the path | Neon | The site's content holds only the relative path |
 | Keep visits light | Public page | Add `loading="lazy"` to `Services` images, which don't have it today |
+
+**R2 CORS rule** (Cloudflare dashboard → R2 → `hh-sites` → Settings → CORS Policy; the
+app's token can't set it). All origins are allowed on purpose: the signature is what
+protects an upload, not the origin, so this one rule covers every future site domain and
+the Capacitor app.
+
+```json
+[{ "AllowedOrigins": ["*"], "AllowedMethods": ["PUT"], "AllowedHeaders": ["content-type", "cache-control"], "MaxAgeSeconds": 3600 }]
+```
+
+The crop is a shape choice, a zoom bar with − and + buttons, drag-to-move on the preview
+and a Rotate button. The position sliders stay for keyboards and screen readers. Zooming
+out below the fit puts white around the photo, so a whole product can fit any shape. Add
+pinch to zoom only if owners keep trying it. Android HEIC photos that Chrome can't open show a message asking for a
+JPEG or PNG.
 
 Old images stay in R2 because saved versions may still use them. All of Manikanta's
 images come to about 6 MB, so add a clean-up only when storage use matters.
@@ -175,6 +191,14 @@ Each flyer is one item in the gallery section's `images` list:
 | Every successful save | A version snapshot exists, Restore brings it back, and the site's cache refreshes |
 | Six wrong passwords | Locked for 15 minutes |
 | Write from another website's origin | Refused |
+| Upload of another type or size, or a file that isn't what it claims | Refused, and a bad file is deleted at confirm |
+| Confirming another site's file | Refused |
+| Staff with `users.manage` changing or removing an owner | Refused. Owners change only through the laptop script |
+| Another site's users or roles, including with a Bearer token | Not found, and its roles can't be assigned |
+
+`users.manage` is a trusted-manager capability: its holder can grant any capability in
+their own site, including to themselves. Only `content.edit` and `users.manage` can be
+assigned today; the other names in the database's list arrive with their modules.
 
 Also required:
 

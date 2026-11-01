@@ -60,7 +60,7 @@ export const fields = [
       { k: 'title', t: 'text', label: 'Title', two: true },
       { k: 'body', t: 'textarea', label: 'Description', two: true },
       { k: 'icon', t: 'select', label: 'Icon', options: 'icons' },
-      { k: 'image', t: 'image', label: 'Image (overrides icon)' },
+      { k: 'image', t: 'image', label: 'Image (overrides icon)', edge: 640 },
       { k: 'alt', t: 'text', label: 'Image description', two: true },
       { k: 'fit', t: 'select', label: 'Photo fit', options: ['', 'contain'] },
       { k: 'amount', t: 'text', label: 'Price', placeholder: '₹99' },

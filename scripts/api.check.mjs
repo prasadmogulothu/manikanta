@@ -8,6 +8,7 @@ import http from 'node:http';
 import { Client } from '@neondatabase/serverless';
 import { migrate } from './migrate.mjs';
 import { hashPassword } from '../src/lib/password.ts';
+import { deleteUpload } from '../src/lib/uploads.ts';
 
 const ownerUrl = process.env.DATABASE_URL_OWNER_DEV;
 if (!ownerUrl) throw new Error('DATABASE_URL_OWNER_DEV is not set (owner role, direct connection, Neon dev branch)');
@@ -23,6 +24,7 @@ const PORT = 3456;
 const HOST_A = 'test-a.check.invalid';
 const HOST_B = 'test-b.check.invalid';
 const PASS = 'test-password-a';
+const NO_USER = '00000000-0000-0000-0000-000000000000';
 
 const db = new Client(ownerUrl);
 await db.connect();
@@ -114,6 +116,16 @@ try {
     ['PUT', '/api/v1/content', 'content/route.ts', { version: 0, config: {} }],
     ['GET', '/api/v1/versions', 'versions/route.ts'],
     ['POST', '/api/v1/versions/1/restore', 'versions/[id]/restore/route.ts', { version: 0 }],
+    ['POST', '/api/v1/uploads', 'uploads/route.ts', { type: 'image/webp', size: 100 }],
+    ['POST', '/api/v1/uploads/confirm', 'uploads/confirm/route.ts', { key: 'check-a/x.webp' }],
+    ['GET', '/api/v1/users', 'users/route.ts'],
+    ['POST', '/api/v1/users', 'users/route.ts', { username: 'nope', password: PASS }],
+    ['PATCH', `/api/v1/users/${NO_USER}`, 'users/[id]/route.ts', { roleIds: [] }],
+    ['DELETE', `/api/v1/users/${NO_USER}`, 'users/[id]/route.ts'],
+    ['GET', '/api/v1/roles', 'roles/route.ts'],
+    ['POST', '/api/v1/roles', 'roles/route.ts', { name: 'Nope', caps: [] }],
+    ['PATCH', '/api/v1/roles/1', 'roles/[id]/route.ts', { name: 'Nope', caps: [] }],
+    ['DELETE', '/api/v1/roles/1', 'roles/[id]/route.ts'],
   ];
 
   await test('every admin route is covered by this table', () => {
@@ -310,6 +322,225 @@ try {
     const page = (await call('GET', '/')).text;
     assert.ok(!page.includes('javascript:alert'));
     assert.ok(!page.includes('evil.example'));
+  });
+
+  // Uploads go to the real bucket, under this test site's own prefix, and are removed.
+  const webpBytes = Buffer.concat([Buffer.from('RIFF'), Buffer.alloc(4), Buffer.from('WEBP'), Buffer.alloc(88)]);
+  const htmlBytes = Buffer.from('<html>'.padEnd(100, ' '));
+  const sign = (session, body, host = HOST_A) => call('POST', '/api/v1/uploads', { host, cookie: session.cookie, body });
+  const confirm = (key, session = a) => call('POST', '/api/v1/uploads/confirm', { cookie: session.cookie, body: { key } });
+  const send = (s, bytes) => fetch(s.url, { method: 'PUT', body: bytes, headers: s.headers });
+  const stored = [];
+  const signed = async (type = 'image/webp', size = 100) => {
+    const res = await sign(a, { type, size });
+    assert.equal(res.status, 200, res.text);
+    stored.push(res.data.key);
+    return res.data;
+  };
+
+  await test('an upload stays in the session site, whatever the request names', async () => {
+    const s = await signed();
+    assert.match(s.key, /^check-a\/[0-9a-f-]{36}\.webp$/);
+    const named = await sign(a, { type: 'image/webp', size: 100, site_id: siteB, slug: 'check-b', key: 'check-b/x.webp' });
+    assert.match(named.data.key, /^check-a\//);
+    stored.push(named.data.key);
+  });
+
+  await test('an upload of the wrong type or size is refused before signing', async () => {
+    for (const type of ['image/svg+xml', 'text/html', 'image/png', undefined]) {
+      assert.equal((await sign(a, { type, size: 100 })).status, 400, type);
+    }
+    for (const size of [0, -1, 1.5, '100', undefined]) {
+      assert.equal((await sign(a, { type: 'image/webp', size })).status, 400, String(size));
+    }
+    assert.equal((await sign(a, { type: 'image/webp', size: 2_000_001 })).status, 413);
+  });
+
+  await test('R2 refuses anything other than the signed type and length', async () => {
+    const s = await signed();
+    const html = await fetch(s.url, { method: 'PUT', body: webpBytes, headers: { ...s.headers, 'Content-Type': 'text/html' } });
+    assert.equal(html.status, 403);
+    assert.equal((await send(s, Buffer.concat([webpBytes, webpBytes]))).status, 403);
+  });
+
+  await test('a real photo uploads, confirms and displays with a long cache', async () => {
+    const s = await signed();
+    assert.equal((await send(s, webpBytes)).status, 200);
+    const res = await confirm(s.key);
+    assert.equal(res.status, 200, res.text);
+    assert.equal(res.data.key, s.key);
+    const shown = await fetch(`${process.env.NEXT_PUBLIC_IMAGE_BASE}/${s.key}`);
+    assert.equal(shown.status, 200);
+    assert.equal(shown.headers.get('content-type'), 'image/webp');
+    assert.match(shown.headers.get('cache-control'), /max-age=31536000/);
+    await shown.arrayBuffer();
+  });
+
+  await test('a file that is not what it claims is deleted at confirm', async () => {
+    for (const [type, bytes] of [['image/webp', htmlBytes], ['image/jpeg', webpBytes]]) {
+      const s = await signed(type);
+      assert.equal((await send(s, bytes)).status, 200);
+      assert.equal((await confirm(s.key)).status, 400);
+      assert.equal((await confirm(s.key)).status, 404, 'the file should be gone');
+    }
+  });
+
+  await test("confirm refuses another site's file, and a file never sent", async () => {
+    const other = await sign(b, { type: 'image/webp', size: 100 }, HOST_B);
+    assert.equal((await send(other.data, webpBytes)).status, 200);
+    stored.push(other.data.key);
+    assert.equal((await confirm(other.data.key)).status, 403);
+    assert.equal((await confirm('check-a/../check-b/x.webp')).status, 403);
+    const never = await signed();
+    assert.equal((await confirm(never.key)).status, 404);
+  });
+
+  await test('staff without content.edit cannot upload', async () => {
+    assert.equal((await sign(staff, { type: 'image/webp', size: 100 })).status, 403);
+    assert.equal((await confirm('check-a/x.webp', staff)).status, 403);
+  });
+
+  for (const key of stored) await deleteUpload(key);
+
+  // Users and roles.
+  const as = (session) => ({
+    get: (p) => call('GET', `/api/v1${p}`, { cookie: session.cookie }),
+    post: (p, body) => call('POST', `/api/v1${p}`, { cookie: session.cookie, body }),
+    patch: (p, body) => call('PATCH', `/api/v1${p}`, { cookie: session.cookie, body }),
+    del: (p) => call('DELETE', `/api/v1${p}`, { cookie: session.cookie }),
+  });
+  const owner = as(a);
+  const idOf = async (username) => (await owner.get('/users')).data.users.find((u) => u.username === username)?.id;
+  const addRole = async (name, caps) => {
+    const res = await owner.post('/roles', { name, caps });
+    assert.equal(res.status, 201, res.text);
+    return res.data.id;
+  };
+  const addStaff = async (username, roleIds) => {
+    const res = await owner.post('/users', { username, password: PASS, roleIds });
+    assert.equal(res.status, 201, res.text);
+    return res.data.id;
+  };
+
+  const managerRole = await addRole('Manager', ['users.manage']);
+  const contentRole = await addRole('Content', ['content.edit']);
+  await addStaff('Mgr', [managerRole]);
+  const mgrSession = await login('mgr');
+  const mgr = as(mgrSession);
+
+  await test('a role allows what it says and the API refuses the rest', async () => {
+    assert.equal((await mgr.get('/users')).status, 200);
+    assert.equal((await mgr.get('/roles')).status, 200);
+    assert.equal((await mgr.get('/content')).status, 403);
+    assert.equal((await sign(mgrSession, { type: 'image/webp', size: 100 })).status, 403);
+    const editor2 = await addStaff('writer', [contentRole]);
+    const writer = as(await login('writer'));
+    assert.equal((await writer.get('/content')).status, 200);
+    for (const res of [
+      await writer.get('/users'),
+      await writer.get('/roles'),
+      await writer.post('/users', { username: 'sneaky', password: PASS }),
+      await writer.post('/roles', { name: 'Sneaky', caps: ['users.manage'] }),
+      await writer.patch(`/users/${editor2}`, { roleIds: [managerRole] }),
+      await writer.patch(`/roles/${contentRole}`, { name: 'Content', caps: ['users.manage'] }),
+      await writer.del(`/roles/${contentRole}`),
+    ]) {
+      assert.equal(res.status, 403);
+    }
+  });
+
+  await test('a role change applies straight away, without signing in again', async () => {
+    const id = await idOf('mgr');
+    assert.equal((await owner.patch(`/users/${id}`, { roleIds: [contentRole] })).status, 200);
+    assert.equal((await mgr.get('/users')).status, 403);
+    assert.equal((await mgr.get('/content')).status, 200);
+    assert.equal((await owner.patch(`/users/${id}`, { roleIds: [contentRole, managerRole] })).status, 200, 'keeps one, adds one');
+    assert.equal((await mgr.get('/users')).status, 200);
+    assert.equal((await owner.patch(`/users/${id}`, { roleIds: [managerRole] })).status, 200);
+    assert.equal((await mgr.get('/content')).status, 403);
+    assert.deepEqual((await owner.get('/users')).data.users.find((u) => u.id === id).role_ids, [managerRole]);
+  });
+
+  await test("nobody can change or remove the owner, or remove themselves", async () => {
+    const ownerId = await idOf('owner');
+    assert.equal((await mgr.patch(`/users/${ownerId}`, { password: 'taken-over-now' })).status, 403);
+    assert.equal((await mgr.patch(`/users/${ownerId}`, { roleIds: [] })).status, 403);
+    assert.equal((await mgr.del(`/users/${ownerId}`)).status, 403);
+    assert.equal((await owner.del(`/users/${ownerId}`)).status, 400);
+    const mgrId = await idOf('mgr');
+    assert.equal((await mgr.del(`/users/${mgrId}`)).status, 400);
+    assert.equal((await mgr.patch(`/users/${mgrId}`, { password: 'skips-the-current' })).status, 400);
+    await login('owner');
+  });
+
+  await test("another site's users and roles can't be seen or touched, even with a Bearer token", async () => {
+    const bearer = (m, p, body) => call(m, `/api/v1${p}`, { host: HOST_B, bearer: b.token, body });
+    const writerId = await idOf('writer');
+    const seen = (await bearer('GET', '/users')).data.users.map((u) => u.username);
+    assert.deepEqual(seen, ['owner']);
+    assert.deepEqual((await bearer('GET', '/roles')).data.roles, []);
+    assert.equal((await bearer('PATCH', `/users/${writerId}`, { password: 'taken-over-now' })).status, 404);
+    assert.equal((await bearer('DELETE', `/users/${writerId}`)).status, 404);
+    assert.equal((await bearer('PATCH', `/roles/${contentRole}`, { name: 'X', caps: [] })).status, 404);
+    assert.equal((await bearer('DELETE', `/roles/${contentRole}`)).status, 404);
+    assert.equal((await bearer('POST', '/users', { username: 'stolen', password: PASS, roleIds: [contentRole] })).status, 400);
+    const bOwner = (await bearer('GET', '/users')).data.users[0].id;
+    assert.equal((await bearer('PATCH', `/users/${bOwner}`, { roleIds: [contentRole] })).status, 403);
+    assert.ok(await idOf('writer'), 'the user is still there');
+    assert.equal((await owner.get('/roles')).data.roles.find((r) => r.id === contentRole).name, 'Content');
+  });
+
+  await test('bad staff and role details are refused', async () => {
+    for (const body of [
+      { username: 'x', password: PASS },
+      { username: 'has space', password: PASS },
+      { username: 'okname', password: 'short' },
+      { username: 'okname', password: PASS, roleIds: ['abc'] },
+      { username: 'okname', password: PASS, roleIds: ['999999999'] },
+      { username: 'okname', password: PASS, roleIds: 'x' },
+    ]) {
+      assert.equal((await owner.post('/users', body)).status, 400, JSON.stringify(body));
+    }
+    assert.equal((await owner.post('/users', { username: 'WRITER', password: PASS })).status, 409);
+    assert.equal((await owner.post('/roles', { name: '', caps: [] })).status, 400);
+    assert.equal((await owner.post('/roles', { name: 'X', caps: ['content.edti'] })).status, 400);
+    assert.equal((await owner.post('/roles', { name: 'X', caps: ['events.edit'] })).status, 400);
+    assert.equal((await owner.post('/roles', { name: 'content', caps: [] })).status, 409);
+    assert.equal((await owner.patch(`/roles/${contentRole}`, { name: 'manager', caps: [] })).status, 409);
+    assert.equal((await owner.patch('/roles/abc', { name: 'X', caps: [] })).status, 404);
+    assert.equal((await owner.patch('/users/abc', { roleIds: [] })).status, 404);
+  });
+
+  await test('resetting a password ends that user\'s sessions and the new one works', async () => {
+    const id = await addStaff('resetme', []);
+    const before = await login('resetme');
+    assert.equal((await owner.patch(`/users/${id}`, { password: 'short' })).status, 400);
+    assert.equal((await call('GET', '/api/v1/auth/me', { cookie: before.cookie })).status, 200);
+    assert.equal((await owner.patch(`/users/${id}`, { password: 'a-brand-new-pass' })).status, 200);
+    assert.equal((await call('GET', '/api/v1/auth/me', { cookie: before.cookie })).status, 401);
+    await login('resetme', HOST_A, 'a-brand-new-pass');
+  });
+
+  await test('removing staff ends their access, and history keeps their name', async () => {
+    const id = await addStaff('leaver', [contentRole]);
+    const leaver = await login('leaver');
+    const { config, version } = (await as(leaver).get('/content')).data;
+    assert.equal((await call('PUT', '/api/v1/content', { cookie: leaver.cookie, body: { config, version } })).status, 200);
+    assert.equal((await owner.del(`/users/${id}`)).status, 200);
+    assert.equal((await call('GET', '/api/v1/auth/me', { cookie: leaver.cookie })).status, 401);
+    assert.equal((await call('POST', '/api/v1/auth/login', { body: { username: 'leaver', password: PASS }, ip: '10.7.7.7' })).status, 401);
+    assert.equal((await owner.get('/versions')).data.versions[0].saved_by, 'leaver');
+  });
+
+  await test('deleting a role takes its capabilities away and keeps the user', async () => {
+    const id = await addRole('Temp', ['content.edit']);
+    const userId = await addStaff('tempstaff', [id]);
+    const temp = as(await login('tempstaff'));
+    assert.equal((await temp.get('/content')).status, 200);
+    assert.equal((await owner.del(`/roles/${id}`)).status, 200);
+    assert.equal((await temp.get('/content')).status, 403);
+    assert.deepEqual((await owner.get('/users')).data.users.find((u) => u.id === userId).role_ids, []);
+    assert.equal((await owner.del(`/roles/${id}`)).status, 404);
   });
 
   await test('the app role still has no schema rights', async () => {

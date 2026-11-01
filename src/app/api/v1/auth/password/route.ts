@@ -1,14 +1,13 @@
 import { fail, json, startSession, withAuth } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { hashPassword, verifyPassword } from '@/lib/password';
-
-const MIN_LENGTH = 10;
+import { MIN_PASSWORD, validPassword } from '@/lib/users';
 
 export const POST = withAuth(null, async (req, ctx) => {
   const body = await req.json().catch(() => null);
   const { current, next } = body ?? {};
   if (typeof current !== 'string' || typeof next !== 'string') return fail('Enter both passwords', 400);
-  if (next.length < MIN_LENGTH || next.length > 200) return fail(`Use at least ${MIN_LENGTH} characters`, 400);
+  if (!validPassword(next)) return fail(`Use at least ${MIN_PASSWORD} characters`, 400);
 
   const [user] = await query('select password_hash from hh_users where id = $1 and site_id = $2', [ctx.userId, ctx.siteId]);
   if (!user || !(await verifyPassword(current, user.password_hash))) return fail('Current password is wrong', 403);

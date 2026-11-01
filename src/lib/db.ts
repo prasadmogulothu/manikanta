@@ -11,6 +11,9 @@ export const VERSIONS_KEPT = 30;
 export const getSiteIdByHost = async (host: string): Promise<string | null> =>
   (await query('select id from hh_sites where $1 = any(hostnames)', [host]))[0]?.id ?? null;
 
+export const getSiteSlug = async (siteId: string) =>
+  (await query('select slug from hh_sites where id = $1', [siteId]))[0].slug as string;
+
 export const getContent = async (siteId: string) =>
   (await query('select config, version from hh_sites where id = $1', [siteId]))[0] as { config: Record<string, any>; version: number };
 
@@ -48,5 +51,10 @@ export const getVersionConfig = async (siteId: string, id: number) =>
   (await query('select config from hh_site_versions where site_id = $1 and id = $2', [siteId, id]))[0]?.config as
     | Record<string, any>
     | undefined;
+
+// True only if every id is a role of this site, so another site's can't be assigned.
+export const rolesBelongToSite = async (siteId: string, ids: string[]) =>
+  (await query('select count(*)::int as n from hh_roles where site_id = $1 and id = any($2::bigint[])', [siteId, ids]))[0].n ===
+  new Set(ids).size;
 
 export { query };

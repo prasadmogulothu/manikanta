@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { asset, safeMapUrl } from '../lib/links';
 import { MODULES } from '../modules/registry';
 import { api } from './api';
-import { FieldForm, MoveButtons, swap, type Field } from './Fields';
+import { DEFAULT_EDGE, FieldForm, MoveButtons, swap, type Field } from './Fields';
+import ImagePicker from './ImagePicker';
 
 export type ScreenProps = { config: Record<string, any>; setConfig: (c: Record<string, any>) => void };
 
@@ -26,17 +27,11 @@ export function Flyers({ config, setConfig }: ScreenProps) {
   // Only one can be chosen, so choosing one clears the rest.
   const choosePopup = (i: number | null) => set(images.map((f, j) => ({ ...f, popup: j === i })));
 
-  function add() {
-    const src = window.prompt('Image path');
-    if (src?.trim()) set([...images, { src: src.trim(), active: true, popup: false, popup_until: null }]);
-  }
-
   return (
     <div className="stack">
-      <div className="screen-head">
-        <h1>Flyers</h1>
-        <button type="button" className="secondary" onClick={add}>Add flyer</button>
-      </div>
+      <h1>Flyers</h1>
+      <ImagePicker id="new-flyer" label="Add flyer" maxEdge={DEFAULT_EDGE}
+        onDone={(src) => set([{ src, active: true, popup: false, popup_until: null }, ...images])} />
       <fieldset className="card">
         <legend>Opens on page load</legend>
         <label className="check">
@@ -132,7 +127,7 @@ export function HomeSections({ config, setConfig }: ScreenProps) {
 const SITE_FIELDS: Field[] = [
   {
     k: 'brand', t: 'group', label: 'Shop', fields: [
-      { k: 'logo', t: 'image', label: 'Logo' },
+      { k: 'logo', t: 'image', label: 'Logo', edge: 400 },
       { k: 'name', t: 'text', label: 'Shop name', two: true },
       { k: 'wordmark', t: 'text', label: 'Name in header, first part', two: true },
       { k: 'wordmark_accent', t: 'text', label: 'Name in header, coloured part', two: true },

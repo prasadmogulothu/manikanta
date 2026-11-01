@@ -6,7 +6,7 @@ type Tokens = Record<string, string> | undefined;
 const safeCss = (s: string | null | undefined) => String(s || '').replace(/<\/(style)/gi, '<\\/$1');
 
 // Token values land in a declaration block, so ; { } could write arbitrary rules.
-const toVars = (tokens: Tokens) =>
+export const toVars = (tokens: Tokens) =>
   Object.entries(tokens || {})
     .map(([k, v]) => `--${k}:${String(v).replace(/[;{}]/g, '')};`)
     .join('');

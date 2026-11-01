@@ -5,6 +5,7 @@
   "template_key": "polam-paper",
   "config": {
     "lang": "te",
+    "lang_2": "en",
     "nav": [
       { "label": "సిరిధాన్యాలు", "href": "#millets" },
       { "label": "ఆర్గానిక్", "href": "#organic" },
@@ -15,6 +16,7 @@
     "theme": {},
     "brand": {
       "logo": "manikantanaturals/logo.webp",
+      "name": "మణికంఠ న్యాచురల్స్",
       "wordmark": "మణికంఠ",
       "wordmark_accent": "న్యాచురల్స్",
       "tagline": "Natural • Pure • Healthy",
@@ -64,7 +66,7 @@
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "millets", "alt": false, "ornament": true, "columns": 5,
+        "id": "millets", "catalog": true, "alt": false, "ornament": true, "columns": 5,
         "kicker": "కొత్త స్టాక్ · New Stock", "heading": "సిరిధాన్యాలు", "heading_2": "Millets — five kinds, now in store",
         "sub": "ప్రకృతి ప్రసాదించిన ఆరోగ్యకరమైన సిరిధాన్యాలు ఇప్పుడు మణికంఠ న్యాచురల్స్ స్టోర్‌లో అందుబాటులో ఉన్నాయి!",
         "items": [
@@ -76,7 +78,7 @@
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "millet-foods", "alt": true, "ornament": true, "columns": 3,
+        "id": "millet-foods", "catalog": true, "alt": true, "ornament": true, "columns": 3,
         "kicker": "సిరిధాన్యాల ఉత్పత్తులు · Millet Foods", "heading": "సిరిధాన్యాలతో రుచికరమైన ఆహారం", "heading_2": "Rava, snacks, cookies and chikkies — all made with millets",
         "items": [
           { "title": "మల్టీ మిల్లెట్ ఇడ్లీ రవ్వ", "title_2": "Multi-Millet Idli Rava", "body": "మెత్తటి ఇడ్లీలకు సిరిధాన్యాల రవ్వ.", "image": "manikantanaturals/prod-multi-millet-idli-rava.webp" },
@@ -99,7 +101,7 @@
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "organic", "alt": true, "ornament": true, "columns": 5,
+        "id": "organic", "catalog": true, "alt": true, "ornament": true, "columns": 5,
         "kicker": "100% ఆర్గానిక్ · Organic", "heading": "స్వచ్ఛమైన ఆర్గానిక్ ఉత్పత్తులు", "heading_2": "Grown in the hills — no chemicals, no adulteration",
         "sub": "కొండ ప్రాంతాల్లో సహజ సిద్ధంగా పండించినవి. రసాయనాలు లేవు, కల్తీ లేదు — స్వచ్ఛమైనవి, ఆరోగ్యకరమైనవి.",
         "items": [
@@ -116,7 +118,7 @@
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "dryfruits", "alt": false, "ornament": true, "columns": 3,
+        "id": "dryfruits", "catalog": true, "alt": false, "ornament": true, "columns": 3,
         "kicker": "కొత్తగా వచ్చినవి · New Arrivals", "heading": "డ్రై ఫ్రూట్స్ & సంప్రదాయ స్వీట్స్", "heading_2": "Dry fruits, pure ghee and jaggery — traditional sweets",
         "items": [
           { "title": "ఆత్రేయపురం పూతరేకులు", "title_2": "Atreyapuram Special Putharekulu", "body": "స్వచ్ఛమైన నెయ్యి, బెల్లం మరియు డ్రై ఫ్రూట్స్‌తో.", "price": "₹99 మాత్రమే", "image": "manikantanaturals/prod-atreyapuram-putharekulu.webp" },
@@ -124,7 +126,7 @@
         ]
       }},
       { "type": "services", "enabled": true, "config": {
-        "id": "ayurveda", "alt": true, "ornament": true, "columns": 2,
+        "id": "ayurveda", "catalog": true, "alt": true, "ornament": true, "columns": 2,
         "kicker": "ఆయుర్వేద · గో ఆధారిత", "heading": "ఆయుర్వేద & గో ఆధారిత ఉత్పత్తులు", "heading_2": "Ayurvedic and cow-based products for home and health",
         "items": [
           { "title": "పంచగవ్య నాసిక", "title_2": "Saraswati Nasika — Panchagavya nasal drops",

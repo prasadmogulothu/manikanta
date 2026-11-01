@@ -25,7 +25,7 @@ export function Header({ site }: { site: Site }) {
         {b.logo && <img src={asset(b.logo)} alt="" />}
         <div>
           <b>
-            {b.wordmark || site.name}
+            {b.wordmark || b.name || site.name}
             {b.wordmark_accent && <em> {b.wordmark_accent}</em>}
           </b>
           {b.tagline && <small>{b.tagline}</small>}
@@ -61,7 +61,7 @@ export function Footer({ site }: { site: Site }) {
     <footer className="foot">
       <div className="foot-in">
         <div>
-          <b>{site.name}</b> &copy; {new Date().getFullYear()}
+          <b>{site.config.brand?.name || site.name}</b> &copy; {new Date().getFullYear()}
           {f.note && <small>{f.note}</small>}
         </div>
         {f.powered_by &&

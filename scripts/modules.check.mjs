@@ -2,7 +2,9 @@
 // declared class styled, and unsafe links dropped.
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
+import { ContentError, MAX_CONTENT_BYTES, prepareContent } from '../src/lib/content.ts';
 import { asset, ctaHref, safeHref, safeMapUrl } from '../src/lib/links.ts';
+import { DUMMY_HASH, hashPassword, verifyPassword } from '../src/lib/password.ts';
 
 const path = (f) => new URL(`../src/${f}`, import.meta.url);
 const read = (f) => readFileSync(path(f), 'utf8');
@@ -44,5 +46,55 @@ assert.equal(ctaHref({ action: 'call' }, contact), 'tel:+911');
 assert.equal(ctaHref({ action: 'whatsapp' }, contact), 'https://wa.me/9122?text=a%20b');
 assert.equal(ctaHref({ href: 'javascript:x' }, contact), undefined);
 assert.equal(asset('https://a.com/x.png'), 'https://a.com/x.png');
+
+// One forgotten check must fail the build, not expose a shop.
+const PUBLIC_ROUTES = ['app/api/v1/auth/login/route.ts'];
+const routes = readdirSync(path('app/api'), { recursive: true })
+  .filter((f) => /route\.ts$/.test(f))
+  .map((f) => `app/api/${f.replaceAll('\\', '/')}`);
+assert.ok(routes.length >= 7, 'no API routes found, so the check below proves nothing');
+for (const f of routes) {
+  if (PUBLIC_ROUTES.includes(f)) continue;
+  const src = read(f);
+  assert.ok(!/export\s+(async\s+)?function\s/.test(src), `${f}: export handlers through withAuth`);
+  const exported = [...src.matchAll(/export\s+const\s+(\w+)\s*=\s*([^\n]*)/g)];
+  assert.ok(exported.length, `${f} exports no handlers`);
+  for (const [, name, value] of exported) {
+    assert.ok(/^withAuth\b/.test(value), `${f}: ${name} must use withAuth`);
+  }
+}
+for (const f of ['lib/db.ts', 'lib/auth.ts']) {
+  assert.ok(!/\bsearchParams\b|site_id\s*[:=]\s*body/.test(read(f)), `${f} must not read a site from the request`);
+}
+
+const current = {
+  theme: { a: 1 },
+  tracking: { enabled: false },
+  footer: { note: 'old', powered_by: 'HH', powered_by_url: 'https://hh.example' },
+};
+const saved = prepareContent(current, {
+  theme: { a: 2 },
+  tracking: { enabled: true },
+  site_id: 'other',
+  footer: { note: 'new', powered_by: 'Evil', powered_by_logo: 'x.png' },
+  sections: [],
+});
+assert.deepEqual(saved.theme, { a: 1 }, 'theme stays');
+assert.deepEqual(saved.tracking, { enabled: false }, 'tracking stays');
+assert.deepEqual(saved.footer, { note: 'new', powered_by: 'HH', powered_by_url: 'https://hh.example' }, 'credit stays');
+assert.ok(!('theme' in prepareContent({}, { theme: { a: 2 } })), "owner can't add a theme");
+for (const bad of [null, [], 'x', 5, { sections: 'x' }, { big: 'x'.repeat(MAX_CONTENT_BYTES) }]) {
+  assert.throws(() => prepareContent({}, bad), ContentError);
+}
+const flyers = (...popups) => ({ sections: [{ type: 'gallery', config: { images: popups.map((popup) => ({ popup })) } }] });
+assert.throws(() => prepareContent({}, flyers(true, true)), /Only one flyer/);
+assert.ok(prepareContent({}, flyers(true, false)));
+
+const stored = await hashPassword('correct horse');
+assert.ok(stored.startsWith('scrypt$') && !stored.includes('correct'));
+assert.notEqual(stored, await hashPassword('correct horse'), 'each password gets its own salt');
+assert.equal(await verifyPassword('correct horse', stored), true);
+assert.equal(await verifyPassword('wrong', stored), false);
+assert.equal(await verifyPassword('anything', DUMMY_HASH), false);
 
 console.log('modules.check: ok');

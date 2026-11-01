@@ -1,10 +1,25 @@
 # Dynamic site and admin page: plan
 
-Status: **plan only, nothing is built yet.** Updated 2026-10-31 for the stack in
-`techstack.md` (Next.js + Neon + R2 + simple auth), replacing the earlier
+Stack: `techstack.md` (Next.js + Neon + R2 + simple auth), replacing the earlier
 Vite + Supabase plan.
 
-**New session, start here:** read `techstack.md`, then this file, then begin Phase 0.
+**Status, 2026-11-01** (work is on branch `next-migration`; the static site on `main`
+is still what's live):
+
+| Phase | State |
+|---|---|
+| 0 Foundation, 1 Same page from the database | Done |
+| 3 Auth and API, 4 Admin content | Built and tested, not yet checked on a real phone |
+| 5 Images | **Next.** Image fields only take a typed path until this is done |
+| 2 Two languages | Not started. English can be typed in the admin, but `/en` doesn't exist. Run alongside 5 |
+| 6 Users and roles, 7 Go-live | Not started. Go-live needs the Vercel Pro decision, and the temporary `admin` password must change first |
+
+Also added beyond this plan: a per-product `amount` shown as a tag on the photo, and
+`config.show_prices`, a site-wide switch on the Products screen.
+
+**New session, start here:** read `techstack.md`, then this file, then continue with
+the next phase above. `npm run check` needs no accounts. `npm run check:api` needs
+`DATABASE_URL_OWNER_DEV` (Neon `dev` branch). Never run tests against production.
 
 ## 1. Goal
 

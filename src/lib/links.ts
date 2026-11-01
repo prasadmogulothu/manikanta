@@ -1,3 +1,7 @@
+// The address a request came to, which picks the site. The override is local only.
+export const hostFromHeader = (host: string | null) =>
+  (process.env.SITE_HOST_OVERRIDE || host || '').split(':')[0].toLowerCase();
+
 // Stored image paths stay relative, so the image domain is this one setting.
 export const asset = (p?: string) =>
   !p ? '' : /^https?:|^data:|^\//.test(p) ? p : `${process.env.NEXT_PUBLIC_IMAGE_BASE}/${p}`;

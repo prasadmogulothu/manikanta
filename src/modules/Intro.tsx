@@ -43,15 +43,14 @@ export const classes = ['intro', 'solo', 'intro-portrait', 'intro-body', 'seal',
 export const fields = [
   ...HEAD_FIELDS,
   { k: 'portrait', t: 'image', label: 'Portrait / photo' },
-  { k: 'portrait_alt', t: 'text', label: 'Photo description' },
-  { k: 'body', t: 'textarea', label: 'Body' },
-  { k: 'body_2', t: 'textarea', label: 'Body, secondary language' },
+  { k: 'portrait_alt', t: 'text', label: 'Photo description', two: true },
+  { k: 'body', t: 'textarea', label: 'Body', two: true },
   {
     k: 'seal',
     t: 'group',
     label: 'Seal badge',
     fields: [
-      { k: 'label', t: 'text', label: 'Label', placeholder: 'Est' },
+      { k: 'label', t: 'text', label: 'Label', placeholder: 'Est', two: true },
       { k: 'value', t: 'text', label: 'Value', placeholder: '1998' },
     ],
   },
@@ -61,7 +60,7 @@ export const fields = [
     label: 'Stats',
     fields: [
       { k: 'value', t: 'text', label: 'Value', placeholder: '28' },
-      { k: 'label', t: 'text', label: 'Label', placeholder: 'Years' },
+      { k: 'label', t: 'text', label: 'Label', placeholder: 'Years', two: true },
     ],
   },
 ];

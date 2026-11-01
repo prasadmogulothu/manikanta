@@ -5,12 +5,17 @@ import { Icon } from './icons';
 
 // Also holds products: a category is a section with `catalog: true`, a product an item.
 // An item may carry a photo or an icon, so a site without photos still looks finished.
-export default function Services({ c }: ModuleProps) {
+export default function Services({ c, site }: ModuleProps) {
   const items: any[] = (c.items || []).filter((it: any) => it.enabled !== false);
+  const showPrices = site.config.show_prices !== false;
   return (
     <Section c={c}>
       <div className="cards" style={{ '--cols': +c.columns || 3 } as React.CSSProperties}>
-        {items.map((it, i) => (
+        {items.map((it, i) => {
+          // No price, or prices switched off: no tag at all, not an empty one.
+          const amount = showPrices && it.amount?.trim();
+          const tag = amount ? <span className="amount">{amount}</span> : null;
+          return (
           <article className="card" key={i}>
             {it.image ? (
               <figure>
@@ -20,24 +25,29 @@ export default function Services({ c }: ModuleProps) {
                   loading="lazy"
                   className={it.fit === 'contain' ? 'fit-contain' : undefined}
                 />
+                {tag}
               </figure>
             ) : it.icon ? (
               <figure>
                 <Icon name={it.icon} size={56} />
+                {tag}
               </figure>
-            ) : null}
+            ) : (
+              tag
+            )}
             <h3>{it.title}</h3>
             {it.title_2 && <p className="t2">{it.title_2}</p>}
             {it.body && <p>{it.body}</p>}
             {it.price && <span className="price">{it.price}</span>}
           </article>
-        ))}
+          );
+        })}
       </div>
     </Section>
   );
 }
 
-export const classes = ['cards', 'card', 'price', 't2', 'fit-contain'];
+export const classes = ['cards', 'card', 'price', 't2', 'fit-contain', 'amount'];
 
 export const fields = [
   ...HEAD_FIELDS,
@@ -47,15 +57,14 @@ export const fields = [
     t: 'list',
     label: 'Items',
     fields: [
-      { k: 'title', t: 'text', label: 'Title' },
-      { k: 'title_2', t: 'text', label: 'Title, secondary language' },
-      { k: 'body', t: 'textarea', label: 'Description' },
+      { k: 'title', t: 'text', label: 'Title', two: true },
+      { k: 'body', t: 'textarea', label: 'Description', two: true },
       { k: 'icon', t: 'select', label: 'Icon', options: 'icons' },
       { k: 'image', t: 'image', label: 'Image (overrides icon)' },
-      { k: 'alt', t: 'text', label: 'Image description' },
+      { k: 'alt', t: 'text', label: 'Image description', two: true },
       { k: 'fit', t: 'select', label: 'Photo fit', options: ['', 'contain'] },
-      { k: 'price', t: 'text', label: 'Price / note' },
-      { k: 'enabled', t: 'bool', label: 'Show on site' },
+      { k: 'amount', t: 'text', label: 'Price', placeholder: '₹99' },
+      { k: 'price', t: 'text', label: 'Note, such as size', two: true },
     ],
   },
 ];

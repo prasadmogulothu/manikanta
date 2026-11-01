@@ -20,7 +20,7 @@ export default function Contact({ c, site }: ModuleProps) {
             <Icon name="pin" size={20} /> {c.address_label || 'Address'}
           </div>
           <p className="addr">
-            <b>{site.name}</b>
+            <b>{site.config.brand?.name || site.name}</b>
             {lines.map((l, i) => (
               <Fragment key={i}>
                 <br />

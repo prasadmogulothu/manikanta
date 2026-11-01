@@ -13,7 +13,7 @@ export default function Hero({ c, site }: ModuleProps) {
       )}
       <div className="wrap">
         <div className="hero-in">
-          <h1>{c.heading || site.name}</h1>
+          <h1>{c.heading || site.config.brand?.name || site.name}</h1>
           {c.heading_2 && <p className="t2">{c.heading_2}</p>}
           {c.sub && <p className="hero-sub">{c.sub}</p>}
           {ctas.length > 0 && (
@@ -33,17 +33,16 @@ export default function Hero({ c, site }: ModuleProps) {
 
 export const fields = [
   { k: 'image', t: 'image', label: 'Banner image' },
-  { k: 'image_alt', t: 'text', label: 'Image description' },
-  { k: 'heading', t: 'text', label: 'Heading' },
-  { k: 'heading_2', t: 'text', label: 'Heading, secondary language' },
-  { k: 'sub', t: 'textarea', label: 'Sub-heading' },
+  { k: 'image_alt', t: 'text', label: 'Image description', two: true },
+  { k: 'heading', t: 'text', label: 'Heading', two: true },
+  { k: 'sub', t: 'textarea', label: 'Sub-heading', two: true },
   { k: 'height', t: 'text', label: 'Height', placeholder: '68vh' },
   {
     k: 'ctas',
     t: 'list',
     label: 'Buttons',
     fields: [
-      { k: 'label', t: 'text', label: 'Label' },
+      { k: 'label', t: 'text', label: 'Label', two: true },
       { k: 'action', t: 'select', label: 'Action', options: ['', 'call', 'whatsapp'] },
       { k: 'href', t: 'text', label: 'Link, if no action', placeholder: '#contact' },
     ],

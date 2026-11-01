@@ -39,7 +39,6 @@ export function Section({ c = {}, children }: { c?: Cfg; children: ReactNode }) 
 // The admin form for the shared head, beside the markup it fills.
 export const HEAD_FIELDS = [
   { k: 'kicker', t: 'text', label: 'Kicker' },
-  { k: 'heading', t: 'text', label: 'Heading' },
-  { k: 'heading_2', t: 'text', label: 'Heading, secondary language' },
-  { k: 'sub', t: 'textarea', label: 'Sub-heading' },
+  { k: 'heading', t: 'text', label: 'Heading', two: true },
+  { k: 'sub', t: 'textarea', label: 'Sub-heading', two: true },
 ];

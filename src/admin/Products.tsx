@@ -2,7 +2,8 @@ import { useContext, useState } from 'react';
 import { asset } from '../lib/links';
 import { MODULES } from '../modules/registry';
 import { FieldForm, LangContext, MoveButtons, swap, type Field } from './Fields';
-import { isCategory, type ScreenProps } from './screens';
+import { isCategory, menuHref, orderMenu, setInMenu } from './menu';
+import type { ScreenProps } from './screens';
 
 const fieldsOf = (type: string) => MODULES[type].fields as Field[];
 
@@ -19,8 +20,10 @@ export default function Products({ config, setConfig }: ScreenProps) {
   const [editing, setEditing] = useState<number | null>(null);
   const sections: any[] = config.sections || [];
   const positions = sections.flatMap((s, i) => (isCategory(s) ? [i] : []));
+  const nav: any[] = config.nav || [];
 
-  const setSections = (next: any[]) => setConfig({ ...config, sections: next });
+  // The menu follows the categories' order, so moving one moves its link too.
+  const setSections = (next: any[]) => setConfig({ ...config, sections: next, nav: orderMenu(nav, next) });
   const setCategory = (index: number, patch: Record<string, any>) =>
     setSections(sections.map((s, i) => (i === index ? { ...s, ...patch } : s)));
   const setItems = (index: number, items: any[]) =>
@@ -47,7 +50,8 @@ export default function Products({ config, setConfig }: ScreenProps) {
     const warning = items.length
       ? `Delete ${name} and its ${items.length} products? You can bring them back from History after saving.`
       : `Delete ${name}?`;
-    if (window.confirm(warning)) setSections(sections.filter((_, i) => i !== index));
+    if (!window.confirm(warning)) return;
+    setConfig({ ...config, sections: sections.filter((_, i) => i !== index), nav: setInMenu(nav, sections, sections[index], false) });
   }
 
   return (
@@ -68,12 +72,13 @@ export default function Products({ config, setConfig }: ScreenProps) {
         const items: any[] = c.items || [];
         const isOpen = open === c.id;
         const hidden = s.enabled === false;
+        const link = nav.find((n) => n.href === menuHref(s));
         return (
           <section className={`card${hidden ? ' off' : ''}`} key={c.id}>
             <div className="row">
               <button type="button" className="row-title" aria-expanded={isOpen} onClick={() => { setOpen(isOpen ? null : c.id); setEditing(null); }}>
                 <b>{c.heading || c.heading_2 || 'Untitled category'}</b>
-                <small>{items.length} products{hidden ? ' · hidden' : ''}</small>
+                <small>{items.length} products{hidden ? ' · hidden' : link ? ' · in top menu' : ''}</small>
               </button>
               <MoveButtons name="category"
                 onUp={p > 0 ? () => setSections(swap(sections, index, positions[p - 1])) : undefined}
@@ -85,6 +90,16 @@ export default function Products({ config, setConfig }: ScreenProps) {
                 <label className="check">
                   <input type="checkbox" checked={!hidden} onChange={(e) => setCategory(index, { enabled: e.target.checked })} /> Show this category on the site
                 </label>
+                <label className="check">
+                  <input type="checkbox" checked={!!link} onChange={(e) => setConfig({ ...config, nav: setInMenu(nav, sections, s, e.target.checked) })} /> Show in the top menu
+                </label>
+                {link && (
+                  <div className="field">
+                    <FieldForm fields={[{ k: 'label', t: 'text', label: 'Name in the top menu', two: true }]} value={link}
+                      onChange={(next) => setConfig({ ...config, nav: nav.map((n) => (n === link ? next : n)) })} />
+                    <small>One or two words, so the menu stays short.</small>
+                  </div>
+                )}
                 <details>
                   <summary>Category title, intro and columns</summary>
                   <div className="stack">

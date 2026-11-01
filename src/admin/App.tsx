@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { asset } from '../lib/links';
 import { ApiError, api } from './api';
-import { LangContext } from './Fields';
+import { LangContext, PasswordInput } from './Fields';
 import { Roles, Users } from './people';
 import Products from './Products';
 import { ChangePassword, Flyers, History, HomeSections, SiteDetails } from './screens';
@@ -71,7 +71,7 @@ function Login({ onDone, brand, name }: { onDone: () => void; brand: Brand; name
         </div>
         <div className="field">
           <label htmlFor="password">Password</label>
-          <input id="password" type="password" autoComplete="current-password" required value={form.password}
+          <PasswordInput id="password" autoComplete="current-password" required value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })} />
         </div>
         {error && <p className="error" role="alert">{error}</p>}

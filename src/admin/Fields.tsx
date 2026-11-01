@@ -1,4 +1,4 @@
-import { createContext, useContext, useId, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useId, useState, type InputHTMLAttributes, type ReactNode } from 'react';
 import { asset } from '../lib/links';
 import { ICON_NAMES } from '../modules/icons';
 import ImagePicker from './ImagePicker';
@@ -24,6 +24,28 @@ export const languageName = (code?: string) => (code && LANGUAGES[code]) || code
 
 // The site's two languages, for labelling side-by-side inputs.
 export const LangContext = createContext<{ lang?: string; lang2?: string }>({});
+
+// A password field with an eye button. While shown it's a text field, so the keyboard
+// must not capitalise, correct or learn what's typed.
+export function PasswordInput({ value, ...props }: InputHTMLAttributes<HTMLInputElement> & { value: string }) {
+  const [shown, setShown] = useState(false);
+  // Hidden again once the field empties, such as after the password is saved.
+  useEffect(() => { if (!value) setShown(false); }, [value]);
+  return (
+    <div className="password">
+      <input {...props} value={value} type={shown ? 'text' : 'password'} autoCapitalize="none" autoCorrect="off" spellCheck={false} />
+      {/* preventDefault keeps the focus, and so the phone's keyboard, in the field. */}
+      <button type="button" className="eye" aria-label={shown ? 'Hide password' : 'Show password'}
+        onMouseDown={(e) => e.preventDefault()} onClick={() => setShown(!shown)}>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
+          <circle cx="12" cy="12" r="3" />
+          {shown && <path d="M4 4l16 16" />}
+        </svg>
+      </button>
+    </div>
+  );
+}
 
 export function swap<T>(list: T[], i: number, j: number) {
   if (j < 0 || j >= list.length) return list;

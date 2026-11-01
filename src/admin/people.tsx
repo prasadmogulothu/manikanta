@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from './api';
+import { PasswordInput } from './Fields';
 
 type Role = { id: string; name: string; caps: string[]; users: number };
 type User = { id: string; username: string; is_owner: boolean; role_ids: string[] };
@@ -111,7 +112,7 @@ export function Users({ me }: { me: string }) {
         </div>
         <div className="field">
           <label htmlFor="new-password">Password</label>
-          <input id="new-password" type="text" autoComplete="off" autoCapitalize="none" required minLength={10} value={form.password}
+          <PasswordInput id="new-password" autoComplete="new-password" required minLength={10} value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })} />
           <small>At least 10 characters. Give it to them; they can change it after signing in.</small>
         </div>

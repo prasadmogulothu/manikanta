@@ -15,6 +15,12 @@ export function safeHref(href: unknown): string | undefined {
   return /^(https?:\/\/|tel:|mailto:|#|\/(?!\/))/i.test(h) ? h : undefined;
 }
 
+// The menu as visitors see it: a link to a hidden section would go nowhere.
+export function visibleNav(config: { nav?: any[]; sections?: any[] }): { label: string; href: string }[] {
+  const hidden = (config.sections || []).filter((s) => s.enabled === false).map((s) => `#${s.config?.id}`);
+  return (config.nav || []).filter((n) => n.label?.trim() && !hidden.includes(n.href));
+}
+
 export function safeMapUrl(url: unknown): string | undefined {
   if (typeof url !== 'string') return undefined;
   try {

@@ -1,4 +1,4 @@
-import { asset, safeHref } from '../lib/links';
+import { asset, safeHref, visibleNav } from '../lib/links';
 import type { Site } from '../lib/types';
 import { Icon } from '../modules/icons';
 
@@ -17,7 +17,7 @@ export const SkipLink = ({ site }: { site: Site }) => (
 export function Header({ site }: { site: Site }) {
   const b = site.config.brand || {};
   const k = site.config.contact || {};
-  const nav: { label: string; href: string }[] = site.config.nav || [];
+  const nav = visibleNav(site.config);
   return (
     <header className="top">
       {b.badge && <div className="top-badge">{b.badge}</div>}

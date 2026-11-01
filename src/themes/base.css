@@ -13,7 +13,11 @@
 @layer base {
 
   *, *::before, *::after { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+  /* Every page runs under the notch (viewport-fit=cover), which moves to the side on a landscape
+     iPhone. On the body, because templates re-declare the padding of .top and .wrap. */
   body { margin:0; background:var(--bg); color:var(--ink);
+    padding:0 env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
     font-family:var(--font-body), 'Segoe UI', sans-serif; font-size:16px;
     -webkit-font-smoothing:antialiased; }
   h1, h2, h3, p, figure, dl, dd { margin:0; }

@@ -2,13 +2,11 @@ import { useEffect, useState } from 'react';
 import { asset, safeMapUrl } from '../lib/links';
 import { MODULES } from '../modules/registry';
 import { api } from './api';
-import { DEFAULT_EDGE, FieldForm, MoveButtons, swap, type Field } from './Fields';
+import { DEFAULT_EDGE, FieldForm, MoveButtons, PasswordInput, swap, type Field } from './Fields';
 import ImagePicker from './ImagePicker';
+import { isCategory, isFixedLink } from './menu';
 
 export type ScreenProps = { config: Record<string, any>; setConfig: (c: Record<string, any>) => void };
-
-// A category is a services section marked catalog; other sections are Home sections.
-export const isCategory = (s: any) => s.type === 'services' && s.config?.catalog === true;
 
 const normalise = (f: any) => (typeof f === 'string' ? { src: f, active: true, popup: false } : f);
 
@@ -151,12 +149,6 @@ const SITE_FIELDS: Field[] = [
       },
     ],
   },
-  {
-    k: 'nav', t: 'list', label: 'Menu links', fields: [
-      { k: 'label', t: 'text', label: 'Label', two: true },
-      { k: 'href', t: 'text', label: 'Link', placeholder: '#contact' },
-    ],
-  },
   { k: 'footer', t: 'group', label: 'Footer', fields: [{ k: 'note', t: 'textarea', label: 'Footer note', two: true }] },
   {
     k: 'seo', t: 'group', label: 'Search engines', fields: [
@@ -168,11 +160,20 @@ const SITE_FIELDS: Field[] = [
 
 export function SiteDetails({ config, setConfig }: ScreenProps) {
   const map = config.contact?.map_embed;
+  const nav: any[] = config.nav || [];
   return (
     <div className="stack">
       <h1>Site details</h1>
       <FieldForm fields={SITE_FIELDS} value={config} onChange={setConfig} />
       {map && !safeMapUrl(map) && <p className="warn">The map link must be a Google Maps link, or the map won't show.</p>}
+      <fieldset className="list">
+        <legend>Fixed top menu links</legend>
+        <small>These always show, after the categories. Choose the category links on the Products screen.</small>
+        {nav.map((n, i) => isFixedLink(n, config.sections || []) && (
+          <FieldForm key={n.href} fields={[{ k: 'label', t: 'text', label: 'Menu name', two: true }]} value={n}
+            onChange={(next) => setConfig({ ...config, nav: nav.map((x, j) => (j === i ? next : x)) })} />
+        ))}
+      </fieldset>
     </div>
   );
 }
@@ -245,12 +246,12 @@ export function ChangePassword() {
       <h1>Change password</h1>
       <div className="field">
         <label htmlFor="pw-current">Current password</label>
-        <input id="pw-current" type="password" autoComplete="current-password" required value={form.current}
+        <PasswordInput id="pw-current" autoComplete="current-password" required value={form.current}
           onChange={(e) => setForm({ ...form, current: e.target.value })} />
       </div>
       <div className="field">
         <label htmlFor="pw-next">New password</label>
-        <input id="pw-next" type="password" autoComplete="new-password" required minLength={10} value={form.next}
+        <PasswordInput id="pw-next" autoComplete="new-password" required minLength={10} value={form.next}
           onChange={(e) => setForm({ ...form, next: e.target.value })} />
         <small>At least 10 characters.</small>
       </div>

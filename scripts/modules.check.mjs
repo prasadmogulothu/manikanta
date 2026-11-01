@@ -3,7 +3,8 @@
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { ContentError, MAX_CONTENT_BYTES, prepareContent } from '../src/lib/content.ts';
-import { asset, ctaHref, safeHref, safeMapUrl } from '../src/lib/links.ts';
+import { asset, ctaHref, safeHref, safeMapUrl, visibleNav } from '../src/lib/links.ts';
+import { isFixedLink, orderMenu, setInMenu } from '../src/admin/menu.ts';
 import { DUMMY_HASH, hashPassword, verifyPassword } from '../src/lib/password.ts';
 import { ASPECTS, ZOOM_MAX, ZOOM_MIN, clampZoom, cropBox, dragged } from '../src/admin/crop.ts';
 import { allowedType, bytesMatchKey, keyFor, ownsKey } from '../src/lib/uploads.ts';
@@ -135,6 +136,27 @@ assert.equal(dragged(0.5, 0.25, 500, 1000), 0.25); // frame half the photo: righ
 assert.equal(dragged(0.5, 0.25, 2000, 1000), 1); // frame twice the photo: right moves the photo right
 assert.equal(dragged(0.5, 5, 500, 1000), 0);
 assert.equal(dragged(0.5, 0.25, 1000, 1000), 0.5); // nowhere to go
+
+// Top menu: chosen categories in category order, then the fixed links, which nothing can remove.
+const cat = (id, heading) => ({ type: 'services', config: { id, catalog: true, heading } });
+const about = { type: 'about', config: { id: 'about' } };
+const secs = [cat('a', 'Aa'), cat('b', 'Bb'), cat('c', 'Cc'), about];
+const fixed = [{ label: 'About', href: '#about' }, { label: 'Address', href: '#contact' }];
+const hrefs = (nav) => nav.map((n) => n.href);
+const withC = setInMenu(fixed, secs, secs[2], true);
+assert.deepEqual(hrefs(withC), ['#c', '#about', '#contact']);
+assert.equal(withC[0].label, 'Cc');
+const withAC = setInMenu(withC, secs, secs[0], true);
+assert.deepEqual(hrefs(withAC), ['#a', '#c', '#about', '#contact'], 'follows the category order, not the order ticked');
+assert.deepEqual(hrefs(orderMenu(withAC, [secs[2], secs[1], secs[0], about])), ['#c', '#a', '#about', '#contact'], 'moving a category moves its link');
+assert.deepEqual(hrefs(setInMenu(withAC, secs, secs[0], false)), ['#c', '#about', '#contact']);
+assert.equal(setInMenu(withAC, secs, secs[2], true).filter((n) => n.href === '#c').length, 1, 'ticking twice adds one link');
+assert.deepEqual(hrefs(orderMenu([{ href: '#about' }, { href: '#a' }], secs)), ['#a', '#about'], 'fixed links stay last');
+assert.ok(isFixedLink(fixed[0], secs));
+assert.ok(!isFixedLink({ href: '#a' }, secs));
+const named = { nav: [{ label: 'A', href: '#a' }, { label: ' ', href: '#b' }, { label: 'About', href: '#about' }], sections: [{ enabled: false, config: { id: 'a' } }, about] };
+assert.deepEqual(hrefs(visibleNav(named)), ['#about'], 'no links to hidden sections, and no empty names');
+assert.deepEqual(visibleNav({}), []);
 
 // Uploads: keys are built by the server and tied to the site.
 const key = keyFor('site-a', 'image/webp');

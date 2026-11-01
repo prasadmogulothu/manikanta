@@ -18,10 +18,10 @@ deploy is what replaces the static site.
 |---|---|
 | 0 Foundation, 1 Same page from the database | Done |
 | 3 Auth and API, 4 Admin content | Built and tested, and checked on a real phone |
-| 5 Images | Built and tested, the R2 CORS rule in §5a is added, and the owner tried it on a real phone. Confirm both Android and iPhone before go-live |
+| 5 Images | Built and tested, the R2 CORS rule in §5a is added, and the owner checked it on Android (Xiaomi 12T Pro). **iPhone is still unchecked:** Safari's JPEG fallback, HEIC photos and the blank-first-preview fix have never run on one |
 | 6 Users and roles | Built and tested, not yet checked on a real phone |
 | 2 Two languages | **Next.** Not started. English can be typed in the admin, but `/en` doesn't exist |
-| 7 Go-live | Not started. Needs the Vercel Pro decision, and the temporary `admin` password must change first |
+| 7 Go-live | Not started. Needs the Vercel Pro decision. The owner changed the `admin` password and removed the test data on 2026-11-01 |
 
 Also added beyond this plan: a per-product `amount` shown as a tag on the photo, and
 `config.show_prices`, a site-wide switch on the Products screen.
@@ -86,7 +86,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Phases 2 and 3 can run side 
 | Logo, shop name, tagline | Yes | Site details | Add `_2` fields; the builder has no form for `brand` yet |
 | Phone, WhatsApp, address, second number | Yes | Site details | Same. Hero buttons use the phone number as a typed link, so make them `call` / `whatsapp` actions that read `contact`, otherwise a number change leaves them stale |
 | Map | Yes | Site details | Accept only Google Maps links |
-| Menu links | Yes | Site details | Builder header needs `config.nav` (`integrate.md` §3a), plus `label_2`. Menu links are chosen separately, so 12 categories don't crowd the header |
+| Menu links | Yes | Products for category links, Site details for the names of the fixed links | Builder header needs `config.nav` (`integrate.md` §3a), plus `label_2`. Each category has a "Show in the top menu" tick, so 12 categories don't crowd the header. Links follow the category order, with the fixed ones (About, Address) last. Hidden sections drop out of the menu |
 | Hero image, headings, buttons | Yes | Home sections | Add image description and `sub_2` |
 | **5 categories**: title, intro, column count, order, show/hide | Yes | Products | Add `catalog: true`; new categories get an `id` from their English title |
 | **28 products**: photo, titles, description, price or note, order | Yes | Products | Add `body_2`, `price_2`, image description, and `enabled` so a product can be hidden when out of stock |

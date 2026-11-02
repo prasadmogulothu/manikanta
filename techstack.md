@@ -43,7 +43,7 @@ compute becomes the limit, pay for usage or move only the busiest sites out.
 | Vercel uses a limited database role (no schema changes). Migrations run from your laptop with the owner role | A bug or leak in the app can't drop tables |
 | No secrets under `NEXT_PUBLIC_*`. Database and R2 keys stay server-only | Those variables go into the browser bundle |
 | **Add Postgres row-level security before storing private customer data** (jobs, enquiries) | Today's data is public content plus password hashes. Private data needs a second layer. |
-| Nightly `pg_dump` to R2 through GitHub Actions, before the first paying client | One database holds every client's content |
+| `pg_dump` to R2 once or twice a month (owner's choice, 2026-11-01, as edits are rare), plus one after any large edit, before the first paying client | One database holds every client's content |
 | The platform admin is **never deployed**. It runs on your laptop with the owner role | Same rule the builder has today (R20) |
 
 ## 4. Auth

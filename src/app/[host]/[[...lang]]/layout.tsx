@@ -2,31 +2,41 @@ import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { asset } from '@/lib/links';
 import { canonicalOrigin, shareImage } from '@/lib/seo';
-import { getSite } from '@/lib/site';
+import { getPage, getSite } from '@/lib/site';
 import { composeCss, fontHref } from '@/lib/theme';
 import '@/themes/base.css';
 
-type Params = { params: Promise<{ host: string }> };
+// `/` is the main language and `/<lang_2>` the second, so `lang` is empty or one segment.
+type Params = { params: Promise<{ host: string; lang?: string[] }> };
 
 // None at build time: each site's page is built on its first visit, then cached.
 export const generateStaticParams = async () => [];
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { host } = await params;
-  const site = await getSite(host);
-  if (!site) return {};
+  const { host, lang } = await params;
+  const found = await getPage(host, lang);
+  if (!found) return {};
+  const { site, page } = found;
   const { seo = {}, brand = {} } = site.config;
   const title = seo.title || site.name;
   const image = shareImage(site.config);
+  const main = page.path === '/' ? page : page.other!;
   return {
     metadataBase: new URL(canonicalOrigin(site, host)),
     title,
     description: seo.description,
-    alternates: { canonical: '/' },
+    alternates: {
+      canonical: page.path,
+      languages: page.other && {
+        [page.lang]: page.path,
+        [page.other.lang]: page.other.path,
+        'x-default': main.path,
+      },
+    },
     icons: brand.favicon ? { icon: asset(brand.favicon) } : undefined,
     openGraph: {
       type: 'website',
-      url: '/',
+      url: page.path,
       siteName: brand.name || site.name,
       title,
       description: seo.description,
@@ -47,11 +57,13 @@ export async function generateViewport({ params }: Params): Promise<Viewport> {
 }
 
 export default async function SiteLayout({ children, params }: Params & { children: ReactNode }) {
-  const site = await getSite((await params).host);
+  const { host, lang } = await params;
+  const found = await getPage(host, lang);
+  const site = found?.site;
   const overrides = site?.config.theme;
   const fonts = site && fontHref({ ...site.template.tokens, ...overrides });
   return (
-    <html lang={site?.config.lang || 'en'}>
+    <html lang={found?.page.lang || 'en'}>
       <head>
         {fonts && (
           <>

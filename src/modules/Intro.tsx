@@ -1,6 +1,6 @@
 import { asset } from '../lib/links';
 import type { ModuleProps } from '../lib/types';
-import { Section, T2, HEAD_FIELDS } from './Section';
+import { Section, HEAD_FIELDS } from './Section';
 
 // With no portrait there is no second column, or the body sits off-centre.
 export default function Intro({ c }: ModuleProps) {
@@ -21,7 +21,6 @@ export default function Intro({ c }: ModuleProps) {
             </div>
           )}
           {c.body && <p>{c.body}</p>}
-          <T2>{c.body_2}</T2>
           {stats.length > 0 && (
             <div className="stats">
               {stats.map((s, i) => (

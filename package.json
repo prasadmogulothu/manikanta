@@ -9,6 +9,7 @@
     "check": "tsc --noEmit && node scripts/migrate.check.mjs && node scripts/modules.check.mjs",
     "check:api": "next build && node --env-file=.env.local scripts/api.check.mjs",
     "seed": "node --env-file=.env.local scripts/seed.mjs",
+    "english": "node --env-file=.env.local scripts/english.mjs",
     "owner": "node --env-file=.env.local scripts/create-owner.mjs",
     "migrate": "node --env-file=.env.local scripts/migrate.mjs",
     "db:app-password": "node --env-file=.env.local scripts/app-role-password.mjs",

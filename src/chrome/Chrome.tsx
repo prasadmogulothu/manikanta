@@ -14,7 +14,10 @@ export const SkipLink = ({ site }: { site: Site }) => (
   <a className="skip" href="#main">{labels(site).skip}</a>
 );
 
-export function Header({ site }: { site: Site }) {
+// A language's name in itself, so a visitor who can't read the page still finds theirs.
+const langName = (lang: string) => new Intl.DisplayNames([lang], { type: 'language' }).of(lang) || lang;
+
+export function Header({ site, other }: { site: Site; other?: { lang: string; path: string } }) {
   const b = site.config.brand || {};
   const k = site.config.contact || {};
   const nav = visibleNav(site.config);
@@ -37,6 +40,11 @@ export function Header({ site }: { site: Site }) {
             <a key={n.href} href={safeHref(n.href)}>{n.label}</a>
           ))}
         </nav>
+      )}
+      {other && (
+        <a className="top-lang" href={other.path} lang={other.lang} hrefLang={other.lang}>
+          {langName(other.lang)}
+        </a>
       )}
       {k.phone && (
         <a className="top-call" href={`tel:${k.phone}`}>

@@ -3,9 +3,6 @@ import type { Cfg } from '../lib/types';
 
 // The wrapper every section shares, so a template restyles all headings with one rule.
 
-export const T2 = ({ children }: { children?: ReactNode }) =>
-  children ? <p className="t2">{children}</p> : null;
-
 export function SectionHead({ c }: { c: Cfg }) {
   if (!c.kicker && !c.heading && !c.heading_2 && !c.sub) return null;
   return (

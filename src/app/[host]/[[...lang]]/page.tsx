@@ -1,17 +1,19 @@
 import { notFound } from 'next/navigation';
-import { getSite } from '@/lib/site';
+import { getPage } from '@/lib/site';
 import { Footer, Header, SkipLink } from '@/chrome/Chrome';
 import { MODULES } from '@/modules/registry';
 
-export default async function Home({ params }: { params: Promise<{ host: string }> }) {
-  const site = await getSite((await params).host);
-  if (!site) notFound();
+export default async function Home({ params }: { params: Promise<{ host: string; lang?: string[] }> }) {
+  const { host, lang } = await params;
+  const found = await getPage(host, lang);
+  if (!found) notFound();
+  const { site, page } = found;
 
   const sections = (site.config.sections || []).filter((s: any) => s.enabled !== false);
   return (
     <>
       <SkipLink site={site} />
-      <Header site={site} />
+      <Header site={site} other={page.other} />
       <main id="main">
         {sections.map((s: any, i: number) => {
           const mod = MODULES[s.type];

@@ -8,8 +8,11 @@ export const canonicalOrigin = (site: SiteLike, fallbackHost: string) => `https:
 // /admin isn't blocked here on purpose: a crawler has to reach it to read its noindex tag.
 export const robotsTxt = (origin: string) => `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${origin}/sitemap.xml\n`;
 
-export const sitemapXml = (origin: string) =>
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${origin}/</loc></url>\n</urlset>\n`;
+// Each language is its own page; their hreflang links are in each page's head.
+export const sitemapXml = (origin: string, paths = ['/']) =>
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths
+    .map((p) => `  <url><loc>${origin}${p}</loc></url>\n`)
+    .join('')}</urlset>\n`;
 
 // The owner's chosen share image, else the first thing on the page that shows the business.
 export function shareImage(config: Record<string, any> = {}): string | undefined {

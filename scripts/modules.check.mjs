@@ -6,6 +6,7 @@ import { ContentError, MAX_CONTENT_BYTES, prepareContent } from '../src/lib/cont
 import { asset, ctaHref, safeHref, safeMapUrl, visibleNav } from '../src/lib/links.ts';
 import { isFixedLink, orderMenu, setInMenu } from '../src/admin/menu.ts';
 import { canonicalOrigin, robotsTxt, shareImage, sitemapXml } from '../src/lib/seo.ts';
+import { configFor, localize, pageFor } from '../src/lib/localize.ts';
 import { toVars } from '../src/lib/theme.ts';
 import { DUMMY_HASH, hashPassword, verifyPassword } from '../src/lib/password.ts';
 import { ASPECTS, ZOOM_MAX, ZOOM_MIN, clampZoom, cropBox, dragged } from '../src/admin/crop.ts';
@@ -167,12 +168,31 @@ assert.match(robotsTxt('https://a.com'), /Disallow: \/api\/\n/);
 assert.match(robotsTxt('https://a.com'), /Sitemap: https:\/\/a\.com\/sitemap\.xml/);
 assert.doesNotMatch(robotsTxt('https://a.com'), /admin/, 'a crawler must be able to read the admin noindex tag');
 assert.match(sitemapXml('https://a.com'), /<loc>https:\/\/a\.com\/<\/loc>/);
+assert.equal(sitemapXml('https://a.com', ['/', '/en']).match(/<loc>[^<]+/g).join(), '<loc>https://a.com/,<loc>https://a.com/en');
 const hero = { type: 'hero', config: { image: 'hero.webp' } };
 assert.equal(shareImage({ seo: { image: 'share.jpg' }, sections: [hero], brand: { logo: 'logo.webp' } }), 'share.jpg');
 assert.equal(shareImage({ sections: [hero], brand: { logo: 'logo.webp' } }), 'hero.webp');
 assert.equal(shareImage({ sections: [{ ...hero, enabled: false }], brand: { logo: 'logo.webp' } }), 'logo.webp');
 assert.equal(shareImage({}), undefined);
 assert.equal(toVars({ a: 'red;}</style><script>' }), '--a:red/style>script>;', 'a theme value cannot end the style element');
+
+// Two languages: the visitor's language first, the other's never lost, never a blank.
+const item = { title: 'తె', title_2: 'En', body: 'తె body', body_2: '', alt: true, n: 5, list: [{ label: '', label_2: 'Only en' }] };
+assert.deepEqual(localize(item, false), { title: 'తె', title_2: 'En', body: 'తె body', body_2: undefined, alt: true, n: 5, list: [{ label: 'Only en', label_2: undefined }] });
+assert.deepEqual(localize(item, true), { title: 'En', title_2: 'తె', body: 'తె body', body_2: undefined, alt: true, n: 5, list: [{ label: 'Only en', label_2: undefined }] });
+assert.deepEqual(localize({ alt: false, alt_2: 'x' }, true), { alt: false, alt_2: 'x' }, 'only text pairs swap');
+assert.deepEqual(localize({ title_2: 'En' }, false), { title: 'En', title_2: undefined }, 'no Telugu yet: English, once');
+const two = { lang: 'te', lang_2: 'en', sections: [{ config: { heading: 'తె', heading_2: 'En' } }] };
+assert.deepEqual(pageFor(two), { lang: 'te', path: '/', other: { lang: 'en', path: '/en' } });
+assert.deepEqual(pageFor(two, ['en']), { lang: 'en', path: '/en', other: { lang: 'te', path: '/' } });
+for (const bad of [['te'], ['fr'], ['en', 'x']]) assert.equal(pageFor(two, bad), null, `pageFor allowed ${bad}`);
+assert.equal(pageFor({ lang: 'te' }, ['en']), null, 'a one-language site has no /en');
+assert.deepEqual(pageFor({ lang: 'te' }), { lang: 'te', path: '/', other: undefined });
+const en = configFor(two, pageFor(two, ['en']));
+assert.equal(en.lang, 'en');
+assert.equal(en.lang_2, 'te');
+assert.equal(en.sections[0].config.heading, 'En');
+assert.equal(two.sections[0].config.heading, 'తె', 'the cached config is not changed');
 
 // Uploads: keys are built by the server and tied to the site.
 const key = keyFor('site-a', 'image/webp');

@@ -1,5 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import { neon } from '@neondatabase/serverless';
+import { configFor, pageFor, type Page } from './localize';
 import type { Site } from './types';
 
 export const siteTag = (host: string) => `site:${host}`;
@@ -22,4 +23,11 @@ export function getSite(host: string): Promise<Site | null> {
     ['site', host],
     { tags: [siteTag(host)] },
   )();
+}
+
+// One language's page of a site: its config already in that language. Null is a 404.
+export async function getPage(host: string, segments?: string[]): Promise<{ site: Site; page: Page } | null> {
+  const site = await getSite(host);
+  const page = site && pageFor(site.config, segments);
+  return page ? { site: { ...site!, config: configFor(site!.config, page) }, page } : null;
 }

@@ -57,6 +57,10 @@
   .top-call { display:inline-flex; align-items:center; gap:8px; padding:10px 18px;
     border-radius:var(--radius); background:var(--accent); color:var(--accent-ink);
     font-weight:700; font-size:14px; white-space:nowrap; }
+  .top-lang { display:inline-flex; align-items:center; min-height:44px; padding:0 4px; font-weight:600;
+    font-size:15px; white-space:nowrap; text-decoration:underline; text-underline-offset:4px; }
+  /* On a phone the name gives way, so the language and call buttons stay on its row. */
+  @media (max-width:420px) { .top-brand { flex:1 1 0; } }
 
   /* --------------------------------------------------------------- hero */
   .hero { position:relative; display:grid; align-items:center; min-height:var(--hero-h, 68vh);

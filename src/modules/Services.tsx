@@ -84,6 +84,13 @@ export const fields = [
       { k: 'fit', t: 'select', label: 'Photo fit', options: ['', 'contain'] },
       { k: 'amount', t: 'text', label: 'Price', placeholder: '₹99' },
       { k: 'price', t: 'text', label: 'Note, such as size', two: true },
+      {
+        k: 'packs', t: 'list', label: 'Pack sizes for ordering', fields: [
+          { k: 'label', t: 'text', label: 'Pack', placeholder: '500 g' },
+          { k: 'price', t: 'num', label: 'Price ₹' },
+          { k: 'offer', t: 'num', label: 'Offer price ₹', hint: 'Optional. Lower than the price; customers see both.' },
+        ],
+      },
     ],
   },
 ];

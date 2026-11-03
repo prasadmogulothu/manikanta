@@ -1,11 +1,13 @@
 import { useContext, useState } from 'react';
 import { asset } from '../lib/links';
+import { packsOf } from '../lib/orders';
 import { MODULES } from '../modules/registry';
 import { FieldForm, LangContext, MoveButtons, swap, type Field } from './Fields';
 import { isCategory, menuHref, orderMenu, setInMenu } from './menu';
 import type { ScreenProps } from './screens';
 
 const fieldsOf = (type: string) => MODULES[type].fields as Field[];
+const itemFields = fieldsOf('services').find((f) => f.k === 'items')!.fields!;
 
 function slugify(text: string, taken: string[]) {
   const base = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'category';
@@ -21,6 +23,10 @@ export default function Products({ config, setConfig }: ScreenProps) {
   const sections: any[] = config.sections || [];
   const positions = sections.flatMap((s, i) => (isCategory(s) ? [i] : []));
   const nav: any[] = config.nav || [];
+  // Pack prices only matter on a site the platform lets take orders.
+  const takesOrders = config.features?.orders === true;
+  const productFields = takesOrders ? itemFields : itemFields.filter((f) => f.k !== 'packs');
+  const orders = config.orders || {};
 
   // The menu follows the categories' order, so moving one moves its link too.
   const setSections = (next: any[]) => setConfig({ ...config, sections: next, nav: orderMenu(nav, next) });
@@ -64,6 +70,17 @@ export default function Products({ config, setConfig }: ScreenProps) {
         <input type="checkbox" checked={config.show_prices !== false}
           onChange={(e) => setConfig({ ...config, show_prices: e.target.checked })} /> Show prices on the site
       </label>
+      {takesOrders && (
+        <div className="card stack">
+          <label className="check">
+            <input type="checkbox" checked={orders.enabled === true}
+              onChange={(e) => setConfig({ ...config, orders: { ...orders, enabled: e.target.checked } })} /> Take orders on WhatsApp
+          </label>
+          <small className="muted">Only products with a pack size and price get an Add to cart button.</small>
+          <FieldForm fields={[{ k: 'note', t: 'text', label: 'Delivery note shown in the cart', placeholder: 'Delivery available to … area only' }]}
+            value={orders} onChange={(next) => setConfig({ ...config, orders: next })} />
+        </div>
+      )}
       {positions.length === 0 && <p className="muted">No categories yet.</p>}
 
       {positions.map((index, p) => {
@@ -118,7 +135,7 @@ export default function Products({ config, setConfig }: ScreenProps) {
                         {it.image ? <img src={asset(it.image)} alt="" /> : <span className="no-image" />}
                         <button type="button" className="row-title" aria-expanded={editing === i} onClick={() => setEditing(editing === i ? null : i)}>
                           <b>{it.title || it.title_2 || 'New product'}</b>
-                          <small>{[it.title && it.title_2, it.amount, off && 'hidden'].filter(Boolean).join(' · ')}</small>
+                          <small>{[it.title && it.title_2, it.amount, takesOrders && packsOf(it).length && 'can be ordered', off && 'hidden'].filter(Boolean).join(' · ')}</small>
                           {missing && <small className="warn">Title needs both languages</small>}
                         </button>
                         <MoveButtons name={it.title || 'product'}
@@ -127,7 +144,7 @@ export default function Products({ config, setConfig }: ScreenProps) {
                       </div>
                       {editing === i && (
                         <div className="stack">
-                          <FieldForm fields={fieldsOf('services').find((f) => f.k === 'items')!.fields!} value={it}
+                          <FieldForm fields={productFields} value={it}
                             onChange={(next) => setItems(index, items.map((x, j) => (j === i ? next : x)))} />
                           <label className="check">
                             <input type="checkbox" checked={!off} onChange={(e) => setItems(index, items.map((x, j) => (j === i ? { ...x, enabled: e.target.checked } : x)))} /> Show on the site

@@ -5,10 +5,11 @@ import { asset } from '../lib/links';
 import { ApiError, api } from './api';
 import { LangContext, PasswordInput } from './Fields';
 import { Roles, Users } from './people';
+import Orders from './Orders';
 import Products from './Products';
 import { ChangePassword, Flyers, History, HomeSections, SiteDetails } from './screens';
 
-type Me = { username: string; isOwner: boolean; caps: string[] };
+type Me = { username: string; isOwner: boolean; caps: string[]; orders?: boolean };
 type Content = { config: Record<string, any>; version: number };
 
 const CONTENT_SCREENS = [
@@ -88,10 +89,12 @@ export default function AdminApp({ brand: initialBrand = {}, name = '' }: { bran
   const [screen, setScreen] = useState<string>('products');
   const [status, setStatus] = useState<{ kind: 'ok' | 'error'; text: string; stale?: boolean } | null>(null);
   const [saving, setSaving] = useState(false);
+  const [newOrders, setNewOrders] = useState(0);
   const top = useRef<HTMLElement>(null);
 
   const canEdit = !!me && (me.isOwner || me.caps.includes('content.edit'));
   const canManage = !!me && (me.isOwner || me.caps.includes('users.manage'));
+  const canOrders = !!me?.orders && (me.isOwner || me.caps.includes('orders.manage'));
   const dirty = !!saved && !!draft && JSON.stringify(saved.config) !== JSON.stringify(draft);
 
   const loadContent = useCallback(async () => {
@@ -105,7 +108,14 @@ export default function AdminApp({ brand: initialBrand = {}, name = '' }: { bran
       const user = await api<Me>('GET', '/auth/me');
       setMe(user);
       if (user.isOwner || user.caps.includes('content.edit')) await loadContent();
+      else if (user.orders && user.caps.includes('orders.manage')) setScreen('orders');
       else setScreen(user.caps.includes('users.manage') ? 'users' : 'password');
+      // The count beside Orders, so new ones are noticed without opening the screen.
+      if (user.orders && (user.isOwner || user.caps.includes('orders.manage'))) {
+        api<{ orders: { status: string }[] }>('GET', '/orders')
+          .then((d) => setNewOrders(d.orders.filter((o) => o.status === 'received').length))
+          .catch(() => {});
+      }
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) setMe(null);
       else setStatus({ kind: 'error', text: (err as Error).message });
@@ -183,6 +193,11 @@ export default function AdminApp({ brand: initialBrand = {}, name = '' }: { bran
           <span className="muted">{me.username}</span>
         </div>
         <nav aria-label="Admin">
+          {canOrders && (
+            <button type="button" aria-current={screen === 'orders' ? 'page' : undefined} onClick={() => go('orders')}>
+              Orders{newOrders > 0 && <span className="count" aria-label={`${newOrders} new`}>{newOrders}</span>}
+            </button>
+          )}
           {canEdit && CONTENT_SCREENS.map(([key, label]) => (
             <button type="button" key={key} aria-current={screen === key ? 'page' : undefined} onClick={() => go(key)}>{label}</button>
           ))}
@@ -195,6 +210,7 @@ export default function AdminApp({ brand: initialBrand = {}, name = '' }: { bran
 
       <main className="screen">
         {screen === 'password' && <ChangePassword />}
+        {canOrders && screen === 'orders' && <Orders onCount={setNewOrders} />}
         {canManage && screen === 'users' && <Users me={me.username} />}
         {canManage && screen === 'roles' && <Roles />}
         {canEdit && draft && saved && (

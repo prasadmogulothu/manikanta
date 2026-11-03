@@ -110,3 +110,10 @@ details > .stack { padding-top: 6px; }
 @media (min-width: 640px) {
   .two { grid-template-columns: 1fr 1fr; }
 }
+
+/* Orders */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.order-status select { min-height: 44px; }
+.order-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.order-lines li { display: flex; justify-content: space-between; gap: 12px; overflow-wrap: anywhere; }
+.count { display: inline-block; min-width: 20px; margin-left: 6px; padding: 1px 6px; border-radius: 999px; background: var(--warn); color: #fff; font-size: 12px; text-align: center; }

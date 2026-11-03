@@ -44,6 +44,10 @@ await db.exec(`insert into hh_user_roles (site_id, user_id, role_id) values (${A
 await refused(`insert into hh_roles (site_id, key, name, caps) values (${A}, 'x', 'X', '{content.edti}')`, 'unknown capability');
 await refused(`insert into hh_users (site_id, username, password_hash) values (${A}, 'Staff', 'x')`, 'username must be lower case');
 await refused(`insert into hh_sites (slug, name, template_key) values ('../evil', 'E', 't')`, 'slug must be safe in a path');
+await db.exec(`insert into hh_roles (site_id, key, name, caps) values (${A}, 'orders', 'Orders', '{orders.manage}')`);
+const ORDER = (status = 'received') =>
+  `insert into hh_orders (site_id, name, phone, address, items, total, ip, status) values (${A}, 'x', '9581617244', 'street', '[]', 1, 'i', '${status}')`;
+await refused(ORDER('shipped'), 'unknown order status');
 
 // Everything below runs as the role Vercel uses.
 await db.exec('set role hh_app');
@@ -52,6 +56,8 @@ await db.exec(`insert into hh_site_versions (site_id, config, saved_by) values (
 await db.exec(`insert into hh_roles (site_id, key, name) values (${A}, 'helper', 'Helper')`);
 await db.exec(`insert into hh_sessions (token_hash, user_id, expires_at) values ('h', ${USER}, now())`);
 await db.exec(`delete from hh_site_versions where site_id = ${A}`);
+await db.exec(ORDER());
+await db.exec(`update hh_orders set status = 'delivered', cancel_reason = null, updated_at = now()`);
 
 for (const [sql, why] of [
   ['create table evil (id int)', 'no schema changes'],
@@ -64,6 +70,9 @@ for (const [sql, why] of [
   [`insert into hh_sites (slug, name, template_key) values ('new', 'N', 't')`, 'no creating sites'],
   [`delete from hh_sites`, 'no deleting sites'],
   [`insert into hh_templates (key, name) values ('n', 'N')`, 'no changing templates'],
+  ['update hh_orders set total = 0', 'no re-pricing an order'],
+  [`update hh_orders set site_id = ${B}`, 'no moving orders'],
+  ['delete from hh_orders', 'orders are kept'],
 ]) {
   await refused(sql, why);
 }

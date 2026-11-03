@@ -9,6 +9,7 @@ type User = { id: string; username: string; is_owner: boolean; role_ids: string[
 const CAP_LABELS: Record<string, string> = {
   'content.edit': 'Edit products, flyers and site content',
   'users.manage': 'Manage users and roles',
+  'orders.manage': 'See and update orders',
 };
 
 const toggled = (list: string[], item: string, on: boolean) => (on ? [...list, item] : list.filter((x) => x !== item));

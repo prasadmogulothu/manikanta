@@ -71,4 +71,21 @@ export const insertOrder = async (siteId: string, o: Order, ip: string) =>
     [siteId, o.name, o.phone, o.address, JSON.stringify(o.items), o.total, ip],
   ))[0].id as string | number;
 
+// ponytail: newest 200 only; add paging when a shop passes that.
+export const listOrders = (siteId: string) =>
+  query(
+    `select id, name, phone, address, items, total, status, cancel_reason, created_at
+       from hh_orders where site_id = $1 order by id desc limit 200`,
+    [siteId],
+  );
+
+export const setOrderStatus = async (siteId: string, id: string, status: string, reason: string | null) =>
+  (await query(
+    'update hh_orders set status = $3, cancel_reason = $4, updated_at = now() where site_id = $1 and id = $2 returning id',
+    [siteId, id, status, reason],
+  )).length > 0;
+
+export const siteTakesOrders = async (siteId: string) =>
+  (await query(`select config->'features'->'orders' = 'true'::jsonb as on from hh_sites where id = $1`, [siteId]))[0]?.on === true;
+
 export { query };

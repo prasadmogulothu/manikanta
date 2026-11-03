@@ -128,6 +128,8 @@ try {
     ['POST', '/api/v1/roles', 'roles/route.ts', { name: 'Nope', caps: [] }],
     ['PATCH', '/api/v1/roles/1', 'roles/[id]/route.ts', { name: 'Nope', caps: [] }],
     ['DELETE', '/api/v1/roles/1', 'roles/[id]/route.ts'],
+    ['GET', '/api/v1/orders', 'orders/route.ts'],
+    ['PATCH', '/api/v1/orders/1', 'orders/[id]/route.ts', { status: 'delivered' }],
   ];
 
   await test('every admin route is covered by this table', () => {
@@ -628,6 +630,35 @@ try {
     for (let i = 0; i < 5; i++) assert.equal((await place({ ip: '10.9.0.2' })).status, 200);
     assert.equal((await place({ ip: '10.9.0.2' })).status, 429);
     assert.equal((await place({ ip: '10.9.0.3' })).status, 200, 'another connection still can');
+  });
+
+  await test('each site sees and updates only its own orders', async () => {
+    const mine = (await call('GET', '/api/v1/orders', { cookie: a.cookie })).data.orders;
+    assert.ok(mine.length >= 7, 'site A sees its orders');
+    assert.ok(!('ip' in mine[0]), 'the ip stays on the server');
+    assert.ok(mine[0].id > mine[1].id, 'newest first');
+    assert.deepEqual((await call('GET', '/api/v1/orders', { host: HOST_B, cookie: b.cookie })).data.orders, []);
+    const id = mine[0].id;
+    const patch = (body, opts = {}) => call('PATCH', `/api/v1/orders/${id}`, { cookie: a.cookie, body, ...opts });
+    assert.equal((await patch({ status: 'delivered' }, { host: HOST_B, cookie: b.cookie })).status, 404, "another site's order");
+    assert.equal((await patch({ status: 'cancelled' })).status, 400, 'cancel needs a reason');
+    assert.equal((await patch({ status: 'cancelled', reason: ' ' })).status, 400, 'cancel needs a reason');
+    assert.equal((await patch({ status: 'shipped' })).status, 400);
+    assert.equal((await call('PATCH', '/api/v1/orders/x', { cookie: a.cookie, body: { status: 'delivered' } })).status, 404);
+    assert.equal((await patch({ status: 'cancelled', reason: 'Out of stock' })).status, 200);
+    let row = (await db.query('select status, cancel_reason from hh_orders where id = $1', [id])).rows[0];
+    assert.deepEqual(row, { status: 'cancelled', cancel_reason: 'Out of stock' });
+    assert.equal((await patch({ status: 'delivered', reason: 'ignored' })).status, 200);
+    row = (await db.query('select status, cancel_reason from hh_orders where id = $1', [id])).rows[0];
+    assert.deepEqual(row, { status: 'delivered', cancel_reason: null });
+  });
+
+  await test('orders need orders.manage, and me says whether the site takes orders', async () => {
+    const staff = await login('nocaps');
+    assert.equal((await call('GET', '/api/v1/orders', { cookie: staff.cookie })).status, 403);
+    assert.equal((await call('GET', '/api/v1/auth/me', { cookie: a.cookie })).data.orders, true);
+    await db.query(`update hh_sites set config = config - 'features' where id = $1`, [siteB]);
+    assert.equal((await call('GET', '/api/v1/auth/me', { host: HOST_B, cookie: b.cookie })).data.orders, false);
   });
 
   await test('the app role still has no schema rights', async () => {

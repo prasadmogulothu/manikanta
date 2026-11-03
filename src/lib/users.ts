@@ -4,7 +4,7 @@ export const MIN_PASSWORD = 10;
 
 // Only capabilities that do something today. The rest of the database's list arrives
 // with their modules in Phase 8.
-export const ASSIGNABLE_CAPS = ['content.edit', 'users.manage'];
+export const ASSIGNABLE_CAPS = ['content.edit', 'users.manage', 'orders.manage'];
 
 export const validPassword = (p: unknown): p is string =>
   typeof p === 'string' && p.length >= MIN_PASSWORD && p.length <= 200;

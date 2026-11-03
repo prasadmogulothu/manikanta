@@ -91,7 +91,7 @@
   - A client `price` field in a line is ignored (total still 330).
   - Throws `/Some items changed/` for: unknown cat, unknown title, unknown pack, `NoPrice` item, a hidden (`enabled:false`) item or section.
   - Throws `OrderError` for: orders off, empty items, 31 lines, qty `0`, `51`, `1.5`, name empty or > 80 chars, address < 5 or > 300 chars, non-empty honeypot `website`, body `null`.
-  - `orderMessage(order, 1042)` includes `#1042`, `కొర్రలు (Foxtail Millet)`, `500 g × 2 = ₹180`, `1 kg × 1 = ₹150 (offer, was ₹170)`, `Total: ₹330`, `9581617244`; and `decodeURIComponent(encodeURIComponent(msg)) === msg`.
+  - `orderMessage(order, 1042)` includes `#1042`, `కొర్రలు (Foxtail Millet)`, `500 g × 2 = ₹180`, `1 kg × 1 = ₹150 (offer ₹150 each, was ₹170)`, `Total: ₹330`, `9581617244`; and `decodeURIComponent(encodeURIComponent(msg)) === msg`.
   - `prepareContent({ features: { orders: true } }, { features: { orders: false } }).features.orders === true` (owner can't flip the platform flag).
 
 - [ ] **Step 2: Run `npm run check`** — expect FAIL (cannot find `src/lib/orders.ts`).
@@ -105,7 +105,7 @@ Phone: 9581617244
 Address: Street 1, Kollapur
 
 1. కొర్రలు (Foxtail Millet) – 500 g × 2 = ₹180
-2. కొర్రలు (Foxtail Millet) – 1 kg × 1 = ₹150 (offer, was ₹170)
+2. కొర్రలు (Foxtail Millet) – 1 kg × 1 = ₹150 (offer ₹150 each, was ₹170)
 
 Total: ₹330
 ```

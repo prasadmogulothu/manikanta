@@ -91,12 +91,12 @@ export function prepareOrder(config: Record<string, any>, body: unknown): Order 
   return { name, phone, address, items, total };
 }
 
-const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`;
+export const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`;
 
 export function orderMessage(order: Order, id: number): string {
   const lines = order.items.map((l, i) => {
     const name = l.title_2 ? `${l.title} (${l.title_2})` : l.title;
-    const offer = l.mrp ? ` (offer, was ${inr(l.mrp)})` : '';
+    const offer = l.mrp ? ` (offer ${inr(l.price)} each, was ${inr(l.mrp)})` : '';
     return `${i + 1}. ${name} – ${l.pack} × ${l.qty} = ${inr(l.price * l.qty)}${offer}`;
   });
   return [

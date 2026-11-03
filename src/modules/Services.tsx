@@ -1,4 +1,5 @@
 import { asset } from '../lib/links';
+import { inr, ordersOn, packsOf } from '../lib/orders';
 import type { ModuleProps } from '../lib/types';
 import { Section, HEAD_FIELDS } from './Section';
 import { Icon } from './icons';
@@ -8,6 +9,8 @@ import { Icon } from './icons';
 export default function Services({ c, site }: ModuleProps) {
   const items: any[] = (c.items || []).filter((it: any) => it.enabled !== false);
   const showPrices = site.config.show_prices !== false;
+  const canOrder = ordersOn(site.config);
+  const addLabel = site.config.lang === 'te' ? 'కార్ట్‌లో వేయండి' : 'Add to cart';
   return (
     <Section c={c}>
       <div className="cards" style={{ '--cols': +c.columns || 3 } as React.CSSProperties}>
@@ -15,6 +18,7 @@ export default function Services({ c, site }: ModuleProps) {
           // No price, or prices switched off: no tag at all, not an empty one.
           const amount = showPrices && it.amount?.trim();
           const tag = amount ? <span className="amount">{amount}</span> : null;
+          const packs = packsOf(it);
           return (
           <article className="card" key={i}>
             {it.image ? (
@@ -39,6 +43,21 @@ export default function Services({ c, site }: ModuleProps) {
             {it.title_2 && <p className="t2">{it.title_2}</p>}
             {it.body && <p>{it.body}</p>}
             {it.price && <span className="price">{it.price}</span>}
+            {showPrices && packs.length > 0 && (
+              <ul className="packs">
+                {packs.map((p) => (
+                  <li key={p.label}>
+                    {p.label}{' '}
+                    {p.offer ? <><s>{inr(p.price)}</s> <b className="offer">{inr(p.offer)}</b></> : <b>{inr(p.price)}</b>}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {/* Chrome's Cart listens for clicks on data-add, so this stays a server component. */}
+            {canOrder && packs.length > 0 && (
+              <button type="button" className="add"
+                data-add={JSON.stringify({ cat: c.id, title: it.title, title_2: it.title_2, packs })}>{addLabel}</button>
+            )}
           </article>
           );
         })}
@@ -47,7 +66,7 @@ export default function Services({ c, site }: ModuleProps) {
   );
 }
 
-export const classes = ['cards', 'card', 'price', 't2', 'fit-contain', 'amount'];
+export const classes = ['cards', 'card', 'price', 't2', 'fit-contain', 'amount', 'packs', 'offer', 'add'];
 
 export const fields = [
   ...HEAD_FIELDS,

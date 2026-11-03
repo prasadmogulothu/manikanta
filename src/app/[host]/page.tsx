@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import { getSite } from '@/lib/site';
+import Cart from '@/chrome/Cart';
 import { Footer, Header, SkipLink } from '@/chrome/Chrome';
+import { ordersOn } from '@/lib/orders';
 import { MODULES } from '@/modules/registry';
 
 export default async function Home({ params }: { params: Promise<{ host: string }> }) {
@@ -23,6 +25,7 @@ export default async function Home({ params }: { params: Promise<{ host: string 
         })}
       </main>
       <Footer site={site} />
+      {ordersOn(site.config) && <Cart site={site} />}
     </>
   );
 }

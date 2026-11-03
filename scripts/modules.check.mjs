@@ -18,7 +18,7 @@ const read = (f) => readFileSync(path(f), 'utf8');
 const base = read('themes/base.css');
 const modules = readdirSync(path('modules')).filter((f) => f.endsWith('.tsx')).map((f) => `modules/${f}`);
 
-for (const f of [...modules, 'chrome/Chrome.tsx', 'modules/registry.ts']) {
+for (const f of [...modules, 'chrome/Chrome.tsx', 'chrome/Cart.tsx', 'modules/registry.ts']) {
   const src = read(f);
   assert.ok(!/from ['"]next[/'"]/.test(src), `${f} must not import next/*`);
   assert.ok(!/\.css['"]/.test(src), `${f} must not import CSS`);
@@ -257,7 +257,7 @@ for (const bad of [
 }
 assert.throws(() => prepareOrder({ ...shop, orders: { enabled: false } }, good), OrderError, 'orders off');
 const msg = orderMessage(placed, 1042);
-for (const part of ['#1042', 'కొర్రలు (Foxtail Millet)', '500 g × 2 = ₹180', '1 kg × 1 = ₹150 (offer, was ₹170)', 'Total: ₹330', '9581617244', 'Street 1, Kollapur']) {
+for (const part of ['#1042', 'కొర్రలు (Foxtail Millet)', '500 g × 2 = ₹180', '1 kg × 1 = ₹150 (offer ₹150 each, was ₹170)', 'Total: ₹330', '9581617244', 'Street 1, Kollapur']) {
   assert.ok(msg.includes(part), `message is missing ${part}`);
 }
 assert.equal(decodeURIComponent(encodeURIComponent(msg)), msg);

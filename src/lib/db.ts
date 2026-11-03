@@ -1,5 +1,6 @@
 import { revalidateTag } from 'next/cache';
 import { neon } from '@neondatabase/serverless';
+import type { Order } from './orders';
 import { siteTag } from './site';
 
 // Every function that touches a site's rows takes siteId first, and API routes only
@@ -56,5 +57,18 @@ export const getVersionConfig = async (siteId: string, id: number) =>
 export const rolesBelongToSite = async (siteId: string, ids: string[]) =>
   (await query('select count(*)::int as n from hh_roles where site_id = $1 and id = any($2::bigint[])', [siteId, ids]))[0].n ===
   new Set(ids).size;
+
+export const recentOrderCount = async (siteId: string, ip: string) =>
+  (await query(
+    `select count(*)::int as n from hh_orders where site_id = $1 and ip = $2 and created_at > now() - interval '1 hour'`,
+    [siteId, ip],
+  ))[0].n as number;
+
+export const insertOrder = async (siteId: string, o: Order, ip: string) =>
+  (await query(
+    `insert into hh_orders (site_id, name, phone, address, items, total, ip)
+     values ($1, $2, $3, $4, $5, $6, $7) returning id`,
+    [siteId, o.name, o.phone, o.address, JSON.stringify(o.items), o.total, ip],
+  ))[0].id as string | number;
 
 export { query };

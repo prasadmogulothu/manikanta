@@ -52,7 +52,7 @@ function readToken(req: Request) {
 }
 
 // A browser sends Origin on every write. Missing or foreign means it isn't our page.
-function sameOrigin(req: Request) {
+export function sameOrigin(req: Request) {
   const origin = req.headers.get('origin');
   if (!origin) return false;
   try {

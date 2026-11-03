@@ -3,7 +3,7 @@
 //   npm run check:api
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
-import { readdirSync } from 'node:fs';
+import { readdirSync, rmSync } from 'node:fs';
 import http from 'node:http';
 import { Client } from '@neondatabase/serverless';
 import { migrate } from './migrate.mjs';
@@ -56,6 +56,8 @@ const role = (await db.query(
 )).rows[0].id;
 await db.query('insert into hh_user_roles (site_id, user_id, role_id) values ($1, $2, $3)', [siteA, editor, role]);
 
+// Each run makes new test sites; a page cached by the last run would show its old content.
+rmSync(new URL('../.next/cache/fetch-cache', import.meta.url), { recursive: true, force: true });
 const server = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '-p', String(PORT)], {
   env: { ...process.env, DATABASE_URL: appUrl.href, SITE_HOST_OVERRIDE: '' },
   stdio: 'ignore',
@@ -131,7 +133,7 @@ try {
   await test('every admin route is covered by this table', () => {
     const files = readdirSync(new URL('../src/app/api/v1/', import.meta.url), { recursive: true })
       .map((f) => f.replaceAll('\\', '/'))
-      .filter((f) => f.endsWith('route.ts') && f !== 'auth/login/route.ts');
+      .filter((f) => f.endsWith('route.ts') && !['auth/login/route.ts', 'orders/place/route.ts'].includes(f));
     for (const f of files) assert.ok(ROUTES.some((r) => r[2] === f), `${f} is missing from ROUTES`);
   });
 
@@ -581,6 +583,51 @@ try {
     assert.match(home, /<meta property="og:title"/);
     assert.match(home, /<meta property="og:site_name"/);
     assert.match(home, /<meta name="twitter:card"/);
+  });
+
+  // Orders: site A takes them, site B may but its owner has them switched off.
+  const SHOP = (enabled) => ({
+    theme: {}, features: { orders: true }, orders: { enabled },
+    sections: [{ type: 'services', config: { id: 'millets', catalog: true, items: [
+      { title: 'Ragi', packs: [{ label: '1 kg', price: 100, offer: 90 }] }] } }],
+  });
+  await db.query('update hh_sites set config = $2 where id = $1', [siteA, SHOP(true)]);
+  await db.query('update hh_sites set config = $2 where id = $1', [siteB, SHOP(false)]);
+  const ORDER = { name: 'Ravi', phone: '9581617244', address: 'Street 1, Town', items: [{ cat: 'millets', title: 'Ragi', pack: '1 kg', qty: 2, price: 1 }] };
+  const place = (opts = {}) => call('POST', '/api/v1/orders/place', { body: ORDER, ip: '10.9.0.1', ...opts });
+
+  await test('an order is saved for the site at that address, priced by the server', async () => {
+    const res = await place();
+    assert.equal(res.status, 200, res.text);
+    assert.equal(res.data.order.total, 180);
+    const row = (await db.query('select site_id, total, status, items from hh_orders where id = $1', [res.data.id])).rows[0];
+    assert.equal(row.site_id, siteA);
+    assert.equal(row.total, 180);
+    assert.equal(row.status, 'received');
+    assert.equal(row.items[0].mrp, 100);
+  });
+
+  await test('an order from another page, or none, is refused', async () => {
+    assert.equal((await place({ origin: 'https://evil.example' })).status, 403);
+    assert.equal((await place({ origin: null })).status, 403);
+  });
+
+  await test('orders switched off are refused', async () => {
+    const res = await place({ host: HOST_B });
+    assert.equal(res.status, 403);
+    assert.match(res.data.error, /Orders are closed/);
+  });
+
+  await test('a changed product is refused, not guessed', async () => {
+    const res = await place({ body: { ...ORDER, items: [{ ...ORDER.items[0], pack: '5 kg' }] } });
+    assert.equal(res.status, 400);
+    assert.match(res.data.error, /Some items changed/);
+  });
+
+  await test('one connection can place 5 orders an hour', async () => {
+    for (let i = 0; i < 5; i++) assert.equal((await place({ ip: '10.9.0.2' })).status, 200);
+    assert.equal((await place({ ip: '10.9.0.2' })).status, 429);
+    assert.equal((await place({ ip: '10.9.0.3' })).status, 200, 'another connection still can');
   });
 
   await test('the app role still has no schema rights', async () => {

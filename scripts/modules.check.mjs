@@ -55,7 +55,7 @@ assert.equal(ctaHref({ href: 'javascript:x' }, contact), undefined);
 assert.equal(asset('https://a.com/x.png'), 'https://a.com/x.png');
 
 // One forgotten check must fail the build, not expose a shop.
-const PUBLIC_ROUTES = ['app/api/v1/auth/login/route.ts'];
+const PUBLIC_ROUTES = ['app/api/v1/auth/login/route.ts', 'app/api/v1/orders/place/route.ts'];
 const routes = readdirSync(path('app/api'), { recursive: true })
   .filter((f) => /route\.ts$/.test(f))
   .map((f) => `app/api/${f.replaceAll('\\', '/')}`);

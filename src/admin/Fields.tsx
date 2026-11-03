@@ -98,7 +98,14 @@ function Input({ field, value, onChange, id }: { field: Field; value: any; onCha
     case 'image':
       return <ImageInput id={id} value={value ?? ''} onChange={onChange} edge={field.edge} forSharing={field.forSharing} />;
     default:
-      return <input id={id} type="text" value={value ?? ''} placeholder={field.placeholder} onChange={(e) => onChange(e.target.value)} />;
+      // A text field with options suggests them and still takes anything typed.
+      return (
+        <>
+          <input id={id} type="text" list={field.options ? `${id}-o` : undefined} value={value ?? ''} placeholder={field.placeholder}
+            onChange={(e) => onChange(e.target.value)} />
+          {Array.isArray(field.options) && <datalist id={`${id}-o`}>{field.options.map((o) => <option key={o} value={o} />)}</datalist>}
+        </>
+      );
   }
 }
 

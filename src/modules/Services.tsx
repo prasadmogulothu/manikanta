@@ -84,6 +84,8 @@ export const fields = [
     label: 'Items',
     fields: [
       { k: 'title', t: 'text', label: 'Title', two: true },
+      { k: 'unit', t: 'select', label: 'Sold by', options: ['', 'weight', 'liquid', 'count'],
+        hint: 'weight: g / kg · liquid: ml / litre · count: items or packs. Pick it before adding pack sizes.' },
       { k: 'body', t: 'textarea', label: 'Description', two: true },
       { k: 'icon', t: 'select', label: 'Icon', options: 'icons' },
       { k: 'image', t: 'image', label: 'Image (overrides icon)', edge: 640 },
@@ -93,9 +95,10 @@ export const fields = [
       { k: 'price', t: 'text', label: 'Note, such as size', two: true },
       {
         k: 'packs', t: 'list', label: 'Pack sizes for ordering', fields: [
-          { k: 'label', t: 'text', label: 'Pack', placeholder: '500 g' },
+          { k: 'label', t: 'text', label: 'Pack', placeholder: '500 g', hint: 'Pick one or type your own.' },
           { k: 'price', t: 'num', label: 'Price ₹' },
           { k: 'offer', t: 'num', label: 'Offer price ₹', hint: 'Optional. Lower than the price; customers see both.' },
+          { k: 'out', t: 'bool', label: 'Out of stock (hidden from the site until unticked)' },
         ],
       },
     ],

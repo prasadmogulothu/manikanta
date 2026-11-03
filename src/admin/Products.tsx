@@ -9,6 +9,19 @@ import type { ScreenProps } from './screens';
 const fieldsOf = (type: string) => MODULES[type].fields as Field[];
 const itemFields = fieldsOf('services').find((f) => f.k === 'items')!.fields!;
 
+// Pack sizes suggested for how a product is sold; the owner can still type any other.
+const PACKS: Record<string, string[]> = {
+  weight: ['100 g', '250 g', '500 g', '1 kg', '2 kg', '5 kg'],
+  liquid: ['250 ml', '½ litre', '1 litre', '2 litre', '5 litre'],
+  count: ['1 item', '2 pack', '6 pack', '10 pack'],
+};
+// Pack sizes show once the owner has said how the product is sold (or it already has some).
+const fieldsFor = (it: any) => itemFields.flatMap((f) => {
+  if (f.k !== 'packs') return [f];
+  if (!it.unit && !it.packs?.length) return [];
+  return [{ ...f, fields: f.fields!.map((p) => (p.k === 'label' ? { ...p, options: PACKS[it.unit], placeholder: PACKS[it.unit]?.[2] ?? p.placeholder } : p)) }];
+});
+
 function slugify(text: string, taken: string[]) {
   const base = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'category';
   let id = base;
@@ -25,7 +38,7 @@ export default function Products({ config, setConfig }: ScreenProps) {
   const nav: any[] = config.nav || [];
   // Pack prices only matter on a site the platform lets take orders.
   const takesOrders = config.features?.orders === true;
-  const productFields = takesOrders ? itemFields : itemFields.filter((f) => f.k !== 'packs');
+  const productFields = (it: any) => (takesOrders ? fieldsFor(it) : itemFields.filter((f) => f.k !== 'packs' && f.k !== 'unit'));
   const orders = config.orders || {};
 
   // The menu follows the categories' order, so moving one moves its link too.
@@ -135,7 +148,7 @@ export default function Products({ config, setConfig }: ScreenProps) {
                         {it.image ? <img src={asset(it.image)} alt="" /> : <span className="no-image" />}
                         <button type="button" className="row-title" aria-expanded={editing === i} onClick={() => setEditing(editing === i ? null : i)}>
                           <b>{it.title || it.title_2 || 'New product'}</b>
-                          <small>{[it.title && it.title_2, it.amount, takesOrders && packsOf(it).length && 'can be ordered', off && 'hidden'].filter(Boolean).join(' · ')}</small>
+                          <small>{[it.title && it.title_2, it.amount, takesOrders && (packsOf(it).length ? 'can be ordered' : it.packs?.length && 'out of stock'), off && 'hidden'].filter(Boolean).join(' · ')}</small>
                           {missing && <small className="warn">Title needs both languages</small>}
                         </button>
                         <MoveButtons name={it.title || 'product'}
@@ -144,7 +157,7 @@ export default function Products({ config, setConfig }: ScreenProps) {
                       </div>
                       {editing === i && (
                         <div className="stack">
-                          <FieldForm fields={productFields} value={it}
+                          <FieldForm fields={productFields(it)} value={it}
                             onChange={(next) => setItems(index, items.map((x, j) => (j === i ? next : x)))} />
                           <label className="check">
                             <input type="checkbox" checked={!off} onChange={(e) => setItems(index, items.map((x, j) => (j === i ? { ...x, enabled: e.target.checked } : x)))} /> Show on the site

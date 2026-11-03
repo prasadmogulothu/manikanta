@@ -31,7 +31,8 @@ export function packsOf(item: any): Pack[] {
   return item.packs.flatMap((p: any) => {
     const label = typeof p?.label === 'string' ? p.label.trim() : '';
     const price = rupees(p?.price);
-    if (!label || !price) return [];
+    // An out-of-stock pack stays saved for the owner but can't be seen or ordered.
+    if (!label || !price || p.out === true) return [];
     const offer = rupees(p.offer);
     return [offer && offer < price ? { label, price, offer } : { label, price }];
   });

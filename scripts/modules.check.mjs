@@ -232,6 +232,8 @@ assert.equal(ordersOn({}), false);
 assert.deepEqual(packsOf(shop.sections[0].config.items[0]), [
   { label: '500 g', price: 90 }, { label: '1 kg', price: 170, offer: 150 }, { label: '2 kg', price: 300 }]);
 assert.deepEqual(packsOf({}), []);
+// An out-of-stock pack stays saved for the owner but can't be seen or ordered.
+assert.deepEqual(packsOf({ packs: [{ label: '1 litre', price: 200, out: true }, { label: '2 litre', price: 380 }] }), [{ label: '2 litre', price: 380 }]);
 for (const ok of ['+91 95816 17244', '095816 17244', '9581617244', '91-9581617244']) assert.equal(cleanPhone(ok), '9581617244', ok);
 for (const bad of ['12345', '5581617244', '95816172440', '', null, 9581617244]) assert.equal(cleanPhone(bad), null, `cleanPhone let through ${bad}`);
 
@@ -239,6 +241,11 @@ const PRICES = { '500 g': 90, '1 kg': 150 };
 const line = (title, pack, qty = 1, cat = 'millets') => ({ cat, title, pack, qty, price: PRICES[pack] ?? 1 });
 const good = { name: ' Ravi ', phone: '+91 95816 17244', address: 'Street 1, Kollapur', items: [line('కొర్రలు', '500 g', 2), line('కొర్రలు', '1 kg')] };
 const placed = prepareOrder(shop, good);
+{
+  const sold = structuredClone(shop);
+  sold.sections[0].config.items[0].packs[0].out = true;
+  assert.throws(() => prepareOrder(sold, { ...good, items: [line('కొర్రలు', '500 g')] }), /Some items changed/, 'out-of-stock pack ordered');
+}
 assert.equal(placed.total, 330);
 assert.equal(placed.name, 'Ravi');
 assert.equal(placed.phone, '9581617244');

@@ -478,6 +478,12 @@
   font:600 15px/1.2 var(--font-body), system-ui, sans-serif; text-decoration:underline; }
 .cart-hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
 .receipt p { margin:0 0 12px; line-height:1.5; }
+.receipt-brand { display:flex; align-items:center; gap:10px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid var(--accent); }
+.receipt-brand img { width:52px; height:52px; object-fit:contain; }
+.receipt-brand b { display:block; font-size:20px; line-height:1.2; }
+.receipt-brand em { color:var(--accent); font-style:normal; }
+.receipt-brand small { display:block; font-size:13px; opacity:.8; }
+.receipt-total { text-align:right; font-size:19px; }
 
 /* Save PDF prints only the receipt, flowing onto as many pages as it needs: everything that
    neither holds the receipt nor sits inside it is removed, and its dialog prints as plain page. */

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { MAX_QTY, cleanPhone, inr, orderMessage, refreshLines, type Order, type Pack } from '../lib/orders';
+import { asset } from '../lib/links';
 import type { Site } from '../lib/types';
 
 // The cart, shown only while the site takes orders. Product cards carry a data-add
@@ -158,6 +159,12 @@ export default function Cart({ site }: { site: Site }) {
   const total = lines.reduce((s, l) => s + l.price * l.qty, 0);
   const count = lines.reduce((s, l) => s + l.qty, 0);
   const chosen = pick?.packs[pack];
+  // The customer's copy opens by itself once the order is saved (the browser's own Save as PDF sheet).
+  useEffect(() => {
+    if (placed) requestAnimationFrame(savePdf);
+  }, [placed]);
+
+  const b = site.config.brand || {};
   const waLink = placed && whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(orderMessage(placed.order, placed.id))}` : '';
 
   return (
@@ -256,8 +263,15 @@ export default function Cart({ site }: { site: Site }) {
         {step === 'done' && placed && (
           <>
             <div className="receipt">
+              <div className="receipt-brand">
+                {b.logo && <img src={asset(b.logo)} alt="" />}
+                <div>
+                  <b>{b.wordmark || b.name || site.name}{b.wordmark_accent && <em> {b.wordmark_accent}</em>}</b>
+                  {b.tagline && <small>{b.tagline}</small>}
+                </div>
+              </div>
               <h2>{t.saved} #{placed.id}</h2>
-              <p><b>{site.config.brand?.name || site.name}</b><br />{new Date().toLocaleString('en-IN')}</p>
+              <p>{new Date().toLocaleString('en-IN')}</p>
               <p>{placed.order.name}<br />{placed.order.phone}<br />{placed.order.address}</p>
               <ul className="cart-lines">
                 {placed.order.items.map((l) => (
@@ -270,7 +284,7 @@ export default function Cart({ site }: { site: Site }) {
                   </li>
                 ))}
               </ul>
-              <p className="cart-total">{t.total}: <b>{inr(placed.order.total)}</b></p>
+              <p className="cart-total receipt-total">{t.total}: <b>{inr(placed.order.total)}</b></p>
             </div>
             {waLink && <a className="cart-go" href={waLink} target="_blank" rel="noopener">{t.whatsapp}</a>}
             {waLink && <p className="cart-small">{t.hint}</p>}
@@ -284,5 +298,5 @@ export default function Cart({ site }: { site: Site }) {
 
 export const classes = [
   'cart-fab', 'cart-count', 'cart', 'cart-packs', 'cart-qty', 'cart-actions', 'cart-link', 'cart-go', 'cart-x',
-  'cart-lines', 'cart-total', 'cart-note', 'cart-hp', 'cart-small', 'cart-error', 'receipt',
+  'cart-lines', 'cart-total', 'cart-note', 'cart-hp', 'cart-small', 'cart-error', 'receipt', 'receipt-brand', 'receipt-total',
 ];

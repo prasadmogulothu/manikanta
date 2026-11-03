@@ -2,8 +2,9 @@
 
 export const MAX_CONTENT_BYTES = 1_000_000;
 
-// The owner edits content. Theme, tracking and the credit stay with the platform.
-const PLATFORM_KEYS = ['theme', 'tracking'];
+// The owner edits content. Theme, tracking, features (such as orders) and the credit stay
+// with the platform.
+const PLATFORM_KEYS = ['theme', 'tracking', 'features'];
 const PLATFORM_FOOTER_KEYS = ['powered_by', 'powered_by_label', 'powered_by_url', 'powered_by_logo'];
 
 export class ContentError extends Error {}

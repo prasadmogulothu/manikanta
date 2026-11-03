@@ -10,6 +10,7 @@ import { toVars } from '../src/lib/theme.ts';
 import { DUMMY_HASH, hashPassword, verifyPassword } from '../src/lib/password.ts';
 import { ASPECTS, ZOOM_MAX, ZOOM_MIN, clampZoom, cropBox, dragged } from '../src/admin/crop.ts';
 import { allowedType, bytesMatchKey, keyFor, ownsKey } from '../src/lib/uploads.ts';
+import { OrderError, cleanPhone, orderMessage, ordersOn, packsOf, prepareOrder } from '../src/lib/orders.ts';
 import { ASSIGNABLE_CAPS, cleanUsername, validCaps, validPassword, validRoleIds, validUserId } from '../src/lib/users.ts';
 
 const path = (f) => new URL(`../src/${f}`, import.meta.url);
@@ -209,5 +210,58 @@ assert.equal(validUserId("x' or 1=1"), false);
 
 // The Roles screen offers exactly what the API accepts.
 assert.deepEqual([...read('admin/people.tsx').matchAll(/^\s+'([a-z]+\.[a-z]+)': '/gm)].map((m) => m[1]), ASSIGNABLE_CAPS);
+
+// Orders: the server prices every line from saved content, never from the browser.
+const shop = {
+  features: { orders: true },
+  orders: { enabled: true },
+  sections: [
+    { type: 'services', config: { id: 'millets', catalog: true, items: [
+      { title: 'కొర్రలు', title_2: 'Foxtail Millet', packs: [
+        { label: '500 g', price: '90' }, { label: '1 kg', price: 170, offer: '150' }, { label: '2 kg', price: 300, offer: 300 }, { label: '', price: 5 }] },
+      { title: 'NoPrice', packs: [] },
+      { title: 'Hidden', enabled: false, packs: [{ label: '1 kg', price: 10 }] },
+    ] } },
+    { type: 'services', enabled: false, config: { id: 'off', catalog: true, items: [{ title: 'X', packs: [{ label: '1', price: 1 }] }] } },
+  ],
+};
+assert.equal(ordersOn(shop), true);
+assert.equal(ordersOn({ ...shop, features: {} }), false, 'platform flag needed');
+assert.equal(ordersOn({ ...shop, orders: { enabled: false } }), false, 'owner switch needed');
+assert.equal(ordersOn({}), false);
+assert.deepEqual(packsOf(shop.sections[0].config.items[0]), [
+  { label: '500 g', price: 90 }, { label: '1 kg', price: 170, offer: 150 }, { label: '2 kg', price: 300 }]);
+assert.deepEqual(packsOf({}), []);
+for (const ok of ['+91 95816 17244', '095816 17244', '9581617244', '91-9581617244']) assert.equal(cleanPhone(ok), '9581617244', ok);
+for (const bad of ['12345', '5581617244', '95816172440', '', null, 9581617244]) assert.equal(cleanPhone(bad), null, `cleanPhone let through ${bad}`);
+
+const line = (title, pack, qty = 1, cat = 'millets') => ({ cat, title, pack, qty });
+const good = { name: ' Ravi ', phone: '+91 95816 17244', address: 'Street 1, Kollapur', items: [line('కొర్రలు', '500 g', 2), { ...line('కొర్రలు', '1 kg'), price: 1 }] };
+const placed = prepareOrder(shop, good);
+assert.equal(placed.total, 330);
+assert.equal(placed.name, 'Ravi');
+assert.equal(placed.phone, '9581617244');
+assert.deepEqual(placed.items[0], { title: 'కొర్రలు', title_2: 'Foxtail Millet', pack: '500 g', price: 90, qty: 2 });
+assert.deepEqual(placed.items[1], { title: 'కొర్రలు', title_2: 'Foxtail Millet', pack: '1 kg', price: 150, mrp: 170, qty: 1 }, 'offer applies, browser price ignored');
+assert.equal(prepareOrder(shop, { ...good, items: [line('కొర్రలు', '500 g'), line('కొర్రలు', '500 g', 2)] }).items[0].qty, 3, 'same line merged');
+for (const items of [[line('కొర్రలు', '500 g', 1, 'nope')], [line('Nope', '500 g')], [line('కొర్రలు', '5 kg')], [line('NoPrice', '1 kg')], [line('Hidden', '1 kg')], [line('X', '1', 1, 'off')]]) {
+  assert.throws(() => prepareOrder(shop, { ...good, items }), /Some items changed/, JSON.stringify(items));
+}
+for (const bad of [
+  null, 'x', { ...good, items: [] }, { ...good, items: 'x' }, { ...good, items: Array.from({ length: 31 }, (_, i) => line(`t${i}`, 'p')) },
+  { ...good, items: [line('కొర్రలు', '500 g', 0)] }, { ...good, items: [line('కొర్రలు', '500 g', 51)] }, { ...good, items: [line('కొర్రలు', '500 g', 1.5)] },
+  { ...good, name: ' ' }, { ...good, name: 'x'.repeat(81) }, { ...good, address: 'abc' }, { ...good, address: 'x'.repeat(301) },
+  { ...good, phone: '123' }, { ...good, website: 'spam' },
+]) {
+  assert.throws(() => prepareOrder(shop, bad), OrderError, JSON.stringify(bad)?.slice(0, 80));
+}
+assert.throws(() => prepareOrder({ ...shop, orders: { enabled: false } }, good), OrderError, 'orders off');
+const msg = orderMessage(placed, 1042);
+for (const part of ['#1042', 'కొర్రలు (Foxtail Millet)', '500 g × 2 = ₹180', '1 kg × 1 = ₹150 (offer, was ₹170)', 'Total: ₹330', '9581617244', 'Street 1, Kollapur']) {
+  assert.ok(msg.includes(part), `message is missing ${part}`);
+}
+assert.equal(decodeURIComponent(encodeURIComponent(msg)), msg);
+assert.equal(prepareContent({ features: { orders: true } }, { features: { orders: false } }).features.orders, true, "owner can't change the platform flag");
+assert.ok(!('features' in prepareContent({}, { features: { orders: true } })), "owner can't turn orders on for a site");
 
 console.log('modules.check: ok');

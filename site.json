@@ -41,6 +41,8 @@
       ]
     },
     "tracking": { "enabled": false },
+    "features": { "orders": true },
+    "orders": { "enabled": false, "note": "Delivery available to Kollapur area only" },
     "reviews": { "source": "public_form", "grid_count": 6, "per_page": 5 },
     "seo": {
       "title": "మణికంఠ న్యాచురల్స్ · Manikanta Naturals, Kollapur — Organic, Millets & Ayurveda",

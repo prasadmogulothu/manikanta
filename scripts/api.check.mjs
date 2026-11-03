@@ -595,7 +595,7 @@ try {
   });
   await db.query('update hh_sites set config = $2 where id = $1', [siteA, SHOP(true)]);
   await db.query('update hh_sites set config = $2 where id = $1', [siteB, SHOP(false)]);
-  const ORDER = { name: 'Ravi', phone: '9581617244', address: 'Street 1, Town', items: [{ cat: 'millets', title: 'Ragi', pack: '1 kg', qty: 2, price: 1 }] };
+  const ORDER = { name: 'Ravi', phone: '9581617244', address: 'Street 1, Town', items: [{ cat: 'millets', title: 'Ragi', pack: '1 kg', qty: 2, price: 90 }] };
   const place = (opts = {}) => call('POST', '/api/v1/orders/place', { body: ORDER, ip: '10.9.0.1', ...opts });
 
   await test('an order is saved for the site at that address, priced by the server', async () => {
@@ -620,16 +620,30 @@ try {
     assert.match(res.data.error, /Orders are closed/);
   });
 
-  await test('a changed product is refused, not guessed', async () => {
-    const res = await place({ body: { ...ORDER, items: [{ ...ORDER.items[0], pack: '5 kg' }] } });
-    assert.equal(res.status, 400);
-    assert.match(res.data.error, /Some items changed/);
+  await test('a changed product or price is refused, not guessed', async () => {
+    for (const changed of [{ pack: '5 kg' }, { price: 100 }]) {
+      const res = await place({ body: { ...ORDER, items: [{ ...ORDER.items[0], ...changed }] } });
+      assert.equal(res.status, 400);
+      assert.match(res.data.error, /Some items changed/);
+    }
   });
 
   await test('one connection can place 5 orders an hour', async () => {
     for (let i = 0; i < 5; i++) assert.equal((await place({ ip: '10.9.0.2' })).status, 200);
     assert.equal((await place({ ip: '10.9.0.2' })).status, 429);
     assert.equal((await place({ ip: '10.9.0.3' })).status, 200, 'another connection still can');
+    for (let i = 0; i < 5; i++) assert.equal((await place({ ip: `2001:db8:9:9::${i + 1}` })).status, 200);
+    assert.equal((await place({ ip: '2001:db8:9:9::99' })).status, 429, 'one IPv6 network counts as one connection');
+  });
+
+  await test('a site takes at most 60 orders an hour, however many connections', async () => {
+    let placed = (await db.query(`select count(*)::int as n from hh_orders where site_id = $1`, [siteA])).rows[0].n;
+    for (let i = 0; placed < 60; i++) {
+      for (let j = 0; j < 5 && placed < 60; j++, placed++) assert.equal((await place({ ip: `10.9.1.${i}` })).status, 200);
+    }
+    const res = await place({ ip: '10.9.2.1' });
+    assert.equal(res.status, 429);
+    assert.match(res.data.error, /call the shop/);
   });
 
   await test('each site sees and updates only its own orders', async () => {

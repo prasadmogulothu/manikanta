@@ -10,7 +10,7 @@ export class OrderError extends Error {}
 
 export const MAX_LINES = 30;
 export const MAX_QTY = 50;
-const CHANGED = 'Some items changed. Please check your cart.';
+const changed = (title: string, pack: string) => `Some items changed. Please check your cart: ${title} ${pack}`;
 
 const rupees = (v: unknown) => {
   const n = Number(v);
@@ -35,6 +35,31 @@ export function packsOf(item: any): Pack[] {
     const offer = rupees(p.offer);
     return [offer && offer < price ? { label, price, offer } : { label, price }];
   });
+}
+
+type CartLine = { cat: string; title: string; title_2?: string; pack: string; price: number; mrp?: number; qty: number };
+
+// A cart saved in the browser, brought up to date with the products now on the page:
+// lines whose product or pack is gone are dropped, and prices are refreshed.
+export function refreshLines(lines: unknown, live: { cat: string; title: string; packs: Pack[] }[]): CartLine[] {
+  if (!Array.isArray(lines)) return [];
+  return lines.flatMap((l: any) => {
+    if (typeof l?.title !== 'string' || !Number.isInteger(l.qty)) return [];
+    const p = live.find((x) => x.cat === l.cat && x.title === l.title)?.packs.find((x) => x.label === l.pack);
+    if (!p) return [];
+    const { mrp: _, ...rest } = l;
+    return [{ ...rest, price: p.offer ?? p.price, ...(p.offer ? { mrp: p.price } : {}) }];
+  });
+}
+
+// Rate limits count an IPv6 /64 as one connection, since one home or phone holds a whole /64.
+export function ipBucket(ip: string): string {
+  if (!ip.includes(':')) return ip;
+  const [head, tail = ''] = ip.toLowerCase().split('::');
+  const left = head ? head.split(':') : [];
+  const right = ip.includes('::') && tail ? tail.split(':') : [];
+  const groups = ip.includes('::') ? [...left, ...Array(8 - left.length - right.length).fill('0'), ...right] : left;
+  return `${groups.slice(0, 4).map((g) => g.replace(/^0+(?=.)/, '')).join(':')}::/64`;
 }
 
 // Indian mobile numbers, however they were typed.
@@ -71,7 +96,8 @@ export function prepareOrder(config: Record<string, any>, body: unknown): Order 
     );
     const item = (section?.config.items || []).find((it: any) => it?.enabled !== false && it?.title === l.title);
     const pack = packsOf(item).find((p) => p.label === l.pack);
-    if (!pack) throw new OrderError(CHANGED);
+    // The customer must be charged what their cart showed them, never a price changed since.
+    if (!pack || Number(l.price) !== (pack.offer ?? pack.price)) throw new OrderError(changed(String(l.title), String(l.pack)));
 
     const same = items.find((x) => x.title === item.title && x.pack === pack.label);
     if (same) {

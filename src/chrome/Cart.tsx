@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { MAX_QTY, cleanPhone, inr, orderMessage, type Order, type Pack } from '../lib/orders';
+import { MAX_QTY, cleanPhone, inr, orderMessage, refreshLines, type Order, type Pack } from '../lib/orders';
 import type { Site } from '../lib/types';
 
 // The cart, shown only while the site takes orders. Product cards carry a data-add
@@ -68,8 +68,13 @@ export default function Cart({ site }: { site: Site }) {
   const cart = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    const saved = load<Line[]>('hh-cart', []);
-    if (Array.isArray(saved)) setLines(saved.filter((l) => l && typeof l.title === 'string' && Number.isInteger(l.qty)));
+    // Products may have changed since the cart was saved; the page's Add buttons say how they are now.
+    const live = [...document.querySelectorAll('[data-add]')].flatMap((b) => {
+      try { return [JSON.parse(b.getAttribute('data-add') || '')]; } catch { return []; }
+    });
+    const fresh = refreshLines(load<unknown>('hh-cart', []), live);
+    setLines(fresh);
+    save('hh-cart', fresh);
     setCustomer({ name: '', phone: '', address: '', ...load<Partial<Customer>>('hh-customer', {}) });
 
     const onClick = (e: MouseEvent) => {
@@ -130,7 +135,7 @@ export default function Cart({ site }: { site: Site }) {
         body: JSON.stringify({
           ...customer,
           website: new FormData(e.currentTarget).get('website'),
-          items: lines.map(({ cat, title, pack, qty }) => ({ cat, title, pack, qty })),
+          items: lines.map(({ cat, title, pack, qty, price }) => ({ cat, title, pack, qty, price })),
         }),
       });
       const data = await res.json().catch(() => null);

@@ -10,7 +10,7 @@ import { toVars } from '../src/lib/theme.ts';
 import { DUMMY_HASH, hashPassword, verifyPassword } from '../src/lib/password.ts';
 import { ASPECTS, ZOOM_MAX, ZOOM_MIN, clampZoom, cropBox, dragged } from '../src/admin/crop.ts';
 import { allowedType, bytesMatchKey, keyFor, ownsKey } from '../src/lib/uploads.ts';
-import { OrderError, cleanPhone, orderMessage, ordersOn, packsOf, prepareOrder } from '../src/lib/orders.ts';
+import { OrderError, cleanPhone, ipBucket, orderMessage, ordersOn, packsOf, prepareOrder, refreshLines } from '../src/lib/orders.ts';
 import { ASSIGNABLE_CAPS, cleanUsername, validCaps, validPassword, validRoleIds, validUserId } from '../src/lib/users.ts';
 
 const path = (f) => new URL(`../src/${f}`, import.meta.url);
@@ -235,18 +235,46 @@ assert.deepEqual(packsOf({}), []);
 for (const ok of ['+91 95816 17244', '095816 17244', '9581617244', '91-9581617244']) assert.equal(cleanPhone(ok), '9581617244', ok);
 for (const bad of ['12345', '5581617244', '95816172440', '', null, 9581617244]) assert.equal(cleanPhone(bad), null, `cleanPhone let through ${bad}`);
 
-const line = (title, pack, qty = 1, cat = 'millets') => ({ cat, title, pack, qty });
-const good = { name: ' Ravi ', phone: '+91 95816 17244', address: 'Street 1, Kollapur', items: [line('కొర్రలు', '500 g', 2), { ...line('కొర్రలు', '1 kg'), price: 1 }] };
+const PRICES = { '500 g': 90, '1 kg': 150 };
+const line = (title, pack, qty = 1, cat = 'millets') => ({ cat, title, pack, qty, price: PRICES[pack] ?? 1 });
+const good = { name: ' Ravi ', phone: '+91 95816 17244', address: 'Street 1, Kollapur', items: [line('కొర్రలు', '500 g', 2), line('కొర్రలు', '1 kg')] };
 const placed = prepareOrder(shop, good);
 assert.equal(placed.total, 330);
 assert.equal(placed.name, 'Ravi');
 assert.equal(placed.phone, '9581617244');
 assert.deepEqual(placed.items[0], { title: 'కొర్రలు', title_2: 'Foxtail Millet', pack: '500 g', price: 90, qty: 2 });
-assert.deepEqual(placed.items[1], { title: 'కొర్రలు', title_2: 'Foxtail Millet', pack: '1 kg', price: 150, mrp: 170, qty: 1 }, 'offer applies, browser price ignored');
+assert.deepEqual(placed.items[1], { title: 'కొర్రలు', title_2: 'Foxtail Millet', pack: '1 kg', price: 150, mrp: 170, qty: 1 }, 'offer applies');
 assert.equal(prepareOrder(shop, { ...good, items: [line('కొర్రలు', '500 g'), line('కొర్రలు', '500 g', 2)] }).items[0].qty, 3, 'same line merged');
 for (const items of [[line('కొర్రలు', '500 g', 1, 'nope')], [line('Nope', '500 g')], [line('కొర్రలు', '5 kg')], [line('NoPrice', '1 kg')], [line('Hidden', '1 kg')], [line('X', '1', 1, 'off')]]) {
   assert.throws(() => prepareOrder(shop, { ...good, items }), /Some items changed/, JSON.stringify(items));
 }
+// The price the customer saw must still be the price, or they'd be charged one they never saw.
+for (const price of [170, 1, undefined, '150x']) {
+  assert.throws(() => prepareOrder(shop, { ...good, items: [{ ...line('కొర్రలు', '1 kg'), price }] }), /Some items changed.*కొర్రలు 1 kg/, `price ${price}`);
+}
+assert.equal(prepareOrder(shop, { ...good, items: [{ ...line('కొర్రలు', '1 kg'), price: '150' }] }).total, 150, 'price as text is fine');
+
+// A saved cart is brought up to date with the products on the page: gone lines dropped, prices refreshed.
+const live = [{ cat: 'millets', title: 'A', packs: [{ label: '1 kg', price: 120, offer: 100 }, { label: '2 kg', price: 200 }] }];
+assert.deepEqual(refreshLines([
+  { cat: 'millets', title: 'A', pack: '1 kg', price: 120, qty: 2 },
+  { cat: 'millets', title: 'A', pack: '2 kg', price: 180, mrp: 220, qty: 1 },
+  { cat: 'millets', title: 'A', pack: '5 kg', price: 500, qty: 1 },
+  { cat: 'millets', title: 'Gone', pack: '1 kg', price: 10, qty: 1 },
+  { cat: 'other', title: 'A', pack: '1 kg', price: 10, qty: 1 },
+  null, { title: 5 },
+], live), [
+  { cat: 'millets', title: 'A', pack: '1 kg', price: 100, mrp: 120, qty: 2 },
+  { cat: 'millets', title: 'A', pack: '2 kg', price: 200, qty: 1 },
+]);
+
+// Rate limits count an IPv6 network (/64) as one connection; IPv4 stays as it is.
+assert.equal(ipBucket('10.0.0.1'), '10.0.0.1');
+assert.equal(ipBucket('2001:db8:1:2:aaaa:bbbb:cccc:dddd'), '2001:db8:1:2::/64');
+assert.equal(ipBucket('2001:db8:1:2::9'), '2001:db8:1:2::/64');
+assert.equal(ipBucket('2001:DB8::1'), '2001:db8:0:0::/64');
+assert.equal(ipBucket('::1'), '0:0:0:0::/64');
+assert.equal(ipBucket('unknown'), 'unknown');
 for (const bad of [
   null, 'x', { ...good, items: [] }, { ...good, items: 'x' }, { ...good, items: Array.from({ length: 31 }, (_, i) => line(`t${i}`, 'p')) },
   { ...good, items: [line('కొర్రలు', '500 g', 0)] }, { ...good, items: [line('కొర్రలు', '500 g', 51)] }, { ...good, items: [line('కొర్రలు', '500 g', 1.5)] },

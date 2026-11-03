@@ -64,6 +64,12 @@ export const recentOrderCount = async (siteId: string, ip: string) =>
     [siteId, ip],
   ))[0].n as number;
 
+export const recentSiteOrderCount = async (siteId: string) =>
+  (await query(
+    `select count(*)::int as n from hh_orders where site_id = $1 and created_at > now() - interval '1 hour'`,
+    [siteId],
+  ))[0].n as number;
+
 export const insertOrder = async (siteId: string, o: Order, ip: string) =>
   (await query(
     `insert into hh_orders (site_id, name, phone, address, items, total, ip)

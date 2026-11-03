@@ -11,15 +11,15 @@ const itemFields = fieldsOf('services').find((f) => f.k === 'items')!.fields!;
 
 // Pack sizes suggested for how a product is sold; the owner can still type any other.
 const PACKS: Record<string, string[]> = {
-  weight: ['100 g', '250 g', '500 g', '1 kg', '2 kg', '5 kg'],
-  liquid: ['250 ml', '½ litre', '1 litre', '2 litre', '5 litre'],
-  count: ['1 item', '2 pack', '6 pack', '10 pack'],
+  weight: ['50 g', '100 g', '250 g', '500 g', '1 kg', '2 kg', '5 kg', '25 kg', '50 kg', '100 kg'],
+  liquid: ['50 ml', '100 ml', '150 ml', '250 ml', '½ litre', '1 litre', '2 litre', '5 litre', '10 litre'],
+  count: ['1 item', '2 pack', '6 pack', '10 pack', '12 pack', '20 pack', '30 pack', '50 pack'],
 };
 // Pack sizes show once the owner has said how the product is sold (or it already has some).
 const fieldsFor = (it: any) => itemFields.flatMap((f) => {
   if (f.k !== 'packs') return [f];
   if (!it.unit && !it.packs?.length) return [];
-  return [{ ...f, fields: f.fields!.map((p) => (p.k === 'label' ? { ...p, options: PACKS[it.unit], placeholder: PACKS[it.unit]?.[2] ?? p.placeholder } : p)) }];
+  return [{ ...f, fields: f.fields!.map((p) => (p.k === 'label' ? { ...p, options: PACKS[it.unit], placeholder: PACKS[it.unit]?.[3] ?? p.placeholder } : p)) }];
 });
 
 function slugify(text: string, taken: string[]) {

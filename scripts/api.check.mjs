@@ -675,6 +675,17 @@ try {
     assert.equal((await call('GET', '/api/v1/auth/me', { host: HOST_B, cookie: b.cookie })).data.orders, false);
   });
 
+  await test('a shop that takes orders has a privacy page; one that does not, has none', async () => {
+    // The orders flag was set straight in the database; an owner's save refreshes the cached page.
+    const { config, version } = (await call('GET', '/api/v1/content', { cookie: a.cookie })).data;
+    assert.equal((await call('PUT', '/api/v1/content', { cookie: a.cookie, body: { config, version } })).status, 200);
+    const page = await call('GET', '/privacy');
+    assert.equal(page.status, 200);
+    assert.ok(page.text.includes('check-a') && page.text.includes('mobile number'), 'names the shop and what is kept');
+    assert.ok((await call('GET', '/')).text.includes('href="/privacy"'), 'the footer links to it');
+    assert.equal((await call('GET', '/privacy', { host: HOST_B })).status, 404);
+  });
+
   await test('the app role still has no schema rights', async () => {
     const app = new Client(appUrl.href);
     await app.connect();

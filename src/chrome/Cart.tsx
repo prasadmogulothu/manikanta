@@ -18,7 +18,7 @@ const LABELS = {
     name: 'పేరు', phone: 'మొబైల్ నంబర్', address: 'చిరునామా', submit: 'ఆర్డర్ సమర్పించండి', sending: 'పంపుతోంది…',
     badPhone: '10 అంకెల మొబైల్ నంబర్ ఇవ్వండి.', failed: 'ఆర్డర్ పంపలేకపోయాం. మళ్ళీ ప్రయత్నించండి.',
     saved: 'ఆర్డర్ నమోదైంది', whatsapp: 'WhatsAppలో షాపుకు పంపండి', pdf: 'PDF సేవ్ చేయండి',
-    hint: 'WhatsApp తెరుచుకున్నాక Send నొక్కండి.', privacy: 'మీ వివరాలు డెలివరీ కోసమే.',
+    hint: 'WhatsApp తెరుచుకున్నాక Send నొక్కండి.', privacy: 'మీ వివరాలు షాపు ఆర్డర్ రికార్డుల్లో ఉంటాయి, డెలివరీ కోసమే.', privacyLink: 'గోప్యతా విధానం',
   },
   en: {
     cart: 'Cart', add: 'Add to cart', qty: 'How many', less: 'One less', more: 'One more', remove: 'Remove',
@@ -26,7 +26,7 @@ const LABELS = {
     name: 'Name', phone: 'Mobile number', address: 'Address', submit: 'Submit order', sending: 'Sending…',
     badPhone: 'Please enter a 10-digit mobile number.', failed: "Couldn't send the order. Please try again.",
     saved: 'Order saved', whatsapp: 'Send it to the shop on WhatsApp', pdf: 'Save PDF',
-    hint: 'When WhatsApp opens, tap Send.', privacy: 'Your details are used only for delivery.',
+    hint: 'When WhatsApp opens, tap Send.', privacy: "Your details are kept in the shop's order records, only for delivery.", privacyLink: 'Privacy',
   },
 };
 
@@ -243,7 +243,7 @@ export default function Cart({ site }: { site: Site }) {
             {/* Hidden from people; a bot that fills it is refused. */}
             <label className="cart-hp" aria-hidden="true">Website <input name="website" tabIndex={-1} autoComplete="off" /></label>
             {note && <p className="cart-note">{note}</p>}
-            <p className="cart-small">{t.privacy}</p>
+            <p className="cart-small">{t.privacy} <a href="/privacy" target="_blank" rel="noopener">{t.privacyLink}</a></p>
             {error && <p className="cart-error" role="alert">{error}</p>}
             <p className="cart-total">{t.total}: <b>{inr(total)}</b></p>
             <div className="cart-actions">

@@ -19,6 +19,15 @@ export default function Services({ c, site }: ModuleProps) {
           const amount = showPrices && it.amount?.trim();
           const tag = amount ? <span className="amount">{amount}</span> : null;
           const packs = packsOf(it);
+          // Chrome's Cart listens for clicks on data-add, so this stays a server component.
+          const data = canOrder && packs.length > 0 ? JSON.stringify({ cat: c.id, title: it.title, title_2: it.title_2, packs }) : null;
+          const hasFigure = !!(it.image || it.icon);
+          // On a photo: a cart icon at its bottom-right corner. Without one: a text button.
+          const cartIcon = data && hasFigure && (
+            <button type="button" className="add-icon" data-add={data} aria-label={`${addLabel}: ${it.title || ''}`}>
+              <Icon name="cart" size={22} />
+            </button>
+          );
           return (
           <article className="card" key={i}>
             {it.image ? (
@@ -30,11 +39,13 @@ export default function Services({ c, site }: ModuleProps) {
                   className={it.fit === 'contain' ? 'fit-contain' : undefined}
                 />
                 {tag}
+                {cartIcon}
               </figure>
             ) : it.icon ? (
               <figure>
                 <Icon name={it.icon} size={56} />
                 {tag}
+                {cartIcon}
               </figure>
             ) : (
               tag
@@ -53,11 +64,7 @@ export default function Services({ c, site }: ModuleProps) {
                 ))}
               </ul>
             )}
-            {/* Chrome's Cart listens for clicks on data-add, so this stays a server component. */}
-            {canOrder && packs.length > 0 && (
-              <button type="button" className="add"
-                data-add={JSON.stringify({ cat: c.id, title: it.title, title_2: it.title_2, packs })}>{addLabel}</button>
-            )}
+            {data && !hasFigure && <button type="button" className="add" data-add={data}>{addLabel}</button>}
           </article>
           );
         })}
@@ -66,7 +73,7 @@ export default function Services({ c, site }: ModuleProps) {
   );
 }
 
-export const classes = ['cards', 'card', 'price', 't2', 'fit-contain', 'amount', 'packs', 'offer', 'add'];
+export const classes = ['cards', 'card', 'price', 't2', 'fit-contain', 'amount', 'packs', 'offer', 'add', 'add-icon'];
 
 export const fields = [
   ...HEAD_FIELDS,

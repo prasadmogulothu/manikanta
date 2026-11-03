@@ -14,14 +14,15 @@ export const SkipLink = ({ site }: { site: Site }) => (
   <a className="skip" href="#main">{labels(site).skip}</a>
 );
 
-export function Header({ site }: { site: Site }) {
+// home: '/' when the header sits on another page, so its #section links lead back home.
+export function Header({ site, home = '' }: { site: Site; home?: string }) {
   const b = site.config.brand || {};
   const k = site.config.contact || {};
   const nav = visibleNav(site.config);
   return (
     <header className="top">
       {b.badge && <div className="top-badge">{b.badge}</div>}
-      <a className="top-brand" href="#top">
+      <a className="top-brand" href={`${home}#top`}>
         {b.logo && <img src={asset(b.logo)} alt="" />}
         <div>
           <b>
@@ -34,7 +35,7 @@ export function Header({ site }: { site: Site }) {
       {nav.length > 0 && (
         <nav className="top-nav" aria-label={labels(site).menu}>
           {nav.map((n) => (
-            <a key={n.href} href={safeHref(n.href)}>{n.label}</a>
+            <a key={n.href} href={safeHref(n.href?.startsWith('#') ? home + n.href : n.href)}>{n.label}</a>
           ))}
         </nav>
       )}
@@ -63,6 +64,9 @@ export function Footer({ site }: { site: Site }) {
         <div>
           <b>{site.config.brand?.name || site.name}</b> &copy; {new Date().getFullYear()}
           {f.note && <small>{f.note}</small>}
+          {site.config.features?.orders === true && (
+            <small><a href="/privacy">{site.config.lang === 'te' ? 'గోప్యతా విధానం · Privacy' : 'Privacy'}</a></small>
+          )}
         </div>
         {f.powered_by &&
           (url ? (

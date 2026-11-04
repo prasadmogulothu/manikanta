@@ -1,6 +1,6 @@
 import { fail, json, requestHost, requestIp, sameOrigin } from '@/lib/auth';
 import { getContent, getSiteIdByHost, insertOrder, recentOrderCount, recentSiteOrderCount } from '@/lib/db';
-import { OrderError, alertUrl, ipBucket, orderMessage, ordersOn, prepareOrder } from '@/lib/orders';
+import { OrderError, ipBucket, ordersOn, prepareOrder } from '@/lib/orders';
 
 const MAX_PER_HOUR = 5;
 // However many connections a flood comes from, real orders stay near the top of the list.
@@ -27,8 +27,5 @@ export async function POST(req: Request) {
     throw err;
   }
   const id = Number(await insertOrder(siteId, order, ip));
-  // The order is saved either way; if the message doesn't go, the customer gets the WhatsApp button instead.
-  const url = alertUrl(config.contact?.whatsapp, process.env.CALLMEBOT_KEYS, orderMessage(order, id));
-  const sent = !!url && (await fetch(url, { signal: AbortSignal.timeout(8000) }).then((r) => r.ok, () => false));
-  return json({ id, order, sent });
+  return json({ id, order });
 }

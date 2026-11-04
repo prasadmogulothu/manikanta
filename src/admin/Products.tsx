@@ -107,8 +107,9 @@ export default function Products({ config, setConfig }: ScreenProps) {
           <section className={`card${hidden ? ' off' : ''}`} key={c.id}>
             <div className="row">
               <button type="button" className="row-title" aria-expanded={isOpen} onClick={() => { setOpen(isOpen ? null : c.id); setEditing(null); }}>
-                <b>{c.heading || c.heading_2 || 'Untitled category'}</b>
+                <b>Category #{p + 1} · {c.heading || c.heading_2 || 'Untitled category'}</b>
                 <small>{items.length} products{hidden ? ' · hidden' : link ? ' · in top menu' : ''}</small>
+                {!isOpen && <small>Click to open details</small>}
               </button>
               <MoveButtons name="category"
                 onUp={p > 0 ? () => setSections(swap(sections, index, positions[p - 1])) : undefined}
@@ -150,6 +151,7 @@ export default function Products({ config, setConfig }: ScreenProps) {
                           <b>{it.title || it.title_2 || 'New product'}</b>
                           <small>{[it.title && it.title_2, it.amount, takesOrders && (packsOf(it).length ? 'can be ordered' : it.packs?.length && 'out of stock'), off && 'hidden'].filter(Boolean).join(' · ')}</small>
                           {missing && <small className="warn">Title needs both languages</small>}
+                          {editing !== i && <small>Click to open details</small>}
                         </button>
                         <MoveButtons name={it.title || 'product'}
                           onUp={i > 0 ? () => setItems(index, swap(items, i, i - 1)) : undefined}

@@ -10,7 +10,7 @@ import { toVars } from '../src/lib/theme.ts';
 import { DUMMY_HASH, hashPassword, verifyPassword } from '../src/lib/password.ts';
 import { ASPECTS, ZOOM_MAX, ZOOM_MIN, clampZoom, cropBox, dragged } from '../src/admin/crop.ts';
 import { allowedType, bytesMatchKey, keyFor, ownsKey } from '../src/lib/uploads.ts';
-import { OrderError, cleanPhone, ipBucket, orderMessage, ordersOn, packsOf, prepareOrder, refreshLines } from '../src/lib/orders.ts';
+import { OrderError, alertUrl, cleanPhone, ipBucket, orderMessage, ordersOn, packsOf, prepareOrder, refreshLines } from '../src/lib/orders.ts';
 import { ASSIGNABLE_CAPS, cleanUsername, validCaps, validPassword, validRoleIds, validUserId } from '../src/lib/users.ts';
 
 const path = (f) => new URL(`../src/${f}`, import.meta.url);
@@ -232,6 +232,10 @@ assert.equal(ordersOn({}), false);
 assert.deepEqual(packsOf(shop.sections[0].config.items[0]), [
   { label: '500 g', price: 90 }, { label: '1 kg', price: 170, offer: 150 }, { label: '2 kg', price: 300 }]);
 assert.deepEqual(packsOf({}), []);
+assert.equal(alertUrl('+91 95816 17244', '{"919581617244":"k&1"}', 'Hi ₹'),
+  'https://api.callmebot.com/whatsapp.php?phone=919581617244&apikey=k%261&text=Hi%20%E2%82%B9');
+for (const [wa, keys] of [['+919581617244', undefined], ['+919581617244', '{"910000000000":"k"}'], ['', '{"":"k"}'], ['+919581617244', 'not json']])
+  assert.equal(alertUrl(wa, keys, 'x'), null, `alertUrl ${wa} ${keys}`);
 // An out-of-stock pack stays saved for the owner but can't be seen or ordered.
 assert.deepEqual(packsOf({ packs: [{ label: '1 litre', price: 200, out: true }, { label: '2 litre', price: 380 }] }), [{ label: '2 litre', price: 380 }]);
 for (const ok of ['+91 95816 17244', '095816 17244', '9581617244', '91-9581617244']) assert.equal(cleanPhone(ok), '9581617244', ok);

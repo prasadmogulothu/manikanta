@@ -118,6 +118,18 @@ export function prepareOrder(config: Record<string, any>, body: unknown): Order 
   return { name, phone, address, items, total };
 }
 
+// The shop's WhatsApp gets each order from the server through CallMeBot, a free service
+// for messaging your own number. Its key belongs to the number, so one setting,
+// CALLMEBOT_KEYS = {"91XXXXXXXXXX":"key"}, serves every site.
+// ponytail: CallMeBot is unofficial with no delivery guarantee; Meta's WhatsApp Cloud API if it falls short.
+export function alertUrl(whatsapp: unknown, keys: string | undefined, text: string): string | null {
+  const phone = String(whatsapp || '').replace(/\D/g, '');
+  let key: unknown;
+  try { key = JSON.parse(keys || '{}')[phone]; } catch { return null; }
+  if (!phone || typeof key !== 'string' || !key) return null;
+  return `https://api.callmebot.com/whatsapp.php?phone=${phone}&apikey=${encodeURIComponent(key)}&text=${encodeURIComponent(text)}`;
+}
+
 export const inr = (n: number) => `₹${n.toLocaleString('en-IN')}`;
 
 export function orderMessage(order: Order, id: number): string {

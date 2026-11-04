@@ -86,13 +86,6 @@ export const fields = [
       { k: 'title', t: 'text', label: 'Title', two: true },
       { k: 'unit', t: 'select', label: 'Sold by', options: ['', 'weight', 'liquid', 'count'],
         hint: 'weight: g / kg · liquid: ml / litre · count: items or packs. Pick it before adding pack sizes.' },
-      { k: 'body', t: 'textarea', label: 'Description', two: true },
-      { k: 'icon', t: 'select', label: 'Icon', options: 'icons' },
-      { k: 'image', t: 'image', label: 'Image (overrides icon)', edge: 640 },
-      { k: 'alt', t: 'text', label: 'Image description', two: true },
-      { k: 'fit', t: 'select', label: 'Photo fit', options: ['', 'contain'] },
-      { k: 'amount', t: 'text', label: 'Price', placeholder: '₹99' },
-      { k: 'price', t: 'text', label: 'Note, such as size', two: true },
       {
         k: 'packs', t: 'list', label: 'Pack sizes for ordering', fields: [
           { k: 'label', t: 'text', label: 'Pack', placeholder: '500 g', hint: 'Pick one or type your own.' },
@@ -101,6 +94,14 @@ export const fields = [
           { k: 'out', t: 'bool', label: 'Out of stock (hidden from the site until unticked)' },
         ],
       },
+      { k: 'body', t: 'textarea', label: 'Description', two: true },
+      { k: 'icon', t: 'select', label: 'Icon', options: 'icons' },
+      { k: 'image', t: 'image', label: 'Image (overrides icon)', edge: 640 },
+      { k: 'alt', t: 'text', label: 'Image description', two: true },
+      { k: 'fit', t: 'select', label: 'Photo fit', options: ['', 'contain'],
+        hint: '— fills the photo frame and may trim the edges · contain shows the whole photo, with space around it' },
+      { k: 'amount', t: 'text', label: 'Price shown on the card (not used for orders)', placeholder: '₹99' },
+      { k: 'price', t: 'text', label: 'Note, such as size', two: true },
     ],
   },
 ];

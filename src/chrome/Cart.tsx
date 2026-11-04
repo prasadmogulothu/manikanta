@@ -19,7 +19,7 @@ const LABELS = {
     name: 'పేరు', phone: 'మొబైల్ నంబర్', address: 'చిరునామా', submit: 'ఆర్డర్ సమర్పించండి', sending: 'పంపుతోంది…',
     badPhone: '10 అంకెల మొబైల్ నంబర్ ఇవ్వండి.', failed: 'ఆర్డర్ పంపలేకపోయాం. మళ్ళీ ప్రయత్నించండి.',
     saved: 'ఆర్డర్ నమోదైంది', whatsapp: 'WhatsAppలో షాపుకు పంపండి', pdf: 'PDF సేవ్ చేయండి',
-    hint: 'WhatsApp తెరుచుకున్నాక Send నొక్కండి.', privacy: 'మీ వివరాలు షాపు ఆర్డర్ రికార్డుల్లో ఉంటాయి, డెలివరీ కోసమే.', privacyLink: 'గోప్యతా విధానం',
+    hint: 'WhatsApp తెరుచుకున్నాక Send నొక్కండి.', sent: 'మీ ఆర్డర్ షాపు WhatsAppకు చేరింది. షాపు వారు మీకు ఫోన్ చేస్తారు.', privacy: 'మీ వివరాలు షాపు ఆర్డర్ రికార్డుల్లో ఉంటాయి, డెలివరీ కోసమే.', privacyLink: 'గోప్యతా విధానం',
   },
   en: {
     cart: 'Cart', add: 'Add to cart', qty: 'How many', less: 'One less', more: 'One more', remove: 'Remove',
@@ -27,7 +27,7 @@ const LABELS = {
     name: 'Name', phone: 'Mobile number', address: 'Address', submit: 'Submit order', sending: 'Sending…',
     badPhone: 'Please enter a 10-digit mobile number.', failed: "Couldn't send the order. Please try again.",
     saved: 'Order saved', whatsapp: 'Send it to the shop on WhatsApp', pdf: 'Save PDF',
-    hint: 'When WhatsApp opens, tap Send.', privacy: "Your details are kept in the shop's order records, only for delivery.", privacyLink: 'Privacy',
+    hint: 'When WhatsApp opens, tap Send.', sent: "Your order has reached the shop's WhatsApp. The shop will call you.", privacy: "Your details are kept in the shop's order records, only for delivery.", privacyLink: 'Privacy',
   },
 };
 
@@ -64,7 +64,7 @@ export default function Cart({ site }: { site: Site }) {
   const [step, setStep] = useState<'cart' | 'form' | 'done'>('cart');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const [placed, setPlaced] = useState<{ id: number; order: Order } | null>(null);
+  const [placed, setPlaced] = useState<{ id: number; order: Order; sent?: boolean } | null>(null);
   const picker = useRef<HTMLDialogElement>(null);
   const cart = useRef<HTMLDialogElement>(null);
 
@@ -165,7 +165,7 @@ export default function Cart({ site }: { site: Site }) {
   }, [placed]);
 
   const b = site.config.brand || {};
-  const waLink = placed && whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(orderMessage(placed.order, placed.id))}` : '';
+  const waLink = placed && !placed.sent && whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(orderMessage(placed.order, placed.id))}` : '';
 
   return (
     <>
@@ -286,6 +286,7 @@ export default function Cart({ site }: { site: Site }) {
               </ul>
               <p className="cart-total receipt-total">{t.total}: <b>{inr(placed.order.total)}</b></p>
             </div>
+            {placed.sent && <p className="cart-note" role="status">{t.sent}</p>}
             {waLink && <a className="cart-go" href={waLink} target="_blank" rel="noopener">{t.whatsapp}</a>}
             {waLink && <p className="cart-small">{t.hint}</p>}
             <button type="button" className="cart-link" onClick={savePdf}>{t.pdf}</button>

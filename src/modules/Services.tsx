@@ -6,26 +6,34 @@ import { Icon } from './icons';
 
 // Also holds products: a category is a section with `catalog: true`, a product an item.
 // An item may carry a photo or an icon, so a site without photos still looks finished.
+// On the home page a category shows its first HOME_LIMIT products and links to its own page.
+export const HOME_LIMIT = 10;
+
 export default function Services({ c, site }: ModuleProps) {
-  const items: any[] = (c.items || []).filter((it: any) => it.enabled !== false);
+  const all: any[] = (c.items || []).filter((it: any) => it.enabled !== false);
+  const preview = c.home && c.catalog && c.id;
+  const items = preview ? all.slice(0, HOME_LIMIT) : all;
+  const viewAll = preview && (
+    <div className="view-all"><a href={`/category/${encodeURIComponent(c.id)}`}>View all{all.length > HOME_LIMIT ? ` (${all.length})` : ''} →</a></div>
+  );
   const showPrices = site.config.show_prices !== false;
   const canOrder = ordersOn(site.config);
-  const addLabel = site.config.lang === 'te' ? 'కార్ట్‌లో వేయండి' : 'Add to cart';
+  const addLabel = 'Add to cart';
   return (
     <Section c={c}>
+      {viewAll}
       <div className="cards" style={{ '--cols': +c.columns || 3 } as React.CSSProperties}>
         {items.map((it, i) => {
-          // No price, or prices switched off: no tag at all, not an empty one.
-          const amount = showPrices && it.amount?.trim();
-          const tag = amount ? <span className="amount">{amount}</span> : null;
           const packs = packsOf(it);
+          // The card price shows below the title, and only when no pack prices already say it.
+          const amount = showPrices && packs.length === 0 && it.amount?.trim();
           // Chrome's Cart listens for clicks on data-add, so this stays a server component.
           const data = canOrder && packs.length > 0 ? JSON.stringify({ cat: c.id, title: it.title, title_2: it.title_2, packs }) : null;
           const hasFigure = !!(it.image || it.icon);
           // On a photo: a cart icon at its bottom-right corner. Without one: a text button.
           const cartIcon = data && hasFigure && (
             <button type="button" className="add-icon" data-add={data} aria-label={`${addLabel}: ${it.title || ''}`}>
-              <Icon name="cart" size={22} />
+              <Icon name="cart" size={18} />
             </button>
           );
           return (
@@ -38,20 +46,17 @@ export default function Services({ c, site }: ModuleProps) {
                   loading="lazy"
                   className={it.fit === 'contain' ? 'fit-contain' : undefined}
                 />
-                {tag}
                 {cartIcon}
               </figure>
             ) : it.icon ? (
               <figure>
                 <Icon name={it.icon} size={56} />
-                {tag}
                 {cartIcon}
               </figure>
-            ) : (
-              tag
-            )}
+            ) : null}
             <h3>{it.title}</h3>
             {it.title_2 && <p className="t2">{it.title_2}</p>}
+            {amount && <p className="amount">{amount}</p>}
             {it.body && <p>{it.body}</p>}
             {it.price && <span className="price">{it.price}</span>}
             {showPrices && packs.length > 0 && (
@@ -69,11 +74,12 @@ export default function Services({ c, site }: ModuleProps) {
           );
         })}
       </div>
+      {viewAll}
     </Section>
   );
 }
 
-export const classes = ['cards', 'card', 'price', 't2', 'fit-contain', 'amount', 'packs', 'offer', 'add', 'add-icon'];
+export const classes = ['cards', 'card', 'price', 't2', 'fit-contain', 'amount', 'packs', 'offer', 'add', 'add-icon', 'view-all'];
 
 export const fields = [
   ...HEAD_FIELDS,

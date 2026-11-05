@@ -142,6 +142,9 @@ export default function Products({ config, setConfig }: ScreenProps) {
                 <h2>Products</h2>
                 {items.map((it, i) => {
                   const missing = lang2 && (!it.title?.trim() || !it.title_2?.trim());
+                  // The cart tells products apart by category and title, so two with one title get mixed up.
+                  const key = it.title?.trim().toLowerCase();
+                  const duplicate = key && items.some((x, j) => j !== i && x.title?.trim().toLowerCase() === key);
                   const off = it.enabled === false;
                   return (
                     <div className={`product${off ? ' off' : ''}`} key={i}>
@@ -151,6 +154,7 @@ export default function Products({ config, setConfig }: ScreenProps) {
                           <b>{it.title || it.title_2 || 'New product'}</b>
                           <small>{[it.title && it.title_2, it.amount, takesOrders && (packsOf(it).length ? 'can be ordered' : it.packs?.length && 'out of stock'), off && 'hidden'].filter(Boolean).join(' · ')}</small>
                           {missing && <small className="warn">Title needs both languages</small>}
+                          {duplicate && <small className="warn">Another product in this category has the same title</small>}
                           {editing !== i && <small>Click to open details</small>}
                         </button>
                         <MoveButtons name={it.title || 'product'}

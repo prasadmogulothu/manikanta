@@ -21,6 +21,11 @@ export function visibleNav(config: { nav?: any[]; sections?: any[] }): { label: 
   return (config.nav || []).filter((n) => n.label?.trim() && !hidden.includes(n.href));
 }
 
+// The product categories visitors can see, in the owner's order.
+export const categories = (config: { sections?: any[] }) =>
+  (config.sections || []).filter((s) => s.type === 'services' && s.enabled !== false && s.config?.catalog && s.config?.id);
+export const categoryName = (s: any): string => s.config.heading || s.config.heading_2 || s.config.id;
+
 export function safeMapUrl(url: unknown): string | undefined {
   if (typeof url !== 'string') return undefined;
   try {

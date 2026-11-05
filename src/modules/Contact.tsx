@@ -11,6 +11,10 @@ export default function Contact({ c, site }: ModuleProps) {
   const hours: any[] = k.hours || [];
   const lines: string[] = k.address_lines || [];
   const map = c.show_map && safeMapUrl(k.map_embed);
+  const digits = (v: unknown) => String(v || '').replace(/\D/g, '');
+  const wa = digits(k.whatsapp);
+  // The same number as the phone reads the way the owner wrote the phone.
+  const waShown = wa && wa === digits(k.phone) ? k.phone_display || k.whatsapp : k.whatsapp;
 
   return (
     <Section c={c}>
@@ -43,6 +47,17 @@ export default function Contact({ c, site }: ModuleProps) {
           <a className="tel" href={`tel:${k.phone}`}>
             {k.phone_display || k.phone}
           </a>
+          {wa && (
+            <>
+              <div className="divide" />
+              <div className="pl">
+                <Icon name="message" size={20} /> {c.whatsapp_label || 'WhatsApp'}
+              </div>
+              <a className="tel" href={`https://wa.me/${wa}`} target="_blank" rel="noopener">
+                {waShown}
+              </a>
+            </>
+          )}
           {hours.length > 0 && (
             <>
               <div className="divide" />
@@ -71,6 +86,7 @@ export const fields = [
   ...HEAD_FIELDS,
   { k: 'address_label', t: 'text', label: 'Address label' },
   { k: 'phone_label', t: 'text', label: 'Phone label' },
+  { k: 'whatsapp_label', t: 'text', label: 'WhatsApp label', placeholder: 'WhatsApp' },
   { k: 'hours_label', t: 'text', label: 'Second panel label' },
   { k: 'hours_icon', t: 'select', label: 'Second panel icon', options: ['clock', 'message'] },
   { k: 'show_map', t: 'bool', label: 'Show map' },

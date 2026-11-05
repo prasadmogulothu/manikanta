@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { MAX_QTY, cleanPhone, inr, orderMessage, refreshLines, type Order, type Pack } from '../lib/orders';
+import { MAX_QTY, cleanPhone, inr, orderMessage, packsOf, refreshLines, type Order, type Pack } from '../lib/orders';
 import { asset } from '../lib/links';
 import type { Site } from '../lib/types';
 
@@ -12,15 +12,8 @@ type Line = { cat: string; title: string; title_2?: string; pack: string; price:
 type Pick = { cat: string; title: string; title_2?: string; packs: Pack[] };
 type Customer = { name: string; phone: string; address: string };
 
+// Page labels stay English; only what the owner types appears in the site's language.
 const LABELS = {
-  te: {
-    cart: 'కార్ట్', add: 'కార్ట్‌లో వేయండి', qty: 'సంఖ్య', less: 'తగ్గించు', more: 'పెంచు', remove: 'తీసివేయండి',
-    close: 'మూసివేయండి', empty: 'కార్ట్ ఖాళీగా ఉంది.', total: 'మొత్తం', send: 'ఆర్డర్ పంపండి', back: 'వెనక్కి',
-    name: 'పేరు', phone: 'మొబైల్ నంబర్', address: 'చిరునామా', submit: 'ఆర్డర్ సమర్పించండి', sending: 'పంపుతోంది…',
-    badPhone: '10 అంకెల మొబైల్ నంబర్ ఇవ్వండి.', failed: 'ఆర్డర్ పంపలేకపోయాం. మళ్ళీ ప్రయత్నించండి.',
-    saved: 'ఆర్డర్ నమోదైంది', whatsapp: 'WhatsAppలో షాపుకు పంపండి', pdf: 'PDF సేవ్ చేయండి',
-    hint: 'WhatsApp తెరుచుకున్నాక Send నొక్కండి.', privacy: 'మీ వివరాలు షాపు ఆర్డర్ రికార్డుల్లో ఉంటాయి, డెలివరీ కోసమే.', privacyLink: 'గోప్యతా విధానం',
-  },
   en: {
     cart: 'Cart', add: 'Add to cart', qty: 'How many', less: 'One less', more: 'One more', remove: 'Remove',
     close: 'Close', empty: 'Your cart is empty.', total: 'Total', send: 'Send order', back: 'Back',
@@ -52,7 +45,7 @@ const Price = ({ price, mrp }: { price: number; mrp?: number }) =>
   mrp ? <><s>{inr(mrp)}</s> <b className="offer">{inr(price)}</b></> : <b>{inr(price)}</b>;
 
 export default function Cart({ site }: { site: Site }) {
-  const t = site.config.lang === 'te' ? LABELS.te : LABELS.en;
+  const t = LABELS.en;
   const whatsapp = String(site.config.contact?.whatsapp || '').replace(/\D/g, '');
   const note: string = site.config.orders?.note || '';
 
@@ -69,10 +62,13 @@ export default function Cart({ site }: { site: Site }) {
   const cart = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
-    // Products may have changed since the cart was saved; the page's Add buttons say how they are now.
-    const live = [...document.querySelectorAll('[data-add]')].flatMap((b) => {
-      try { return [JSON.parse(b.getAttribute('data-add') || '')]; } catch { return []; }
-    });
+    // Products may have changed since the cart was saved. Read them from the whole catalog, not this
+    // page's buttons: a category page or the home page's preview shows only some of them.
+    const live = (site.config.sections || [])
+      .filter((s: any) => s.type === 'services' && s.enabled !== false)
+      .flatMap((s: any) => (s.config?.items || [])
+        .filter((it: any) => it.enabled !== false)
+        .map((it: any) => ({ cat: s.config.id, title: it.title, packs: packsOf(it) })));
     const fresh = refreshLines(load<unknown>('hh-cart', []), live);
     setLines(fresh);
     save('hh-cart', fresh);

@@ -1,14 +1,12 @@
-import { asset, safeHref, visibleNav } from '../lib/links';
+import { asset, categories, safeHref, visibleNav } from '../lib/links';
 import type { Site } from '../lib/types';
 import { Icon } from '../modules/icons';
 
 // Page chrome. Config-driven: no site name, phone number or logo path is written here.
 
-const LABELS: Record<string, { skip: string; menu: string }> = {
-  te: { skip: 'ప్రధాన విషయానికి వెళ్ళండి', menu: 'ప్రధాన మెను' },
-  en: { skip: 'Skip to main content', menu: 'Main menu' },
-};
-const labels = (site: Site) => LABELS[site.config.lang] || LABELS.en;
+// Page labels stay English; only what the owner types appears in the site's language.
+const LABELS = { skip: 'Skip to main content', menu: 'Main menu' };
+const labels = (_site: Site) => LABELS;
 
 export const SkipLink = ({ site }: { site: Site }) => (
   <a className="skip" href="#main">{labels(site).skip}</a>
@@ -19,6 +17,11 @@ export function Header({ site, home = '' }: { site: Site; home?: string }) {
   const b = site.config.brand || {};
   const k = site.config.contact || {};
   const nav = visibleNav(site.config);
+  const cats = categories(site.config).map((s) => `#${s.config.id}`);
+  // "All categories" goes after the category links, before fixed ones such as About.
+  const at = nav.findIndex((n) => !cats.includes(n.href));
+  const allAt = cats.length ? (at < 0 ? nav.length : at) : -1;
+  const all = <a key="/categories" href="/categories">All categories</a>;
   return (
     <header className="top">
       {b.badge && <div className="top-badge">{b.badge}</div>}
@@ -32,11 +35,13 @@ export function Header({ site, home = '' }: { site: Site; home?: string }) {
           {b.tagline && <small>{b.tagline}</small>}
         </div>
       </a>
-      {nav.length > 0 && (
+      {(nav.length > 0 || allAt >= 0) && (
         <nav className="top-nav" aria-label={labels(site).menu}>
-          {nav.map((n) => (
-            <a key={n.href} href={safeHref(n.href?.startsWith('#') ? home + n.href : n.href)}>{n.label}</a>
-          ))}
+          {nav.map((n, i) => [
+            i === allAt && all,
+            <a key={n.href} href={safeHref(n.href?.startsWith('#') ? home + n.href : n.href)}>{n.label}</a>,
+          ])}
+          {allAt === nav.length && all}
         </nav>
       )}
       {k.phone && (
@@ -65,7 +70,7 @@ export function Footer({ site }: { site: Site }) {
           <b>{site.config.brand?.name || site.name}</b> &copy; {new Date().getFullYear()}
           {f.note && <small>{f.note}</small>}
           {site.config.features?.orders === true && (
-            <small><a href="/privacy">{site.config.lang === 'te' ? 'గోప్యతా విధానం · Privacy' : 'Privacy'}</a></small>
+            <small><a href="/privacy">Privacy</a></small>
           )}
         </div>
         {f.powered_by &&

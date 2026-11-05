@@ -20,7 +20,7 @@ export default async function Home({ params }: { params: Promise<{ host: string 
           // An unknown type means the config outran this deploy. Render the rest.
           if (!mod) return null;
           // Bands alternate unless the section pins it in config.
-          const c = { ...s.config, alt: s.config?.alt ?? i % 2 === 1 };
+          const c = { ...s.config, alt: s.config?.alt ?? i % 2 === 1, home: true };
           return <mod.Component key={`${s.type}-${i}`} c={c} site={site} />;
         })}
       </main>

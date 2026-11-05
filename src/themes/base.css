@@ -529,8 +529,9 @@ main .orn { margin-top:14px; }
   @media (min-width:861px) { .top .top-nav a { text-box:trim-both cap alphabetic; padding-top:13px; padding-bottom:13px; } }
 }
 
-/* A small link under the Powered by box, in the same small letters as its "Powered by". */
-.pb-wrap { display:grid; justify-items:end; gap:8px; }
-.pb-more { font-size:10.5px; letter-spacing:.22em; opacity:.85; color:inherit; }
+/* padamz.com under the credit's name, in the same small letters as its "Powered by". */
+.pb-link { display:contents; color:inherit; }
+.foot .pb-more { grid-column:1; font-size:10.5px; letter-spacing:.22em; opacity:.85; color:inherit; }
 .pb-more:hover { opacity:1; text-decoration:underline; }
-@media (max-width:860px) { .pb-wrap { justify-items:start; } }
+/* The logo spans the three lines beside it: Developed by, the name, padamz.com. */
+.foot .pb img { grid-row:1 / span 3; }

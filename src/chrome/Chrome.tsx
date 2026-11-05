@@ -74,12 +74,10 @@ export function Footer({ site }: { site: Site }) {
           )}
         </div>
         {f.powered_by && (
-          <div className="pb-wrap">
-            {url ? (
-              <a className="pb" href={url} target="_blank" rel="noopener">{credit}</a>
-            ) : (
-              <div className="pb">{credit}</div>
-            )}
+          // Two links side by side in one box: the credit's link is display:contents, so its
+          // pieces and padamz.com sit in the same grid, under the name and beside the logo.
+          <div className="pb">
+            {url ? <a className="pb-link" href={url} target="_blank" rel="noopener">{credit}</a> : credit}
             {/* ponytail: the platform's own link, the same on every site; move it into footer config if a site needs another. */}
             <a className="pb-more" href="https://padamz.com" target="_blank" rel="noopener">padamz.com</a>
           </div>

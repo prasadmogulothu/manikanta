@@ -513,6 +513,8 @@
 /* Tighter section spacing below the hero. `main .sec` outranks a template's own `.sec` padding;
    `main.sec` is a page whose main is itself the section, such as All categories. */
 main .sec, main.sec { padding:28px 0; }
+/* Phones: the hero's bottom gap, down from the template's 56px to the sections' 28px. */
+@media (max-width:860px) { main .hero { padding-bottom:28px; } }
 main .sec-head { margin-bottom:24px; }
 main .orn { margin-top:14px; }
 .view-all { margin:-6px 0 12px; }

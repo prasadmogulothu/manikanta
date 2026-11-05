@@ -515,6 +515,9 @@
 main .sec, main.sec { padding:28px 0; }
 /* Phones: the hero's bottom gap, down from the template's 56px to the sections' 28px. */
 @media (max-width:860px) { main .hero { padding-bottom:28px; } }
+/* Desktop: the hero is as tall as the shop photo plus 32px each side, not 78% of the screen.
+   ponytail: the photo's size and 880/815 shape copy the template's .hero-bg; change both together. */
+@media (min-width:861px) { main .hero { min-height:calc(min(44vw, 540px) * 815 / 880 + 64px); padding-bottom:40px; } }
 main .sec-head { margin-bottom:24px; }
 main .orn { margin-top:14px; }
 .view-all { margin:-6px 0 12px; }
@@ -525,3 +528,9 @@ main .orn { margin-top:14px; }
 @supports (text-box: trim-both cap alphabetic) {
   @media (min-width:861px) { .top .top-nav a { text-box:trim-both cap alphabetic; padding-top:13px; padding-bottom:13px; } }
 }
+
+/* A small link under the Powered by box, in the same small letters as its "Powered by". */
+.pb-wrap { display:grid; justify-items:end; gap:8px; }
+.pb-more { font-size:10.5px; letter-spacing:.22em; opacity:.85; color:inherit; }
+.pb-more:hover { opacity:1; text-decoration:underline; }
+@media (max-width:860px) { .pb-wrap { justify-items:start; } }
